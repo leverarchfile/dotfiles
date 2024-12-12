@@ -1,0 +1,90 @@
+!/bin/sh
+
+riverctl map normal Super Escape close
+riverctl map normal Super Tab toggle-float
+riverctl map normal Super+Shift Tab toggle-fullscreen
+riverctl map normal Super F send-layout-cmd wideriver "--layout-toggle"
+riverctl map normal Super A focus-view next
+riverctl map normal Super+Shift A zoom
+
+riverctl map normal Super Return spawn $TERMINAL
+riverctl map normal Super S spawn screenshot
+riverctl map normal Super D spawn "tofi-drun --drun-launch=true"
+riverctl map normal Super G spawn "$TERMINAL lf"
+riverctl map normal Super X spawn system_state
+riverctl map normal Super C spawn clipboard 
+riverctl map normal Super B spawn firefox
+riverctl map normal Super M spawn "bookmark add"
+riverctl map normal Super V spawn "bookmark open"
+riverctl map normal Super Semicolon "emacsclient -c -a 'emacs'"
+riverctl map normal Super Minus spawn password_menu
+
+# Open current image in cliboard with swappy
+riverctl map normal Super+Shift S spawn "wl-paste -t image | swappy -f -"
+
+# Colour picker & copy to clipboard
+riverctl map normal Super+Shift C spawn colour-picker
+
+# Toggle bluetooth
+riverctl map normal Super+Shift Z spawn bt_toggle
+
+# Reload waybar
+riverctl map normal Super+Shift B spawn reload-waybar
+
+# Switch focus to window
+riverctl map normal Super H focus-view left
+riverctl map normal Super J focus-view down
+riverctl map normal Super K focus-view up
+riverctl map normal Super L focus-view right
+
+# Swap window position
+riverctl map normal Super+Shift H swap left
+riverctl map normal Super+Shift J swap down
+riverctl map normal Super+Shift K swap up
+riverctl map normal Super+Shift L swap right
+
+# Resize focused window
+riverctl map normal Super+Control H resize horizontal -100
+riverctl map normal Super+Control J resize vertical 100
+riverctl map normal Super+Control K resize vertical -100
+riverctl map normal Super+Control L resize horizontal 100
+
+# Super + left mouse button to move window
+riverctl map-pointer normal Super BTN_LEFT move-view
+
+# Super + right mouse button to resize window
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+
+for i in $(seq 1 9)
+	do
+    tags=$((1 << ($i - 1)))
+
+    # Switch focus to a different tag
+    riverctl map normal Super $i set-focused-tags $tags
+
+    # Move focused window to a different tag
+    riverctl map normal Super+Shift $i set-view-tags $tags
+
+    # Add focused window to another tag 
+    riverctl map normal Super+Control $i toggle-view-tags $tags
+
+    # Show a tag on current monitor
+    #riverctl map normal Super+Shift+Control $i toggle-focused-tags $tags
+done
+
+# Switch focus to next monitor
+riverctl map normal Super Period focus-output next
+riverctl map normal Super Comma focus-output previous
+
+# Send focused window to next monitor
+riverctl map normal Super+Shift Period send-to-output next
+riverctl map normal Super+Shift Comma send-to-output previous
+
+for mode in normal locked
+do
+		riverctl map $mode None XF86AudioRaiseVolume spawn "volume up"
+		riverctl map $mode None XF86AudioLowerVolume spawn "volume down"
+		riverctl map $mode None XF86AudioMute spawn "volume mute"
+		riverctl map $mode None XF86MonBrightnessUp spawn "brightness up"
+		riverctl map $mode None XF86MonBrightnessDown spawn "brightness down"
+done

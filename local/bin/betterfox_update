@@ -1,0 +1,3 @@
+#!/bin/sh
+
+curl https://raw.githubusercontent.com/yokoffing/Betterfox/master/user.js > ~/dotfiles/config/firefox/user.js

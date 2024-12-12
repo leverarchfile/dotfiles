@@ -1,0 +1,37 @@
+#!/bin/sh
+
+dbus-update-activation-environment \
+	SEATD_SOCK \
+	WAYLAND_DISPLAY \
+	XDG_CURRENT_DESKTOP=river
+
+systemctl --user restart wireplumber pipewire pipewire-pulse
+
+exec /usr/lib/polkit-kde-authentication-agent-1 &
+
+riverctl default-layout wideriver
+
+wideriver \
+	--layout left --stack even --ratio-master 0.50 \
+	--outer-gaps 6 --inner-gaps 6 --no-smart-gaps \
+	--border-width 2 \
+	--border-width-monocle 0 \
+	--border-color-focused 0xEBDBB2 \
+	--border-color-unfocused 0x928374 &
+
+riverctl background-color "0x282828"
+
+kanshi &
+waybar &
+dunst &
+udiskie &
+foot --server &
+emacs --daemon &
+kmonad ~/.config/kmonad/config.kbd &
+wl-paste --type text --watch cliphist store &
+wl-paste --type image --watch cliphist store &
+wl-clip-persist --clipboard regular &
+nm-applet &
+
+swayidle -w timeout 300 "lock" timeout 600 "wlopm --off '*'" \
+	resume "wlopm --on '*'" before-sleep "lock" &

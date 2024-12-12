@@ -1,0 +1,13 @@
+auto-save-list/
+elpa
+eln-cache/
+eshell
+history
+places
+projects
+straight/*
+!straight/versions/
+straight/versions/*
+!straight/versions/default.el
+recentf
+transient

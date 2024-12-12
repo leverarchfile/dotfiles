@@ -1,0 +1,5 @@
+#!/bin/sh
+
+. ~/.config/river/autostart
+. ~/.config/river/settings
+. ~/.config/river/keybindings

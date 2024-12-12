@@ -1,0 +1,60 @@
+/* Single bar interface */
+#navigator-toolbox {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+	border-bottom: 0 !important;	
+}
+#nav-bar{
+	direction: ltr !important;
+	width: 500px !important;
+	background-color: transparent !important;
+} 
+#titlebar {
+  order: 2 !important;
+  flex-grow: 1 !important;
+	background: var(--accent-color) !important;
+}
+
+#urlbar-container, 
+#customizationui-widget-panel {
+	direction: ltr !important;
+}
+
+/* No round corners and shadows */
+* {
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	text-shadow: none !important;
+}
+
+/* Remove "padding" left and right from tabs */
+.titlebar-spacer {
+  display: none !important;
+}
+
+/* Remove gaps from unpinned/pinned tabs */
+.tabbrowser-tab:not([pinned]) {
+  margin-inline-start: 0px !important;
+}
+
+/*  Remove the rainbow thing from the hamburger  */
+#appMenu-fxa-separator{
+	border-image:none !important;
+}
+
+/* Remove these elements */
+#identity-box > :not(#urlbar-go-button), /* magnify glass in the URL bar */
+#tracking-protection-icon-container, /* container for the tracking protection shield icon */
+#page-action-buttons > :not(#urlbar-zoom-button), /* all page action buttons except zoom */
+#alltabs-button, /* button for showing all open tabs in a dropdown menu */
+#PersonalToolbar, /* bookmark toolbar */
+#toolbar-menubar, /* traditional menu bar (File, Edit, View, etc.) */
+#forward-button,
+#back-button,
+#reload-button,
+#unified-extensions-button, /* unified extensions button in the toolbar */
+#unified-extensions-button > .toolbarbutton-icon, /* icon for the unified extensions button */
+.titlebar-buttonbox-container /* close/minimize/maximize buttons container */ {
+  display: none !important;
+}

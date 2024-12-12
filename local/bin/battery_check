@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# check battery percentage and send notification when low
+
+THRESHOLD=21  # threshold percentage to send notifcation
+
+# create file to store notification flag, if it doesn't already exist
+touch ~/.local/bin/battery_notification
+
+# check if battery is discharging
+STATUS=$(cat /sys/class/power_supply/BAT1/status)
+
+# convert status to integer for easier comparison
+case "$STATUS" in
+	"Charging") STATUS=1 ;;
+	"Discharging") STATUS=0 ;;
+	*) STATUS=-1 ;;
+esac
+
+# cet current percentage
+CURRENT_PERCENTAGE=$(cat /sys/class/power_supply/BAT1/capacity)
+
+# check if a notifcation has already been sent
+NOTIFICATION_SENT=$(cat ~/.local/bin/battery_notification)
+
+# send a notification if
+# 1. the battery is discharing
+# 2. the current percentage is lower than the threshold
+# 3. a notification hasn't been sent yet
+if [ "$CURRENT_PERCENTAGE" -lt "$THRESHOLD" ] && [ "$STATUS" -eq 0 ] && [ "$NOTIFICATION_SENT" -eq 0 ]; then
+	notify-send -u critical "Battery is low"
+	echo "1" > ~/.local/bin/battery_notification
+fi
+
+# reset the notification sent flag if the battery is charging
+if [ "$STATUS" -eq 1 ]; then
+	echo "0" > ~/.local/bin/battery_notification
+fi
+

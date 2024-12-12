@@ -1,0 +1,7 @@
+#!/bin/sh
+
+uoa="$(find ~/mail/uoa/Inbox/new -type f | wc -l)"
+
+perso="$(find ~/mail/perso/Inbox/new -type f | wc -l)"
+
+echo "u-$uoa  p-$perso"

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Allow battery to charge to 100% 
+# on reboot will revert to value set in BIOS
+
+framework_tool --charge-limit 100
+

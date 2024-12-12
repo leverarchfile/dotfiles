@@ -1,0 +1,27 @@
+#!/bin/sh
+
+riverctl keyboard-layout -options 'us' 
+riverctl set-repeat 50 250
+
+riverctl default-attach-mode bottom
+
+riverctl rule-add ssd
+
+gsettings set "org.gnome.desktop.interface" gtk-theme "Gruvbox-Material-Dark"
+gsettings set "org.gnome.desktop.interface" icon-theme "breeze-dark"
+
+touchpad="pointer-2362-628-PIXA3854:00_093A:0274_Touchpad"
+riverctl input "$touchpad" tap enabled
+riverctl input "$touchpad" drag disabled
+riverctl input "$touchpad" pointer-accel 0.30
+riverctl input "$touchpad" scroll-factor 1.5
+riverctl input "$touchpad" accel-profile adaptive
+riverctl input "$touchpad" natural-scroll enabled
+riverctl input "$touchpad" disable-while-typing enabled
+
+riverctl hide-cursor timeout 5000
+riverctl hide-cursor when-typing enabled
+riverctl focus-follows-cursor normal
+
+# warp cursor to focused monitor
+riverctl set-cursor-warp on-output-change

@@ -1,0 +1,11 @@
+[user]
+	email = mail@leverarchfile.org
+	name = Leo Baldwin-Ramult
+	signinkey = F621D22B44011766
+[commit]
+	gpgsign = true
+[init]
+	defaultBranch = main
+[sendemail]
+	smtpserver = /usr/bin/msmtp
+	annotate = yes

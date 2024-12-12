@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Take screenshot using slurp to select region 
+# save file to ~/pictures/screenshots and copy to clipboard
+
+NOW=$(date +'%y%m%d_%H-%M-%S')
+
+grim -g "$(slurp -d )" -t png $HOME/pictures/screenshots/$NOW.png
+
+wl-copy < $HOME/pictures/screenshots/$NOW.png
+

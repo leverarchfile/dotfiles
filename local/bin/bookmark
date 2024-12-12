@@ -1,0 +1,26 @@
+#!/bin/sh
+
+file="${XDG_DATA_HOME}/bookmarks"
+
+menu() { fuzzel -l "$1" -w 80 -di -p "$2"; }
+
+case $1 in
+	add)
+		bookmark=$(wl-paste)
+		if grep -qF "$bookmark|" "$file"; then
+			notify-send -u critical "Bookmark already exists!"
+		elif ! echo "$bookmark" | grep "http"; then
+			notify-send -u critical "Not a URL?"
+		else
+			title=$(menu 0 "Add bookmark: ") || exit 1
+			tag=$(menu 0 "Tag(s): ") || exit 1
+			echo "$bookmark|$title ----- $tag" >> "$file"
+			notify-send -u low "Bookmark added:" "$title"$'\n'"($tag)"$'\n'"$bookmark"
+		fi
+	;;
+	open)
+		choice=$(awk -F "|" '{print $2}' "$file" | sort | menu 10 "Bookmark: ") || exit 1
+		url=$(ugrep -F "$choice" "$file" | awk -F "|" '{print $1}')
+		$BROWSER "$url"
+	;;
+esac

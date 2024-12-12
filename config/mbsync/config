@@ -1,0 +1,50 @@
+IMAPAccount perso
+Host imap.migadu.com
+Port 993
+AuthMechs LOGIN
+User mail@leverarchfile.org
+PassCmd "pass mail@leverarchfile.org"
+TLSType IMAPS
+
+IMAPStore perso-remote
+Account perso
+
+MaildirStore perso-local
+Path ~/mail/perso/
+Inbox ~/mail/perso/Inbox
+Subfolders Verbatim
+
+Channel perso
+Far :perso-remote:
+Near :perso-local:
+Expunge both
+Create both
+Patterns *
+SyncState *
+CopyArrivalDate yes
+
+
+IMAPAccount uoa 
+Host outlook.office365.com
+Port 993
+User l.baldwin-ramult@auckland.ac.nz
+AuthMechs XOAUTH2
+PassCmd "oama access l.baldwin-ramult@auckland.ac.nz"
+TLSType IMAPS
+
+IMAPStore uoa-remote
+Account uoa
+
+MaildirStore uoa-local
+Path ~/mail/uoa/
+Inbox ~/mail/uoa/Inbox
+Subfolders Verbatim
+
+Channel uoa
+Far :uoa-remote:
+Near :uoa-local:
+Expunge both
+Create both
+Patterns *
+SyncState *
+CopyArrivalDate yes
