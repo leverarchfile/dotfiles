@@ -20,68 +20,68 @@
 (setq straight-use-package-by-default t)
 
 (use-package emacs
-	:config
-		(setq custom-file null-device) ;; persistent customize settings need to be made with init.el
+  :config
+    (setq custom-file null-device) ;; persistent customize settings need to be made with init.el
 
-		(setq inhibit-startup-screen t)
-		
-		(setq backup-directory-alist '((".*" . "~/.local/share/Trash/files")))
+    (setq inhibit-startup-screen t)
+    
+    (setq backup-directory-alist '((".*" . "~/.local/share/Trash/files")))
 
-		(menu-bar-mode -1) 
-		(scroll-bar-mode -1)
-		(horizontal-scroll-bar-mode -1)
-		(tool-bar-mode -1)
-		(tooltip-mode -1)
-		(blink-cursor-mode -1)
+    (menu-bar-mode -1) 
+    (scroll-bar-mode -1)
+    (horizontal-scroll-bar-mode -1)
+    (tool-bar-mode -1)
+    (tooltip-mode -1)
+    (blink-cursor-mode -1)
 
-		(save-place-mode 1) 
-		(savehist-mode 1)
-		(recentf-mode 1)
-		(global-auto-revert-mode 1) ;; refresh buffers with file changes
+    (save-place-mode 1) 
+    (savehist-mode 1)
+    (recentf-mode 1)
+    (global-auto-revert-mode 1) ;; refresh buffers with file changes
 
-		(setq use-short-answers t)
+    (setq use-short-answers t)
 
-		(setq scroll-step            1
+    (setq scroll-step            1
       scroll-conservatively  10000)
 
-		(setq display-line-numbers-type 'relative)
+    (setq display-line-numbers-type 'relative)
 
-		(global-visual-line-mode t)
-		(setq-default display-line-numbers-width 3) ;; make line numbers column three digits wide
+    (global-visual-line-mode t)
+    (setq-default display-line-numbers-width 3) ;; make line numbers column three digits wide
 
-		(set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
-		(set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
-		(set-face-attribute 'variable-pitch nil :family "Source Sans Pro" :weight 'medium :height 120)
+    (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
+    (set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
+    (set-face-attribute 'variable-pitch nil :family "Source Sans Pro" :weight 'medium :height 120)
 
-		;; needed for fonts to show properly in emacsclient
-	  (add-to-list 'default-frame-alist '(font . "Mononoki Nerd Font Mono-12"))
+    ;; needed for fonts to show properly in emacsclient
+    (add-to-list 'default-frame-alist '(font . "Mononoki Nerd Font Mono-12"))
 
-		;; italics for comments and keywords (works on emacsclient)
-		(set-face-attribute 'font-lock-comment-face nil
-			:slant 'italic)
-		(set-face-attribute 'font-lock-keyword-face nil
-			:slant 'italic)
-			
-		;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
-		(setq wl-copy-process nil)
-		(defun wl-copy (text)
-			(setq wl-copy-process (make-process :name "wl-copy"
+    ;; italics for comments and keywords (works on emacsclient)
+    (set-face-attribute 'font-lock-comment-face nil
+      :slant 'italic)
+    (set-face-attribute 'font-lock-keyword-face nil
+      :slant 'italic)
+      
+    ;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
+    (setq wl-copy-process nil)
+    (defun wl-copy (text)
+      (setq wl-copy-process (make-process :name "wl-copy"
                                         :buffer nil
                                         :command '("wl-copy" "-f" "-n")
                                         :connection-type 'pipe
                                         :noquery t))
-			(process-send-string wl-copy-process text)
-			(process-send-eof wl-copy-process))
-		(defun wl-paste ()
-			(if (and wl-copy-process (process-live-p wl-copy-process))
-					nil ; should return nil if we're the current paste owner
-					(shell-command-to-string "wl-paste -n | tr -d \r")))
-		(setq interprogram-cut-function 'wl-copy)
-		(setq interprogram-paste-function 'wl-paste)
+      (process-send-string wl-copy-process text)
+      (process-send-eof wl-copy-process))
+    (defun wl-paste ()
+      (if (and wl-copy-process (process-live-p wl-copy-process))
+          nil ; should return nil if we're the current paste owner
+          (shell-command-to-string "wl-paste -n | tr -d \r")))
+    (setq interprogram-cut-function 'wl-copy)
+    (setq interprogram-paste-function 'wl-paste)
 
-		(setq truncate-string-ellipsis "…")		;; Unicode ellipsis rather than "..."
+    (setq truncate-string-ellipsis "…")   ;; Unicode ellipsis rather than "..."
 
-		(global-set-key (kbd "<escape>") 'keyboard-escape-quit))
+    (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
 
 (use-package xclip
   :config
@@ -94,10 +94,10 @@
   :ensure t
   :config
    ;; Global settings (defaults)
-	 (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
    (load-theme 'doom-gruvbox t)
-	 ;; Corrects (and improves) org-mode's native fontification
+   ;; Corrects (and improves) org-mode's native fontification
    (doom-themes-org-config))
 
 (use-package diminish)
@@ -111,21 +111,21 @@
 (use-package doom-modeline
    :init (doom-modeline-mode 1)
    :config
- 		(setq doom-modeline-height 15
- 					doom-modeline-enable-word-count t
-					doom-modeline-buffer-encoding nil
-					doom-modeline-icon nil))
+    (setq doom-modeline-height 15
+          doom-modeline-enable-word-count t
+          doom-modeline-buffer-encoding nil
+          doom-modeline-icon nil))
 
 (use-package evil
   :ensure t
   :init
-		(setq evil-want-integration t ;; This is optional since it's already set to t by default.
-					evil-want-keybinding nil
-					evil-vsplit-window-right t
-					evil-split-window-below t
-					evil-undo-system 'undo-redo ;; add C-r redo functionality
-					evil-respect-visual-line-mode t)
-					;; evil-default-cursor "#2ecc71"
+    (setq evil-want-integration t ;; This is optional since it's already set to t by default.
+          evil-want-keybinding nil
+          evil-vsplit-window-right t
+          evil-split-window-below t
+          evil-undo-system 'undo-redo ;; add C-r redo functionality
+          evil-respect-visual-line-mode t)
+          ;; evil-default-cursor "#2ecc71"
   :config
   (evil-mode 1))
 
@@ -138,9 +138,9 @@
 (use-package which-key
   :config (which-key-mode)
   :custom
-		(which-key-max-description-length 40)
-		(which-key-lighter nil)
-		(which-key-sort-order 'which-key-description-order))
+    (which-key-max-description-length 40)
+    (which-key-lighter nil)
+    (which-key-sort-order 'which-key-description-order))
 
 (use-package rainbow-mode
   :hook prog-mode)
@@ -160,21 +160,21 @@
     (setq ivy-initial-inputs-alist nil)) ;; removes starting ^ regex in M-x
 
 (use-package flyspell
-	:init (flyspell-mode)
-	:custom
-		(setq ispell-program-name "hunspell"
-					ispell-really-hunspell t
-					ispell-dictionary "en_GB"
- 					ispell-silently-savep t
- 					ispell-personal-dictionary "~/.hunspell_en_GB")
- 	:hook (text-mode . flyspell-mode)
-	:hook (prog-mode . flyspell-prog-mode))
-	
+  :init (flyspell-mode)
+  :custom
+    (setq ispell-program-name "hunspell"
+          ispell-really-hunspell t
+          ispell-dictionary "en_GB"
+          ispell-silently-savep t
+          ispell-personal-dictionary "~/.hunspell_en_GB")
+  :hook (text-mode . flyspell-mode)
+  :hook (prog-mode . flyspell-prog-mode))
+  
 (use-package flyspell-correct
   :after flyspell
   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper))
-	:bind (:map flyspell-mouse-map ("RET" . flyspell-correct-at-point))
-	:bind (:map flyspell-mouse-map ([mouse-1] . flyspell-correct-at-point)))
+  :bind (:map flyspell-mouse-map ("RET" . flyspell-correct-at-point))
+  :bind (:map flyspell-mouse-map ([mouse-1] . flyspell-correct-at-point)))
 
 (use-package flyspell-correct-avy-menu
   :after flyspell-correct)
@@ -190,80 +190,80 @@
 
 (use-package general
   :config
-		(general-evil-setup)
-		;; use SPACE as global leader key
-		(general-create-definer my/leader-keys
-			:states '(normal insert visual emacs)
-			:keymaps 'override
-			:prefix "SPC" ;; set leader
-			:global-prefix "M-SPC") ;; use leader in insert mode
-		(my/leader-keys
-			"f" '(:ignore t :wk "Files")  
-			"f d" '(kill-current-buffer :wk "Kill current buffer")
-			"f f" '(basic-save-buffer :wk "Save buffer")
-			"f r" '(counsel-recentf :wk "Find recent files")
-			"f s" '(find-file :wk "Find file")
-			;; links
-			"l" '(:ignore t :wk "Links")
-			"l l" '(org-insert-link :wk "Insert a link")
-			;; buffers
-			"b" '(:ignore t :wk "Buffers")
-			"b c" '(clone-indirect-buffer :wk "Create indirect buffer copy in a split")
-			"b C" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer in new window")
-			"b k" '(kill-current-buffer :wk "Kill current buffer")
-			"b n" '(next-buffer :wk "Next buffer")
-			"b p" '(previous-buffer :wk "Previous buffer")
-			"b r" '(revert-buffer :wk "Reload buffer")
-			;; dired
-			"d" '(:ignore t :wk "Dired")
-			"d d" '(dired :wk "Open dired")
-			"d j" '(dired-jump :wk "Dired jump to current")
-			;; comments
-			"g c" '(comment-line :wk "Comment lines")
-			;; org
-			"o" '(:ignore t :wk "Org")
-			"o a" '(org-agenda :wk "Org agenda")
-			"o t" '(org-todo :wk "Org todo")
-			"o T" '(org-todo-list :wk "Org todo list")
-			;; toggle
-			"t" '(:ignore t :wk "Toggle")
-			"t f" '(flyspell-mode :wk "Toggle flyspell")
-			"t l" '(display-line-numbers-mode :wk "Toggle line numbers")
-			"t r" '(rainbow-mode :wk "Toggle rainbow mode")
-			"t t" '(visual-line-mode :wk "Toggle truncated lines")
-			;; windows
-			"w" '(:ignore t :wk "Windows")
-			"w c" '(evil-window-delete :wk "Close window")
-			"w n" '(evil-window-new :wk "New window")
-			"w s" '(evil-window-split :wk "Horizontal split window")
-			"w v" '(evil-window-vsplit :wk "Vertical split window")
-			;; window motions
-			"w h" '(evil-window-left :wk "Window left")
-			"w j" '(evil-window-down :wk "Window down")
-			"w k" '(evil-window-up :wk "Window up")
-			"w l" '(evil-window-right :wk "Window right")
-			"w w" '(evil-window-next :wk "Goto next window")
-			;; move windows
-			"w H" '(buf-move-left :wk "Buffer move left")
-			"w J" '(buf-move-down :wk "Buffer move down")
-			"w K" '(buf-move-up :wk "Buffer move up")
-			"w L" '(buf-move-right :wk "Buffer move right")))
+    (general-evil-setup)
+    ;; use SPACE as global leader key
+    (general-create-definer my/leader-keys
+      :states '(normal insert visual emacs)
+      :keymaps 'override
+      :prefix "SPC" ;; set leader
+      :global-prefix "M-SPC") ;; use leader in insert mode
+    (my/leader-keys
+      "f" '(:ignore t :wk "Files")  
+      "f d" '(kill-current-buffer :wk "Kill current buffer")
+      "f f" '(basic-save-buffer :wk "Save buffer")
+      "f r" '(counsel-recentf :wk "Find recent files")
+      "f s" '(find-file :wk "Find file")
+      ;; links
+      "l" '(:ignore t :wk "Links")
+      "l l" '(org-insert-link :wk "Insert a link")
+      ;; buffers
+      "b" '(:ignore t :wk "Buffers")
+      "b c" '(clone-indirect-buffer :wk "Create indirect buffer copy in a split")
+      "b C" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer in new window")
+      "b k" '(kill-current-buffer :wk "Kill current buffer")
+      "b n" '(next-buffer :wk "Next buffer")
+      "b p" '(previous-buffer :wk "Previous buffer")
+      "b r" '(revert-buffer :wk "Reload buffer")
+      ;; dired
+      "d" '(:ignore t :wk "Dired")
+      "d d" '(dired :wk "Open dired")
+      "d j" '(dired-jump :wk "Dired jump to current")
+      ;; comments
+      "g c" '(comment-line :wk "Comment lines")
+      ;; org
+      "o" '(:ignore t :wk "Org")
+      "o a" '(org-agenda :wk "Org agenda")
+      "o t" '(org-todo :wk "Org todo")
+      "o T" '(org-todo-list :wk "Org todo list")
+      ;; toggle
+      "t" '(:ignore t :wk "Toggle")
+      "t f" '(flyspell-mode :wk "Toggle flyspell")
+      "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
+      "t r" '(rainbow-mode :wk "Toggle rainbow mode")
+      "t t" '(visual-line-mode :wk "Toggle truncated lines")
+      ;; windows
+      "w" '(:ignore t :wk "Windows")
+      "w c" '(evil-window-delete :wk "Close window")
+      "w n" '(evil-window-new :wk "New window")
+      "w s" '(evil-window-split :wk "Horizontal split window")
+      "w v" '(evil-window-vsplit :wk "Vertical split window")
+      ;; window motions
+      "w h" '(evil-window-left :wk "Window left")
+      "w j" '(evil-window-down :wk "Window down")
+      "w k" '(evil-window-up :wk "Window up")
+      "w l" '(evil-window-right :wk "Window right")
+      "w w" '(evil-window-next :wk "Goto next window")
+      ;; move windows
+      "w H" '(buf-move-left :wk "Buffer move left")
+      "w J" '(buf-move-down :wk "Buffer move down")
+      "w K" '(buf-move-up :wk "Buffer move up")
+      "w L" '(buf-move-right :wk "Buffer move right")))
 ;;
 (use-package mixed-pitch
-		:hook (text-mode . mixed-pitch-mode))
+    :hook (text-mode . mixed-pitch-mode))
 
 (use-package olivetti
   :config
-		(setq olivetti-body-width 100)
-	:hook (text-mode . olivetti-mode))
+    (setq olivetti-body-width 100)
+  :hook (text-mode . olivetti-mode))
 
 (add-hook 'text-mode-hook (lambda () 
-														(fringe-mode 1) ;; needed for olivetti to work
-														(display-line-numbers-mode -1)))
+                            (fringe-mode 1) ;; needed for olivetti to work
+                            (display-line-numbers-mode -1)))
 
 (add-hook 'prog-mode-hook (lambda ()
-														(fringe-mode -1)
-														(display-line-numbers-mode 1)))
+                            (fringe-mode -1)
+                            (display-line-numbers-mode 1)))
 
 
 (use-package toc-org
@@ -274,9 +274,9 @@
   :hook (org-mode . org-appear-mode))
 
 (use-package org-modern
- 	:custom
-		(org-modern-star nil)
-		(org-modern-block-name nil))
+  :custom
+    (org-modern-star nil)
+    (org-modern-block-name nil))
 (with-eval-after-load 'org (global-org-modern-mode))
 
 (setq-default prettify-symbols-alist
@@ -312,19 +312,19 @@
 (setq org-src-fontify-natively t
       org-src-tab-acts-natively t)
       ;; org-edit-src-content-indentation 0)
-			;; org-src-preserve-indentation t)
+      ;; org-src-preserve-indentation t)
 
 (setq org-cycle-separator-lines 0)
 
 (defun my/org-font-setup()
-	(set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-	(set-face-attribute 'org-level-2 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-	(set-face-attribute 'org-level-3 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-	(set-face-attribute 'org-level-4 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-	(set-face-attribute 'org-level-5 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-	(set-face-attribute 'org-level-6 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-	(set-face-attribute 'org-level-7 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-	(set-face-attribute 'org-level-8 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold))
+  (set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-2 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-3 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-4 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-5 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-6 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-7 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-8 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold))
 (add-hook 'org-mode-hook #'my/org-font-setup)
 
 (setq org-agenda-window-setup 'only-window) ;; agenda uses whole window
@@ -335,162 +335,162 @@
 ;;
 ;; doesn't seem to work:
 (add-hook 'server-after-make-frame-hook (lambda ()
-																					(fringe-mode 1)
-																					(setq olivetti-body-width 100)
-																					(olivetti-mode)
-																					(org-agenda nil "n")))
+                                          (fringe-mode 1)
+                                          (setq olivetti-body-width 100)
+                                          (olivetti-mode)
+                                          (org-agenda nil "n")))
 
 (add-hook 'org-agenda-mode-hook (lambda ()
-																	(fringe-mode 1)
-																	(setq olivetti-body-width 100)
-																	(olivetti-mode)))
+                                  (fringe-mode 1)
+                                  (setq olivetti-body-width 100)
+                                  (olivetti-mode)))
 
 ;; (defun org-agenda-open-hook ()
-;; 	(fringe-mode 1)
+;;  (fringe-mode 1)
 ;;   (olivetti-mode))
 ;; (add-hook 'org-agenda-mode-hook 'org-agenda-open-hook)
 
 (defun my/org-agenda-font-setup()
-	(set-face-attribute 'org-super-agenda-header nil :inherit 'outline-1 :height 1.2 :weight 'bold))
+  (set-face-attribute 'org-super-agenda-header nil :inherit 'outline-1 :height 1.2 :weight 'bold))
 (add-hook 'org-agenda-mode-hook #'my/org-agenda-font-setup)
 
 (setq org-agenda-span 7
-			org-agenda-start-day "+0d")
+      org-agenda-start-day "+0d")
 
 (setq org-agenda-hide-tags-regexp ".*") ;; hide agenda view tags (using org-super-agenda instead)
 
 (use-package org-super-agenda
-		:hook (org-agenda-mode . org-super-agenda-mode))
+    :hook (org-agenda-mode . org-super-agenda-mode))
 
 (setq org-super-agenda-groups
-		'(
-			(:name "Today"
-						 :time-grid t
-						 :date today
-						 :scheduled today
-						 :order 1)
-			(:name "Overdue"
-						 :scheduled past
-						 :order 2
-						 :face 'error)
-			(:name "Research"
-						:tag "Research"
-						:order 3)
-			(:name "Teaching"
-						:tag "Teaching"
-						:order 4)
-			(:name "Service"
-						:tag "Service"
-						:order 5)
-			(:name "Perso"
-						:tag "Personal"
-						:order 6)
-			(:name "Computing"
-						:tag "Computing"
-						:order 7)))
+    '(
+      (:name "Today"
+             :time-grid t
+             :date today
+             :scheduled today
+             :order 1)
+      (:name "Overdue"
+             :scheduled past
+             :order 2
+             :face 'error)
+      (:name "Research"
+            :tag "Research"
+            :order 3)
+      (:name "Teaching"
+            :tag "Teaching"
+            :order 4)
+      (:name "Service"
+            :tag "Service"
+            :order 5)
+      (:name "Perso"
+            :tag "Personal"
+            :order 6)
+      (:name "Computing"
+            :tag "Computing"
+            :order 7)))
 
 ;; evil key configurations for org-agenda
 (evil-set-initial-state 'org-agenda-mode 'normal)
 (defvar org-agenda-mode-map)
 (general-define-key
-	;; :keymaps 'org-agenda-mode-map
-	:keymaps 'org-super-agenda-header-map
+  ;; :keymaps 'org-agenda-mode-map
+  :keymaps 'org-super-agenda-header-map
   ;; :states '(normal motion)
-		"l" 'org-agenda-later
-		"h" 'org-agenda-earlier
-		"j" 'org-agenda-next-line
-		"k" 'org-agenda-previous-line
-		(kbd "RET") 'org-agenda-switch-to
-		[escape] 'org-agenda-quit
-		"q" 'org-agenda-quit
-		"s" 'org-save-all-org-buffers
-		"t" 'org-agenda-todo
-		"T" 'org-agenda-set-tags
-		"g" 'org-agenda-redo
-		"v" 'org-agenda-view-mode-dispatch
-		"." 'org-agenda-goto-today
-		"J" 'gs/org-agenda-next-section
-		"K" 'gs/org-agenda-prev-section
-		"c" 'org-agenda-goto-calendar
-		"i" 'org-agenda-clock-in
-		"o" 'org-agenda-clock-out
-		"E" 'org-agenda-entry-text-mode
+    "l" 'org-agenda-later
+    "h" 'org-agenda-earlier
+    "j" 'org-agenda-next-line
+    "k" 'org-agenda-previous-line
+    (kbd "RET") 'org-agenda-switch-to
+    [escape] 'org-agenda-quit
+    "q" 'org-agenda-quit
+    "s" 'org-save-all-org-buffers
+    "t" 'org-agenda-todo
+    "T" 'org-agenda-set-tags
+    "g" 'org-agenda-redo
+    "v" 'org-agenda-view-mode-dispatch
+    "." 'org-agenda-goto-today
+    "J" 'gs/org-agenda-next-section
+    "K" 'gs/org-agenda-prev-section
+    "c" 'org-agenda-goto-calendar
+    "i" 'org-agenda-clock-in
+    "o" 'org-agenda-clock-out
+    "E" 'org-agenda-entry-text-mode
 )
 (general-define-key
-	:keymaps 'org-agenda-mode-map
+  :keymaps 'org-agenda-mode-map
   :prefix "SPC"
   :states '(normal motion)
-		"" '(:ignore t :which-key "Agenda")
-		"t" 'org-agenda-todo
-		"/" 'org-agenda-filter-by-tag
-		"b k" 'org-agenda-quit
+    "" '(:ignore t :which-key "Agenda")
+    "t" 'org-agenda-todo
+    "/" 'org-agenda-filter-by-tag
+    "b k" 'org-agenda-quit
 )
 
 ;; email
 (use-package mu4e
-						 :straight
-						 (:local-repo "/usr/share/emacs/site-lisp/mu4e/"
-													:type built-in)
-						 :commands (mu4e)
-						 :config
-						 (setq
-							 mu4e-change-filenames-when-moving t ;; avoid syncing issues with mbsync
-							 mu4e-view-show-images t
-							 mu4e-view-show-addresses t
-								
-							 ;; disable threading
-							 mu4e-headers-show-threads nil
-							 mu4e-headers-include-related nil
+             :straight
+             (:local-repo "/usr/share/emacs/site-lisp/mu4e/"
+                          :type built-in)
+             :commands (mu4e)
+             :config
+             (setq
+               mu4e-change-filenames-when-moving t ;; avoid syncing issues with mbsync
+               mu4e-view-show-images t
+               mu4e-view-show-addresses t
+                
+               ;; disable threading
+               mu4e-headers-show-threads nil
+               mu4e-headers-include-related nil
 
-							 ;; mu4e-header-highlight-face (underline nil)
+               ;; mu4e-header-highlight-face (underline nil)
 
-							 mu4e-maildir "~/mail"
-							 mu4e-update-interval (* 10 60) ;; update with isync every 10 minutes
-							 mu4e-get-mail-command "mbsync -a -c ~/.config/mbsync/config")
-							 						 
-						 (setq mu4e-contexts
-									 (list
-										 ;; perso
-										 (make-mu4e-context
-											 :name "perso"
-											 :match-func
-												 (lambda (msg)
-													 (when msg
-														 (string-prefix-p "/perso" (mu4e-message-field msg :maildir))))
-												 :vars '((user-mail-address . "mail@leverarchfile.org")
-																 (user-full-name . "Leo Baldwin-Ramult")
-																 (mu4e-sent-folder . "/perso/Sent")
-																 (mu4e-drafts-folder . "/perso/Drafts")
-																 (mu4e-refile-folder . "/perso/Archive")
-																 (mu4e-trash-folder . "/perso/Trash")))
-										 ;; uoa
-										 (make-mu4e-context
-											 :name "uoa"
-											 :match-func
-												 (lambda (msg)
-													 (when msg
-														 (string-prefix-p "/uoa" (mu4e-message-field msg :maildir))))
-												 :vars '((user-mail-address . "l.baldwin-ramult@auckland.ac.nz")
-																 (user-full-name . "Leo Baldwin-Ramult")
-																 (mu4e-sent-folder . "/uoa/Sent Items")
-																 (mu4e-drafts-folder . "/uoa/Drafts")
-																 (mu4e-refile-folder . "/uoa/Archive")
-																 (mu4e-trash-folder . "/uoa/Trash")))))
-						 ;; sending email
-						 (setq sendmail-program "/usr/bin/msmtp" 
-									 send-mail-function #'smtpmail-multi-send-it
-									 message-sendmail-f-is-evil t
-									 message-sendmail-extra-arguments '("--read-envelope-from")
-									 message-send-mail-function #'message-send-mail-with-sendmail)
+               mu4e-maildir "~/mail"
+               mu4e-update-interval (* 10 60) ;; update with isync every 10 minutes
+               mu4e-get-mail-command "mbsync -a -c ~/.config/mbsync/config")
+                           
+             (setq mu4e-contexts
+                   (list
+                     ;; perso
+                     (make-mu4e-context
+                       :name "perso"
+                       :match-func
+                         (lambda (msg)
+                           (when msg
+                             (string-prefix-p "/perso" (mu4e-message-field msg :maildir))))
+                         :vars '((user-mail-address . "mail@leverarchfile.org")
+                                 (user-full-name . "Leo Baldwin-Ramult")
+                                 (mu4e-sent-folder . "/perso/Sent")
+                                 (mu4e-drafts-folder . "/perso/Drafts")
+                                 (mu4e-refile-folder . "/perso/Archive")
+                                 (mu4e-trash-folder . "/perso/Trash")))
+                     ;; uoa
+                     (make-mu4e-context
+                       :name "uoa"
+                       :match-func
+                         (lambda (msg)
+                           (when msg
+                             (string-prefix-p "/uoa" (mu4e-message-field msg :maildir))))
+                         :vars '((user-mail-address . "l.baldwin-ramult@auckland.ac.nz")
+                                 (user-full-name . "Leo Baldwin-Ramult")
+                                 (mu4e-sent-folder . "/uoa/Sent Items")
+                                 (mu4e-drafts-folder . "/uoa/Drafts")
+                                 (mu4e-refile-folder . "/uoa/Archive")
+                                 (mu4e-trash-folder . "/uoa/Trash")))))
+             ;; sending email
+             (setq sendmail-program "/usr/bin/msmtp" 
+                   send-mail-function #'smtpmail-multi-send-it
+                   message-sendmail-f-is-evil t
+                   message-sendmail-extra-arguments '("--read-envelope-from")
+                   message-send-mail-function #'message-send-mail-with-sendmail)
 
-						 ;; ask for context when sending mail, if context hasn't already been chosen
-						 (setq mu4e-compose-context-policy 'ask-if-none)
+             ;; ask for context when sending mail, if context hasn't already been chosen
+             (setq mu4e-compose-context-policy 'ask-if-none)
 
-						 (setq mu4e-maildir-shortcuts
-									 '((:maildir "/perso/Inbox"				:key ?p)
-										 (:maildir "/perso/Sent"				:key ?w)
-										 (:maildir "/uoa/Inbox"					:key ?i)
-										 (:maildir "/uoa/Sent Items"		:key ?s)))
+             (setq mu4e-maildir-shortcuts
+                   '((:maildir "/perso/Inbox"       :key ?p)
+                     (:maildir "/perso/Sent"        :key ?w)
+                     (:maildir "/uoa/Inbox"         :key ?i)
+                     (:maildir "/uoa/Sent Items"    :key ?s)))
 )
 ;; spell check
 (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
