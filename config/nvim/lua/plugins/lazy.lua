@@ -14,57 +14,57 @@ vim.opt.rtp:prepend(lazypath)
 
 
 require('lazy').setup({
-	{
-		"sainnhe/gruvbox-material", 
-		lazy = false,
-		priority = 1000,
+  {
+    "sainnhe/gruvbox-material", 
+    lazy = false,
+    priority = 1000,
     config = function()
-			vim.g.gruvbox_material_enable_italic = true,
-			vim.cmd.colorscheme('gruvbox-material')
+      vim.g.gruvbox_material_enable_italic = true,
+      vim.cmd.colorscheme('gruvbox-material')
     end
   },
-	{
-		"RRethy/nvim-base16",
-	},
-	{
-		"ThePrimeagen/harpoon",
+  {
+    "RRethy/nvim-base16",
+  },
+  {
+    "ThePrimeagen/harpoon",
      branch = "harpoon2",
      dependencies = { "nvim-lua/plenary.nvim" }
-	},
-	{
-		"norcalli/nvim-colorizer.lua",
-		config = function()
-				require'colorizer'.setup()
-		end
-	},
-	{
-		"nvim-tree/nvim-tree.lua",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-		config = function()
-				require("nvim-tree").setup()
-		end
-	},
-	{
-		"nvim-lualine/lualine.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" }
+  },
+  {
+    "norcalli/nvim-colorizer.lua",
+    config = function()
+        require'colorizer'.setup()
+    end
+  },
+  {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+        require("nvim-tree").setup()
+    end
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" }
     },
-	{
-		"nvim-telescope/telescope.nvim",
-		branch = '0.1.x',
+  {
+    "nvim-telescope/telescope.nvim",
+    branch = '0.1.x',
     dependencies = { "nvim-lua/plenary.nvim" }
     },
-	{
-		"nvim-treesitter/nvim-treesitter", 
-		build = ":TSUpdate",
-	},
-	{
-		"numToStr/Comment.nvim",
-		dependencies = {"JoosepAlviste/nvim-ts-context-commentstring"},
-		config = function()
-				require("Comment").setup()
-		end
+  {
+    "nvim-treesitter/nvim-treesitter", 
+    build = ":TSUpdate",
   },
-	{
+  {
+    "numToStr/Comment.nvim",
+    dependencies = {"JoosepAlviste/nvim-ts-context-commentstring"},
+    config = function()
+        require("Comment").setup()
+    end
+  },
+  {
     "kylechui/nvim-surround",
     version = "*", -- use for stability
     event = "VeryLazy",
@@ -72,6 +72,6 @@ require('lazy').setup({
         require("nvim-surround").setup({
         })
     end
-	},
+  },
 })
 

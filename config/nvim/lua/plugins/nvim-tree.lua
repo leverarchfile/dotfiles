@@ -10,21 +10,21 @@ vim.keymap.set("n", "<leader>ec", "<cmd>NvimTreeCollapse<CR>", { desc = "Collaps
 vim.keymap.set("n", "<leader>er", "<cmd>NvimTreeRefresh<CR>", { desc = "Refresh file explorer" }) 
 
 require("nvim-tree").setup({
-	view = {
-		width = 35,
+  view = {
+    width = 35,
     relativenumber = true,
-	},
-	renderer = {
-		indent_markers = {
+  },
+  renderer = {
+    indent_markers = {
     enable = true,
-		},
-	},
-	-- disable window_picker for explorer to work well with window splits
-	actions = {
-		open_file = {
-			window_picker = {
-				enable = false,
-			},
-		},
-	},
+    },
+  },
+  -- disable window_picker for explorer to work well with window splits
+  actions = {
+    open_file = {
+      window_picker = {
+        enable = false,
+      },
+    },
+  },
 })

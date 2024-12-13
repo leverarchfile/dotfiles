@@ -9,11 +9,11 @@
 /* @define-color grey #909090; */
 
 * {
-		border-radius: 0;
-		font-family: Mononoki Nerd Font;
-		font-size: 15;
-		min-height: 0px;
-		min-width: 0px;
+    border-radius: 0;
+    font-family: Mononoki Nerd Font;
+    font-size: 15;
+    min-height: 0px;
+    min-width: 0px;
 }
 
 window#waybar {
@@ -21,7 +21,7 @@ window#waybar {
 }
 
 #tags {
-		margin-top: 6px;
+    margin-top: 6px;
     margin-left: 6px;
     padding: 1px;
     background-color: @base02; 
@@ -29,22 +29,22 @@ window#waybar {
 }
 
 #tags button {
-		margin: 2px;
-		padding: 1 6px;
-		color: @base1;
-		border: 2px solid @base02;
+    margin: 2px;
+    padding: 1 6px;
+    color: @base1;
+    border: 2px solid @base02;
 }
 
 #tags button:hover {
-		box-shadow: inherit;
-		text-shadow: inherit;
-		background: inherit;
+    box-shadow: inherit;
+    text-shadow: inherit;
+    background: inherit;
 }
 
 #tags button.focused {
-		color: @base02;
-		background-color: @base1;
-		border: 2px solid @base02;
+    color: @base02;
+    background-color: @base1;
+    border: 2px solid @base02;
 }
 
 #tags button.occupied {
@@ -52,34 +52,34 @@ window#waybar {
 }
 
 #tags button.focused.occupied {
-		color: @base02;
-		background-color: @base1;
-		border: 2px solid @base1;
+    color: @base02;
+    background-color: @base1;
+    border: 2px solid @base1;
 }
 
 #tags button.urgent {
-		border: 2px solid @red; 
+    border: 2px solid @red; 
 }
 
 #tags button.occupied.urgent {
-		border: 2px solid @red;
+    border: 2px solid @red;
 }
 
 #network, #idle_inhibitor, #clock, #custom-inbox, #cpu, #memory, #disk, #temperature, #battery {
    padding: 1 6px;
-	 margin-top: 6px;
+   margin-top: 6px;
    background-color: @base02; 
    color: @base1;
-	 border: 2px solid @base1; 
+   border: 2px solid @base1; 
 }
 
 #clock {
-	 margin-left: 0px;
-	 margin-right: 0px;
+   margin-left: 0px;
+   margin-right: 0px;
 }
 
 #battery {
-	 margin-right: 6px;
+   margin-right: 6px;
 }
 
 #battery.charging, 

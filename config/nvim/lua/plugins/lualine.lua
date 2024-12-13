@@ -5,8 +5,8 @@ require('lualine').setup {
 --    theme = 'base16',
 --    component_separators = { left = '', right = ''},
 --    section_separators = { left = '', right = ''},
-		component_separators = '',
-		section_separators = '',
+    component_separators = '',
+    section_separators = '',
 
     disabled_filetypes = {
       statusline = {},
