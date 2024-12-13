@@ -9,56 +9,56 @@
   esc   f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11   f12     del
   grv   1    2    3    4    5    6    7    8    9    0    -     =       bspc
   tab   q    w    e    r    t    y    u    i    o    p    [     ]       \
-  caps  a    s    d    f    g    h    j    k    l    ;    '						  ret
-  lsft  z    x    c    v    b    n    m    ,    .    /		rsft	 up
+  caps  a    s    d    f    g    h    j    k    l    ;    '             ret
+  lsft  z    x    c    v    b    n    m    ,    .    /    rsft   up
   lctl  wkup lmet lalt      spc       ralt rctl           left   down   rght
 )
 
 (defalias
-	tbx (tap-hold-next-release 250 tab S-C)
-	spx (tap-hold-next-release 250 spc lsft)
-	spr (sticky-key 300 lmet)
-	ssf (sticky-key 300 lsft)
-	als (sticky-key 300 lalt)
-	ctr (sticky-key 300 ctl)
-	lck (cmd-button "lock")
-	nns (layer-next numsym)
-	nss (layer-next supers)
-	nsc (layer-next superc)
+  tbx (tap-hold-next-release 250 tab S-C)
+  spx (tap-hold-next-release 250 spc lsft)
+  spr (sticky-key 300 lmet)
+  ssf (sticky-key 300 lsft)
+  als (sticky-key 300 lalt)
+  ctr (sticky-key 300 ctl)
+  lck (cmd-button "lock")
+  nns (layer-next numsym)
+  nss (layer-next supers)
+  nsc (layer-next superc)
 )
 
 (deflayer base
   @lck  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11   f12     del
   S-grv 1    2    3    4    5    6    7    8    9    0    +     =       bspc
   @tbx  q    w    e    r    t    y    u    i    o    p    -     S--     S-\
-  esc		a    s    d    f    g    h    j    k    l    ;    '						  ret
-  @ssf  z    x    c    v    b    n    m    ,    .    /		@ctr	 up
-  @als  wkup @nsc @nns			@spx			@spr @nss           left   down   rght
+  esc   a    s    d    f    g    h    j    k    l    ;    '             ret
+  @ssf  z    x    c    v    b    n    m    ,    .    /    @ctr   up
+  @als  wkup @nsc @nns      @spx      @spr @nss           left   down   rght
 )
 
 (deflayer numsym
-  XX		_		 _		_    _		_		 _    _    _    _    _		_     _				XX
-  grv		_		 _		_		 _    _    _    _    _    _    _    _     _       _
-  XX		1    2    3    4    5    6    7    8    9    0    XX    XX      \
-  XX		!    @    #    $    %    ^    &    \(   \)   *    XX						_
-  XX		grv	 {    }    |    =    +    \    [    ]    S-/	XX		XX
-  XX		_		 XX		XX				XX				XX	 XX							XX		XX			XX
+  XX    _    _    _    _    _    _    _    _    _    _    _     _       XX
+  grv   _    _    _    _    _    _    _    _    _    _    _     _       _
+  XX    1    2    3    4    5    6    7    8    9    0    XX    XX      \
+  XX    !    @    #    $    %    ^    &    \(   \)   *    XX            _
+  XX    grv  {    }    |    =    +    \    [    ]    S-/  XX    XX
+  XX    _    XX   XX        XX        XX   XX             XX    XX      XX
 )
 
 (deflayer supers
-  XX			_			_			_			_			_			_			_			_			_			_			 _     _		 XX
-  XX			M-S-1 M-S-2 M-S-3 M-S-4 M-S-5 M-S-6 M-S-7 M-S-8 M-S-9 M-S-0  XX    XX    _
-  XX			M-S-1	M-S-2 M-S-3 M-S-4 M-S-5 M-S-6 M-S-7 M-S-8 M-S-9 M-S-0  XX    XX		 XX
-  M-S-esc	M-S-a	M-S-s M-S-d M-S-f M-S-g M-S-h M-S-j M-S-k M-S-l M-S-;  M-S-'			 M-S-ret
-  XX			M-S-z	M-S-x M-S-c M-S-v M-S-b M-S-n M-S-m M-S-, M-S-. M-S-/	 XX		 XX
-  XX			_			XX		XX					M-S-spc			XX		XX								 XX		 XX		 XX
+  XX      _     _     _     _     _     _     _     _     _     _      _     _     XX
+  XX      M-S-1 M-S-2 M-S-3 M-S-4 M-S-5 M-S-6 M-S-7 M-S-8 M-S-9 M-S-0  XX    XX    _
+  XX      M-S-1 M-S-2 M-S-3 M-S-4 M-S-5 M-S-6 M-S-7 M-S-8 M-S-9 M-S-0  XX    XX    XX
+  M-S-esc M-S-a M-S-s M-S-d M-S-f M-S-g M-S-h M-S-j M-S-k M-S-l M-S-;  M-S-'       M-S-ret
+  XX      M-S-z M-S-x M-S-c M-S-v M-S-b M-S-n M-S-m M-S-, M-S-. M-S-/  XX    XX
+  XX      _     XX    XX          M-S-spc     XX    XX                 XX    XX    XX
 )
 
 (deflayer superc
-  XX			_			_			_			_			_			_			_			_			_			_			 _     _		 XX
-  XX			M-C-1 M-C-2 M-C-3 M-C-4 M-C-5 M-C-6 M-C-7 M-C-8 M-C-9 M-C-0  XX    XX     _
-  XX			M-C-1	M-C-2 M-C-3 M-C-4 M-C-5 M-C-6 M-C-7 M-C-8 M-C-9 M-C-0	 XX    XX    XX
-  M-C-esc	M-C-a	M-C-s M-C-d M-C-f M-C-g M-C-h M-C-j M-C-k M-C-l M-C-;  M-C-'			 M-C-ret
-  XX			M-C-z	M-C-x M-C-c M-C-v M-C-b M-C-n M-C-m M-C-, M-C-. M-C-/	 XX		 XX
-  XX			_			XX		XX					M-C-spc			XX		XX								 XX		 XX		 XX
+  XX      _     _     _     _     _     _     _     _     _     _      _     _     XX
+  XX      M-C-1 M-C-2 M-C-3 M-C-4 M-C-5 M-C-6 M-C-7 M-C-8 M-C-9 M-C-0  XX    XX     _
+  XX      M-C-1 M-C-2 M-C-3 M-C-4 M-C-5 M-C-6 M-C-7 M-C-8 M-C-9 M-C-0  XX    XX    XX
+  M-C-esc M-C-a M-C-s M-C-d M-C-f M-C-g M-C-h M-C-j M-C-k M-C-l M-C-;  M-C-'       M-C-ret
+  XX      M-C-z M-C-x M-C-c M-C-v M-C-b M-C-n M-C-m M-C-, M-C-. M-C-/  XX    XX
+  XX      _     XX    XX          M-C-spc     XX    XX                 XX    XX    XX
 )
