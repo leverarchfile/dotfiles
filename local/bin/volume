@@ -4,42 +4,42 @@
 # of the current volume level.
 
 send_notification() {
-	volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf ("%d%%\n", 100 *$2)}')
-	dunstify -a "changevolume" -u low -r 9993 -h int:value:"$volume" "Volume: ${volume}" -t 2000
+  volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf ("%d%%\n", 100 *$2)}')
+  dunstify -a "changevolume" -u low -r 9993 -h int:value:"$volume" "Volume: ${volume}" -t 2000
 }
 
 case $1 in
 up)
-	mutestate=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}')
-	mutemessage="[MUTED]"
-	if [ "$mutestate" = "$mutemessage" ]; then
-		wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-		send_notification up
-	else
-		wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ 
-		send_notification "$1"
-	fi
-	;;
+  mutestate=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}')
+  mutemessage="[MUTED]"
+  if [ "$mutestate" = "$mutemessage" ]; then
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+    send_notification up
+  else
+    wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ 
+    send_notification "$1"
+  fi
+  ;;
 down)
-	mutestate=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}')
-	mutemessage="[MUTED]"
-	if [ "$mutestate" = "$mutemessage" ]; then
-		wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-		send_notification up
-	else
-		wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-		send_notification "$1"
-	fi
-	;;
+  mutestate=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}')
+  mutemessage="[MUTED]"
+  if [ "$mutestate" = "$mutemessage" ]; then
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+    send_notification up
+  else
+    wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+    send_notification "$1"
+  fi
+  ;;
 mute)
-	mutestate=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}')
-	mutemessage="[MUTED]"
-	if [ "$mutestate" = "$mutemessage" ]; then
-		wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle 	
-		send_notification up
-	else
-		wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle 	
-		dunstify -a "changevolume" -t 2000 -r 9993 -u low "Muted"
-	fi
-	;;
+  mutestate=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}')
+  mutemessage="[MUTED]"
+  if [ "$mutestate" = "$mutemessage" ]; then
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle  
+    send_notification up
+  else
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle  
+    dunstify -a "changevolume" -t 2000 -r 9993 -u low "Muted"
+  fi
+  ;;
 esac

@@ -1,6 +1,6 @@
 #!/bin/sh
 
 waylock -fork-on-lock \
-	-input-color 0xA89984 \
-	-fail-color 0xF7768E \
-	>/dev/null 2>&1
+  -input-color 0xA89984 \
+  -fail-color 0xF7768E \
+  >/dev/null 2>&1

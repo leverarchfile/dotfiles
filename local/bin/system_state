@@ -1,11 +1,11 @@
 #!/bin/sh
 
 case "$(printf "lock\nsuspend\nhibernate\nreboot\nshutdown\n" | tofi)" in
-	"lock") lock ;;
-	"suspend") systemctl suspend-then-hibernate ;;
-	"hibernate") systemctl hibernate ;;
-	"reboot") reboot ;;
-	"shutdown") shutdown now ;;
-	*) exit 1 ;;
+  "lock") lock ;;
+  "suspend") systemctl suspend-then-hibernate ;;
+  "hibernate") systemctl hibernate ;;
+  "reboot") reboot ;;
+  "shutdown") shutdown now ;;
+  *) exit 1 ;;
 esac
 
