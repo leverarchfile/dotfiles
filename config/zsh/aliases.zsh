@@ -19,10 +19,10 @@ alias trr="trash restore"
 alias tu="trash restore -r 0" # restore last trashed item
 
 alias ga="cd ~/archive"
-alias gb="cd ~/.local/bin"
+alias gb="cd ~/dotfiles/local/bin"
 alias gc="cd ~/.config"
 alias gd="cd ~/downloads"
-alias g.="cd ~/dotfiles"
+alias g.="cd ~/dotfiles/config"
 alias gf="cd ~/documents"
 alias gh="cd"
 alias go="cd ~/org"

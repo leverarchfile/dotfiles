@@ -100,11 +100,11 @@ map Z zip
 
 # movement
 map ga cd ~/archive
-map gb cd ~/.local/bin
+map gb cd ~/dotfiles/local/bin
 map gc cd ~/.config
 map gd cd ~/downloads
 map gf cd ~/documents
-map g. cd ~/dotfiles
+map g. cd ~/dotfiles/config
 map gh cd
 map go cd ~/org
 map gp cd ~/pictures
