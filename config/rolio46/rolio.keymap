@@ -91,7 +91,7 @@ ZMK_BEHAVIOR(stk_sup, tap_dance,
 // tap dance for alt key: 1 for underscore, 2 for sticky alt, 3 for toggle settings layer
 ZMK_BEHAVIOR(und_alt, tap_dance,
     tapping-term-ms = <200>;
-    bindings = <&mt LEFT_ALT UNDER>, <&tog 6>;
+    bindings = <&kp UNDER>, <&sk ALT>, <&tog 6>;
 )
 
 // tap dance for left 'sometimes' key: 1 for copy, 2 for cut
