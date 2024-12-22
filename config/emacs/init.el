@@ -335,7 +335,7 @@
                                           (fringe-mode 1)
                                           (setq olivetti-body-width 100)
                                           (olivetti-mode)
-                                          (org-agenda nil "n")))
+                                          (org-agenda nil "t")))
 
 (add-hook 'org-agenda-mode-hook (lambda ()
                                   (fringe-mode 1)
@@ -349,10 +349,9 @@
 (setq org-agenda-span 1
       org-agenda-start-day "+0d"
       org-agenda-block-separator nil
-      org-agenda-compact-blocks t
-      org-agenda-start-with-log-mode t)
+      org-agenda-compact-blocks t)
 
-(setq org-agenda-tags-column 0) ;; put agenda view tags straight after items 
+;; (setq org-agenda-tags-column 0) ;; put agenda view tags straight after items 
 ;; (setq org-agenda-hide-tags-regexp (regexp-opt '("Inbox-Phone" "Intray" "Research" "Teaching" "Service" "Perso" "Technology"))) ;; hide specific agenda view tags (filetags)
 (setq org-agenda-hide-tags-regexp ".*") ;; hide all agenda view tags
 
@@ -379,33 +378,41 @@
         (:name "Research"
               :tag "Research"
               :order 5)
-        (:name "FA205 Creative Computing"
-               :tag "FA205"
-               :order 6)
-        (:name "DES102G Design for Sustainable Futures"
-               :tag "DES102G"
-               :order 7)
-        (:name "DES303 Design Research Practice"
-               :tag "DES303"
-               :order 8)
-        (:name "DES232 Smart Homes and Cities"
-               :tag "DES232"
-               :order 9)
         (:name "Teaching"
               :tag "Teaching"
-              :order 10)
+              :order 6)
         (:name "Service"
               :tag "Service"
-              :order 11)
+              :order 7)
         (:name "Perso"
               :tag "Perso"
-              :order 12)
+              :order 8)
         (:name "Technology"
               :tag "Technology"
-              :order 13)))
+              :order 9)))
 
-;; (setq org-super-agenda-groups
-;;         '((:auto-parent t)))
+(setq org-agenda-custom-commands
+      '(("z" "Teaching"
+         ((todo "" ((org-agenda-span 'day)
+          (org-super-agenda-groups
+           '(
+              (:name "FA205 Creative Computing"
+               :tag "FA205"
+               :order 1)
+              (:name "DES102G Design for Sustainable Futures"
+               :tag "DES102G"
+               :order 2)
+              (:name "DES303 Design Research Practice"
+               :tag "DES303"
+               :order 3)
+              (:name "DES232 Smart Homes and Cities"
+               :tag "DES232"
+               :order 4)
+              (:discard (:anything t))))))))
+        ("u" "By headline"
+         ((todo "" ((org-agenda-span 'day)
+          (org-super-agenda-groups
+           '((:auto-parent t)))))))))
 
 ;; evil key configurations for org-agenda
 (evil-set-initial-state 'org-agenda-mode 'normal)
