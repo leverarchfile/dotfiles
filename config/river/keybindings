@@ -16,7 +16,7 @@ riverctl map normal Super C spawn clipboard
 riverctl map normal Super B spawn firefox
 riverctl map normal Super M spawn "bookmark add"
 riverctl map normal Super V spawn "bookmark open"
-riverctl map normal Super Semicolon "emacsclient -c -a 'emacs'"
+riverctl map normal Super Semicolon spawn "emacsclient -c -a 'emacs'"
 riverctl map normal Super Minus spawn password_menu
 
 # Open current image in cliboard with swappy

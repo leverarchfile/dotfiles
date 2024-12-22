@@ -331,9 +331,6 @@
 (setq org-agenda-restore-windows-after-quit t) ;; restore window configuration on exit
 
 ;; show org-agenda list on startup
-;; (add-hook 'server-after-make-frame-hook (lambda () (org-agenda nil "n")))
-;;
-;; doesn't seem to work:
 (add-hook 'server-after-make-frame-hook (lambda ()
                                           (fringe-mode 1)
                                           (setq olivetti-body-width 100)
@@ -345,49 +342,70 @@
                                   (setq olivetti-body-width 100)
                                   (olivetti-mode)))
 
-;; (defun org-agenda-open-hook ()
-;;  (fringe-mode 1)
-;;   (olivetti-mode))
-;; (add-hook 'org-agenda-mode-hook 'org-agenda-open-hook)
-
 (defun my/org-agenda-font-setup()
   (set-face-attribute 'org-super-agenda-header nil :inherit 'outline-1 :height 1.2 :weight 'bold))
 (add-hook 'org-agenda-mode-hook #'my/org-agenda-font-setup)
 
-(setq org-agenda-span 7
-      org-agenda-start-day "+0d")
+(setq org-agenda-span 1
+      org-agenda-start-day "+0d"
+      org-agenda-block-separator nil
+      org-agenda-compact-blocks t
+      org-agenda-start-with-log-mode t)
 
-(setq org-agenda-hide-tags-regexp ".*") ;; hide agenda view tags (using org-super-agenda instead)
+(setq org-agenda-tags-column 0) ;; put agenda view tags straight after items 
+;; (setq org-agenda-hide-tags-regexp (regexp-opt '("Inbox-Phone" "Intray" "Research" "Teaching" "Service" "Perso" "Technology"))) ;; hide specific agenda view tags (filetags)
+(setq org-agenda-hide-tags-regexp ".*") ;; hide all agenda view tags
 
 (use-package org-super-agenda
     :hook (org-agenda-mode . org-super-agenda-mode))
 
 (setq org-super-agenda-groups
-    '(
-      (:name "Today"
-             :time-grid t
-             :date today
-             :scheduled today
-             :order 1)
-      (:name "Overdue"
-             :scheduled past
-             :order 2
-             :face 'error)
-      (:name "Research"
-            :tag "Research"
-            :order 3)
-      (:name "Teaching"
-            :tag "Teaching"
-            :order 4)
-      (:name "Service"
-            :tag "Service"
-            :order 5)
-      (:name "Perso"
-            :tag "Personal"
-            :order 6)
-      (:name "Computing"
-            :tag "Computing"
-            :order 7)))
+      '(
+        (:name "Today"
+               :time-grid t
+               :date today
+               :scheduled today
+               :order 1)
+        (:name "Overdue"
+               :scheduled past
+               :order 2
+               :face 'error)
+        (:name "Intray"
+               :tag "Intray"
+               :order 3)
+        (:name "Inbox-Phone"
+               :tag "Inbox-Phone"
+               :order 4)
+        (:name "Research"
+              :tag "Research"
+              :order 5)
+        (:name "FA205 Creative Computing"
+               :tag "FA205"
+               :order 6)
+        (:name "DES102G Design for Sustainable Futures"
+               :tag "DES102G"
+               :order 7)
+        (:name "DES303 Design Research Practice"
+               :tag "DES303"
+               :order 8)
+        (:name "DES232 Smart Homes and Cities"
+               :tag "DES232"
+               :order 9)
+        (:name "Teaching"
+              :tag "Teaching"
+              :order 10)
+        (:name "Service"
+              :tag "Service"
+              :order 11)
+        (:name "Perso"
+              :tag "Perso"
+              :order 12)
+        (:name "Technology"
+              :tag "Technology"
+              :order 13)))
+
+;; (setq org-super-agenda-groups
+;;         '((:auto-parent t)))
 
 ;; evil key configurations for org-agenda
 (evil-set-initial-state 'org-agenda-mode 'normal)
