@@ -214,6 +214,12 @@
       "b n" '(next-buffer :wk "Next buffer")
       "b p" '(previous-buffer :wk "Previous buffer")
       "b r" '(revert-buffer :wk "Reload buffer")
+      ;; capture
+      "c" '(:ignore t :wk "Capture")
+      "c c" '(org-capture :wk "New capture")
+      "c f" '(org-capture-finalize :wk "Finish")
+      "c r" '(org-capture-refile :wk "Refile")
+      "c k" '(org-capture-kill :wk "Abort")
       ;; dired
       "d" '(:ignore t :wk "Dired")
       "d d" '(dired :wk "Open dired")
@@ -225,6 +231,11 @@
       "o a" '(org-agenda :wk "Org agenda")
       "o t" '(org-todo :wk "Org todo")
       "o T" '(org-todo-list :wk "Org todo list")
+      ;; refile
+      "r" '(:ignore t :wk "Refile")
+      "r r" '(org-refile :wk "Org refile")
+      "r c" '(org-refile-copy :wk "Org refile copy (original item stays in place")
+      "r g" '(org-refile-goto-last-stored :wk "Jump to location of last refiled item")
       ;; toggle
       "t" '(:ignore t :wk "Toggle")
       "t f" '(flyspell-mode :wk "Toggle flyspell")
@@ -248,7 +259,7 @@
       "w J" '(buf-move-down :wk "Buffer move down")
       "w K" '(buf-move-up :wk "Buffer move up")
       "w L" '(buf-move-right :wk "Buffer move right")))
-;;
+
 (use-package mixed-pitch
     :hook (text-mode . mixed-pitch-mode))
 
@@ -264,7 +275,6 @@
 (add-hook 'prog-mode-hook (lambda ()
                             (fringe-mode -1)
                             (display-line-numbers-mode 1)))
-
 
 (use-package toc-org
     :commands toc-org-enable
@@ -300,7 +310,6 @@
 (require 'org-tempo) ;; source code block with <s TAB
 
 (setq org-directory "~/org/")
-(setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
 
 (setq org-startup-with-inline-images t)
 (setq org-startup-folded t)
@@ -326,6 +335,9 @@
   (set-face-attribute 'org-level-7 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
   (set-face-attribute 'org-level-8 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold))
 (add-hook 'org-mode-hook #'my/org-font-setup)
+
+;; agenda
+(setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
 
 (setq org-agenda-window-setup 'only-window) ;; agenda uses whole window
 (setq org-agenda-restore-windows-after-quit t) ;; restore window configuration on exit
@@ -369,27 +381,25 @@
                :scheduled past
                :order 2
                :face 'error)
-        (:name "Intray"
-               :tag "Intray"
-               :order 3)
-        (:name "Inbox-Phone"
+        (:name "Refile"
+               :tag "Intray" 
                :tag "Inbox-Phone"
-               :order 4)
+               :order 3)
         (:name "Research"
               :tag "Research"
-              :order 5)
+              :order 4)
         (:name "Teaching"
               :tag "Teaching"
-              :order 6)
+              :order 5)
         (:name "Service"
               :tag "Service"
-              :order 7)
+              :order 6)
         (:name "Perso"
               :tag "Perso"
-              :order 8)
+              :order 7)
         (:name "Technology"
               :tag "Technology"
-              :order 9)))
+              :order 8)))
 
 (setq org-agenda-custom-commands
       '(("z" "Teaching"
@@ -450,6 +460,80 @@
     "/" 'org-agenda-filter-by-tag
     "b k" 'org-agenda-quit
 )
+
+;; refile
+(setq org-refile-targets
+      '((nil :maxlevel . 3)
+        (org-agenda-files :maxlevel . 3)))
+
+;; capture
+(setq org-capture-templates
+                   '(("t" "TODO for intray" entry
+                      (file+headline "intray.org" "Refile")
+                      "* TODO %?")
+                     ("c" "TODO from quote for intray" entry
+                      (file+headline "intray.org" "Refile")
+                      "* TODO %^{Heading for TODO}\n%i %?")
+                     ("e" "TODO from email for intray" entry
+                      (file+headline "intray.org" "Refile")
+                      "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n :END:")
+                     ("s" "Schedule reminder for today" entry
+                      (file+headline "intray.org" "Reminders")
+                      "* %^{Title for reminder}\nSCHEDULED: %t\n %?")
+                     ("p" "Schedule reminder for another day" entry
+                      (file+headline "intray.org" "Reminders")
+                      "* %^{Title for reminder}\nSCHEDULED: %^t\n %?")
+                     ("m" "Appointments")
+                     ("mw" "Work meeting" entry
+                      (file+headline "meetings.org" "Work")
+                      "* Meeting with %{With?}\n %?\n SCHEDULED: %^t")
+                     ("me" "Work meeting from email" entry
+                      (file+headline "meetings.org" "Work")
+                      "* Meeting with %^{With?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
+                     ("mm" "Personal meeting from email" entry
+                      (file+headline "meetings.org" "Personal")
+                      "* Meeting %^{With/About?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
+                     ("mp" "Personal appointment" entry
+                      (file+headline "meetings.org" "Personal")
+                      "* Meeting %{Title??}\n %?\n SCHEDULED: %^t")
+                     ("a" "Add TODO in location")
+                     ("ar" "TODO for research" entry
+                      (file+function "research.org" org-ask-location)
+                      "* TODO %?")
+                     ("at" "TODO for teaching" entry
+                      (file+function "teaching.org" org-ask-location)
+                      "* TODO %?")
+                     ("as" "TODO for service" entry
+                      (file+function "service.org" org-ask-location)
+                      "* TODO %?")
+                     ("ap" "TODO for perso" entry
+                      (file+function "perso.org" org-ask-location)
+                      "* TODO %?")
+                     ("ai" "TODO for technology" entry
+                      (file+function "technology.org" org-ask-location)
+                      "* TODO %?")))
+
+(defun org-ask-location (&optional prompt targets)
+      (let* ((loc-prompt (or prompt "Headline"))
+            (org-refile-targets (or targets '((nil :maxlevel . 1))))
+            (hd (condition-case nil
+                   (car (org-refile-get-location loc-prompt nil t))
+                   (error (car org-refile-history)))))
+        (goto-char (point-min))
+        (outline-next-heading)
+        (if (re-search-forward
+             (format org-complex-heading-regexp-format (regexp-quote hd))
+             nil t)
+          (goto-char (point-at-bol))
+        (goto-char (point-max)))))
+
+(setq org-capture-templates-contexts
+      '(("e" ((in-mode . "message-mode")
+              (in-mode . "mu4e-headers-mode")
+              (in-mode . "mu4e-view-mode")))
+        ("me" ((in-mode . "message-mode")
+              (in-mode . "mu4e-headers-mode")
+              (in-mode . "mu4e-view-mode")))))
 
 ;; email
 (use-package mu4e
