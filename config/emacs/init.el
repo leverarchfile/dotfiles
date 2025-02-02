@@ -486,7 +486,7 @@
                      ("m" "Appointments")
                      ("mw" "Work meeting" entry
                       (file+headline "meetings.org" "Work")
-                      "* Meeting with %{With?}\n %?\n SCHEDULED: %^t")
+                      "* Meeting with %^{With?}\n %?\n SCHEDULED: %^t")
                      ("me" "Work meeting from email" entry
                       (file+headline "meetings.org" "Work")
                       "* Meeting with %^{With?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
@@ -495,7 +495,7 @@
                       "* Meeting %^{With/About?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
                      ("mp" "Personal appointment" entry
                       (file+headline "meetings.org" "Personal")
-                      "* Meeting %{Title??}\n %?\n SCHEDULED: %^t")
+                      "* Meeting %^{Title?}\n %?\n SCHEDULED: %^t")
                      ("a" "Add TODO in location")
                      ("ar" "TODO for research" entry
                       (file+function "research.org" org-ask-location)
