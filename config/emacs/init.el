@@ -91,7 +91,6 @@
   (setq xclip-method (quote wl-copy)))
 
 (use-package doom-themes
-  :ensure t
   :config
    ;; Global settings (defaults)
    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
@@ -100,13 +99,52 @@
    ;; Corrects (and improves) org-mode's native fontification
    (doom-themes-org-config))
 
-(use-package diminish)
-
 (use-package vertico
   :init (vertico-mode 1))
 
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
 (use-package marginalia
-  :init (marginalia-mode 1))
+  :custom
+  (marginalia-align 'right)
+  :init 
+  (marginalia-mode 1))
+
+(use-package embark
+   :init)
+
+(use-package embark-consult
+   :after (embark consult)
+   :demand t
+   :hook
+   (embark-collect-mode . consult-preview-at-point-mode))
+
+(global-set-key (kbd "C->") 'embark-act)
+
+(use-package consult
+  :init)
+
+(defvar org-source
+  (list :name     "Org Buffer"
+        :category 'buffer
+        :narrow   ?o
+        :face     'consult-buffer
+        :history  'buffer-name-history
+        :state    #'consult--buffer-state
+        :new
+        (lambda (name)
+          (with-current-buffer (get-buffer-create name)
+            (insert "#+title: " name "\n\n")
+            (org-mode)
+            (consult--buffer-action (current-buffer))))
+        :items
+        (lambda ()
+          (consult--buffer-query :mode 'org-mode :as #'consult--buffer-pair))))
+
+(add-to-list 'consult-buffer-sources 'org-source 'append)
 
 (use-package doom-modeline
    :init (doom-modeline-mode 1)
@@ -117,7 +155,6 @@
           doom-modeline-icon nil))
 
 (use-package evil
-  :ensure t
   :init
     (setq evil-want-integration t ;; This is optional since it's already set to t by default.
           evil-want-keybinding nil
@@ -131,7 +168,6 @@
 
 (use-package evil-collection
   :after evil
-  :ensure t
   :config
   (evil-collection-init))
 
@@ -147,17 +183,6 @@
 
 (use-package rainbow-delimiters
   :hook ((lisp-mode emacs-lisp-mode) . rainbow-delimiters-mode))
-
-(use-package ivy
-  :diminish
-  :config (ivy-mode))
-
-(use-package counsel
-  :after ivy
-  :diminish
-  :config 
-    (counsel-mode)
-    (setq ivy-initial-inputs-alist nil)) ;; removes starting ^ regex in M-x
 
 (use-package flyspell
   :init (flyspell-mode)
@@ -183,10 +208,10 @@
                electric-indent-mode nil
                tab-width 4)
 
-
 (add-hook 'prog-mode-hook 'hl-line-mode)
 
 (global-set-key (kbd "C-S-v") 'yank) ;; added this for pasting URLs into minibuffer
+
 
 (use-package general
   :config
@@ -198,16 +223,21 @@
       :prefix "SPC" ;; set leader
       :global-prefix "M-SPC") ;; use leader in insert mode
     (my/leader-keys
-      "f" '(:ignore t :wk "Files")  
+      "f" '(:ignore t :wk "Files")
+      "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
       "f d" '(kill-current-buffer :wk "Kill current buffer")
       "f f" '(basic-save-buffer :wk "Save buffer")
-      "f r" '(counsel-recentf :wk "Find recent files")
+      "f h" '(consult-org-heading :wk "Find org heading")
+      "f l" '(consult-line :wk "Find line in current buffer")
+      "f p" '(consult-yank-pop :wk "Search clipboard to paste")
+      "f r" '(consult-recent-file :wk "Find recent files")
       "f s" '(find-file :wk "Find file")
       ;; links
       "l" '(:ignore t :wk "Links")
       "l l" '(org-insert-link :wk "Insert a link")
       ;; buffers
       "b" '(:ignore t :wk "Buffers")
+      "b b" '(consult-buffer :wk "Show buffers")
       "b c" '(clone-indirect-buffer :wk "Create indirect buffer copy in a split")
       "b C" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer in new window")
       "b k" '(kill-current-buffer :wk "Kill current buffer")
@@ -231,10 +261,17 @@
       "o a" '(org-agenda :wk "Org agenda")
       "o t" '(org-todo :wk "Org todo")
       "o T" '(org-todo-list :wk "Org todo list")
+      ;; references
+      "q" '(:ignore t :wk "References")
+      "q q" '(citar-insert-citation :wk "Insert citation")
+      "q k" '(citar-org-kill-citation :wk "Kill citation")
+      "q o" '(citar-open :wk "Open library, notes etc")
+      "q r" '(citar-insert-reference :wk "Insert reference")
+      "q u" '(citar-org-update-prefix-suffix :wk "Update citation prefix/suffix")
       ;; refile
       "r" '(:ignore t :wk "Refile")
       "r r" '(org-refile :wk "Org refile")
-      "r c" '(org-refile-copy :wk "Org refile copy (original item stays in place")
+      "r c" '(org-refile-copy :wk "Org refile copy, original item stays in place")
       "r g" '(org-refile-goto-last-stored :wk "Jump to location of last refiled item")
       ;; toggle
       "t" '(:ignore t :wk "Toggle")
@@ -534,6 +571,41 @@
         ("me" ((in-mode . "message-mode")
               (in-mode . "mu4e-headers-mode")
               (in-mode . "mu4e-view-mode")))))
+
+;; references
+(setq org-cite-csl-styles-dir
+      (expand-file-name "~/.local/share/zotero/styles"))
+
+(setq org-cite-global-bibliography '("~/.local/share/zotero/storage/my_library.bib"))
+
+(setq org-cite-export-processors '((t csl)))
+
+(use-package citeproc)
+
+(use-package oc-csl-activate
+  :straight (oc-csl-activate :type git :host github :repo "andras-simonyi/org-cite-csl-activate") 
+  :after oc
+  :config
+  (setq org-cite-csl-activate-use-document-style t))
+
+(use-package citar
+             :straight (citar :type git :host github :repo "emacs-citar/citar" :includes (citar-org))
+             :custom
+             (citar-bibliography org-cite-global-bibliography)
+             :hook
+             (org-mode . citar-capf-setup))
+
+(use-package citar-org
+             :after oc
+             :custom
+             (org-cite-insert-processor 'citar)
+             (org-cite-follow-processor 'citar)
+             (org-cite-activate-processor 'citar))
+
+(use-package citar-embark
+  :after citar embark
+  :no-require
+  :config (citar-embark-mode))
 
 ;; email
 (use-package mu4e
