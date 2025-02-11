@@ -263,9 +263,10 @@
       "o T" '(org-todo-list :wk "Org todo list")
       ;; references
       "q" '(:ignore t :wk "References")
-      "q q" '(citar-insert-citation :wk "Insert citation")
       "q k" '(citar-org-kill-citation :wk "Kill citation")
       "q o" '(citar-open :wk "Open library, notes etc")
+      "q p" '(org-cite-csl-activate-render-all :wk "Fontify citations in the buffer")
+      "q q" '(citar-insert-citation :wk "Insert citation")
       "q r" '(citar-insert-reference :wk "Insert reference")
       "q u" '(citar-org-update-prefix-suffix :wk "Update citation prefix/suffix")
       ;; refile

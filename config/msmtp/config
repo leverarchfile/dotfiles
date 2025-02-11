@@ -8,7 +8,7 @@ host smtp.migadu.com
 port 465
 from mail@leverarchfile.org
 user mail@leverarchfile.org
-passwordeval "pass mail@leverarchfile.org"
+passwordeval pass mail@leverarchfile.org
 tls_starttls off
 
 account uoa
@@ -17,5 +17,5 @@ port 587
 from l.baldwin-ramult@auckland.ac.nz
 user lbal452@uoa.auckland.ac.nz
 auth xoauth2
-passwordeval "oama access l.baldwin-ramult@auckland.ac.nz"
+passwordeval oama access l.baldwin-ramult@auckland.ac.nz
 tls_starttls on
