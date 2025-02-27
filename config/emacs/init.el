@@ -274,6 +274,11 @@
       "r r" '(org-refile :wk "Org refile")
       "r c" '(org-refile-copy :wk "Org refile copy, original item stays in place")
       "r g" '(org-refile-goto-last-stored :wk "Jump to location of last refiled item")
+      ;; org-roam
+      "s" '(:ignore t :wk "Org-roam")
+      "s f" '(org-roam-node-find :wk "Open or create org-roam node")
+      "s i" '(org-roam-node-insert :wk "Insert an org-roam node link") 
+      "s t" '(org-roam-buffer-toggle :wk "Toggle buffer with org-roam backlinks")
       ;; toggle
       "t" '(:ignore t :wk "Toggle")
       "t f" '(flyspell-mode :wk "Toggle flyspell")
@@ -515,10 +520,10 @@
                      ("e" "TODO from email for intray" entry
                       (file+headline "intray.org" "Refile")
                       "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n :END:")
-                     ("s" "Schedule reminder for today" entry
+                     ("r" "Schedule reminder for today" entry
                       (file+headline "intray.org" "Reminders")
                       "* %^{Title for reminder}\nSCHEDULED: %t\n %?")
-                     ("p" "Schedule reminder for another day" entry
+                     ("l" "Schedule reminder for another day" entry
                       (file+headline "intray.org" "Reminders")
                       "* %^{Title for reminder}\nSCHEDULED: %^t\n %?")
                      ("m" "Appointments")
@@ -593,6 +598,7 @@
              :straight (citar :type git :host github :repo "emacs-citar/citar" :includes (citar-org))
              :custom
              (citar-bibliography org-cite-global-bibliography)
+             (citar-notes-paths '("~/slips/references"))
              :hook
              (org-mode . citar-capf-setup))
 
@@ -608,6 +614,31 @@
   :no-require
   :config (citar-embark-mode))
 
+;; org-roam
+(use-package org-roam
+             :custom
+             (org-roam-directory "~/slips"))
+
+(use-package citar-org-roam
+             :after (citar org-roam)
+             :config (citar-org-roam-mode)
+             (setq citar-org-roam-note-title-template "${author} — ${title}"))
+
+(setq org-roam-capture-templates
+      '(("d" "default" plain
+         "%?"
+         :target (file+head "main/%<%Y%m%d%H%M%S>-${slug}.org" 
+                            "#+title: ${title}\n#+created: %U\n#+last_modified: %U\n\n")
+         :unnarrowed t)
+         ("r" "reference" plain
+         "%?"
+         :target (file+head "references/${citar-citekey}.org"
+                            "#+title: ${citar-citekey} (${citar-date}). ${note-title}.\n#+created: %U\n#+last_modified: %U\n\n")
+         :unnarrowed t)
+        ))
+
+(setq citar-org-roam-capture-template-key "r")
+
 ;; email
 (use-package mu4e
              :straight
@@ -619,6 +650,7 @@
                mu4e-change-filenames-when-moving t ;; avoid syncing issues with mbsync
                mu4e-view-show-images t
                mu4e-view-show-addresses t
+               mu4e-compose-complete-only-personal t
                 
                ;; disable threading
                mu4e-headers-show-threads nil

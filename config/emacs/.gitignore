@@ -1,9 +1,11 @@
+.org-id-locations
 auto-save-list/
 bookmarks
 elpa
 eln-cache/
 eshell
 history
+org-roam.db
 places
 projects
 straight/*

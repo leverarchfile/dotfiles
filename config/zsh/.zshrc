@@ -46,3 +46,6 @@ source "/usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting
 source "/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 bindkey '^ ' autosuggest-accept	# ctrl+space to accept current suggestion
+
+# set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
