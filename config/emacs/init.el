@@ -51,7 +51,7 @@
 
     (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
     (set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
-    (set-face-attribute 'variable-pitch nil :family "Source Sans Pro" :weight 'medium :height 120)
+    (set-face-attribute 'variable-pitch nil :family "Atkinson Hyperlegible" :weight 'medium :height 120)
 
     ;; needed for fonts to show properly in emacsclient
     (add-to-list 'default-frame-alist '(font . "Mononoki Nerd Font Mono-12"))
@@ -617,7 +617,9 @@
 ;; org-roam
 (use-package org-roam
              :custom
-             (org-roam-directory "~/slips"))
+             (org-roam-directory "~/slips")
+             :config
+             (org-roam-db-autosync-mode))
 
 (use-package citar-org-roam
              :after (citar org-roam)
