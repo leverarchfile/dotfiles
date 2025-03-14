@@ -235,6 +235,7 @@
       ;; links
       "l" '(:ignore t :wk "Links")
       "l l" '(org-insert-link :wk "Insert a link")
+      "l s" '(org-store-link :wk "Store a link")
       ;; buffers
       "b" '(:ignore t :wk "Buffers")
       "b b" '(consult-buffer :wk "Show buffers")
@@ -360,13 +361,14 @@
 (setq org-pretty-entities t)
 (setq org-ellipsis " [+]")
 (setq org-use-sub-superscripts "{}")
+(setq org-M-RET-may-split-line '((default . nil)))
+
+(setq org-cycle-separator-lines -1)
 
 (setq org-src-fontify-natively t
       org-src-tab-acts-natively t)
       ;; org-edit-src-content-indentation 0)
       ;; org-src-preserve-indentation t)
-
-(setq org-cycle-separator-lines 0)
 
 (defun my/org-font-setup()
   (set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
@@ -653,12 +655,14 @@
                mu4e-view-show-images t
                mu4e-view-show-addresses t
                mu4e-compose-complete-only-personal t
-                
+               
                ;; disable threading
                mu4e-headers-show-threads nil
                mu4e-headers-include-related nil
 
                ;; mu4e-header-highlight-face (underline nil)
+               
+               mu4e-confirm-quit nil
 
                mu4e-maildir "~/mail"
                mu4e-update-interval (* 10 60) ;; update with isync every 10 minutes
