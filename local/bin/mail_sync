@@ -1,0 +1,11 @@
+#!/bin/sh
+
+pidof -q "mbsync" && exit 1
+
+mbsync -qac "${XDG_CONFIG_HOME}/mbsync/config" &
+
+wait
+
+pkill -RTMIN+1 waybar
+
+emacsclient -e "(mu4e-update-index)"
