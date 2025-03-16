@@ -1,0 +1,11 @@
+{
+    "host": "outlook.office365.com",
+    "port": 993,
+    "tls": true,
+    "xoAuth2": true,
+    "username": "l.baldwin-ramult@auckland.ac.nz",
+    "passwordCMD": "oama access l.baldwin-ramult@auckland.ac.nz",
+    "onNewMail": "mbsync -qc \"${XDG_CONFIG_HOME}/mbsync/config\" --pull --new uoa:INBOX",
+    "onNewMailPost": "emacsclient -e \"(mu4e-update-index)\" && pkill -RTMIN+1 waybar",
+    "boxes": ["INBOX"]
+}

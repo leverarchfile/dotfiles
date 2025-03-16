@@ -79,7 +79,8 @@
     (setq interprogram-cut-function 'wl-copy)
     (setq interprogram-paste-function 'wl-paste)
 
-    (setq truncate-string-ellipsis "…")   ;; Unicode ellipsis rather than "..."
+    (setq truncate-string-ellipsis "…") ;; Unicode ellipsis rather than "..."
+    (setq sentence-end-double-space nil) ;; Make sure sentences end with one space
 
     (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
 
@@ -170,6 +171,11 @@
   :after evil
   :config
   (evil-collection-init))
+
+(use-package evil-surround
+  :after evil
+  :config
+  (global-evil-surround-mode 1))
 
 (use-package which-key
   :config (which-key-mode)
@@ -360,6 +366,7 @@
 (setq org-hide-emphasis-markers t)
 (setq org-pretty-entities t)
 (setq org-ellipsis " [+]")
+;; (setq org-ellipsis " ▼")
 (setq org-use-sub-superscripts "{}")
 (setq org-M-RET-may-split-line '((default . nil)))
 
@@ -655,18 +662,20 @@
                mu4e-view-show-images t
                mu4e-view-show-addresses t
                mu4e-compose-complete-only-personal t
-               
+               mu4e-confirm-quit nil
+               mu4e-hide-index-messages t
+
                ;; disable threading
                mu4e-headers-show-threads nil
                mu4e-headers-include-related nil
 
                ;; mu4e-header-highlight-face (underline nil)
+               mu4e-headers-auto-update t
+               mu4e-headers-advance-after-mark t
                
-               mu4e-confirm-quit nil
-
                mu4e-maildir "~/mail"
-               mu4e-update-interval (* 10 60) ;; update with isync every 10 minutes
-               mu4e-get-mail-command "mbsync -a -c ~/.config/mbsync/config")
+               mu4e-get-mail-command "true" ;; using cron job to get mail
+               mu4e-update-interval nil)
                            
              (setq mu4e-contexts
                    (list

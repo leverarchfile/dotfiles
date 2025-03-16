@@ -1,7 +1,7 @@
 // -*- mode: jsonc -*-
 {
   "layer": "top",
-  "height": 24,
+  "height": 40,
   "spacing": 6,
   "modules-left": ["river/tags", "network", "idle_inhibitor"],
   "modules-center": ["clock"],
@@ -26,7 +26,7 @@
   },
   "custom/inbox": {
     "exec": "inbox",
-    "signal": 4,
+    "signal": 1,
     "tooltip": false
   },
   "cpu": {
