@@ -263,6 +263,9 @@
       "d j" '(dired-jump :wk "Dired jump to current")
       ;; comments
       "g c" '(comment-line :wk "Comment lines")
+      ;; mail
+      "m" '(:ignore t :wk "Org")
+      "m m" '(mu4e :wk "Start mu4e")
       ;; org
       "o" '(:ignore t :wk "Org")
       "o a" '(org-agenda :wk "Org agenda")
@@ -724,3 +727,10 @@
 ;; spell check
 (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
 (add-hook 'mu4e-view-mode-hook #'visual-line-mode)
+
+;; email alerts
+(add-hook 'mu4e-index-updated-hook
+  (defun new-mail-alert ()
+    (shell-command "mail_alert&")))
+;; prevent buffer showing output
+(add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))

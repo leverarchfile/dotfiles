@@ -1,0 +1,17 @@
+#!/bin/sh
+
+export WAYLAND_DISPLAY=wayland-1
+
+pkill -RTMIN+1 waybar &
+
+NEW=$(date +"%Y%m%d%H%M" --date="5 minutes ago")
+
+MAIL="$(mu find flag:unread date:$NEW..now --fields l | grep -v '/Junk/' | tac)"
+
+SENDERS=$(echo "$MAIL" | xargs grep -m 1 -h -i "^From:" | sed 's/^From: //' | uniq | sed 's/^From: //; s/<[^>]*>//g; s/^[[:space:]]*//' | while read -r sender; do
+  echo "${sender:0:30}"
+done)
+
+if [ -n "$SENDERS" ]; then
+  notify-send Mail "$SENDERS"
+fi

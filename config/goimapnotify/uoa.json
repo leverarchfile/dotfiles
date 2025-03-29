@@ -6,6 +6,6 @@
     "username": "l.baldwin-ramult@auckland.ac.nz",
     "passwordCMD": "oama access l.baldwin-ramult@auckland.ac.nz",
     "onNewMail": "mbsync -qc \"${XDG_CONFIG_HOME}/mbsync/config\" --pull --new uoa:INBOX",
-    "onNewMailPost": "emacsclient -e \"(mu4e-update-index)\" && pkill -RTMIN+1 waybar",
+    "onNewMailPost": "emacsclient -e \"(mu4e-update-index)\"",
     "boxes": ["INBOX"]
 }

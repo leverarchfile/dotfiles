@@ -35,3 +35,5 @@ nm-applet &
 
 swayidle -w timeout 300 "lock" timeout 600 "wlopm --off '*'" \
 	resume "wlopm --on '*'" before-sleep "lock" &
+
+mail_sync &
