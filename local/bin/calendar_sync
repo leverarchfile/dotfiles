@@ -1,0 +1,13 @@
+#!/bin/sh
+
+WGET=/sbin/wget
+ICS2ORG="uv run ical2orgpy "
+ICSFILE=$(mktemp)
+ORGFILE=$HOME/org/work-cal.org
+URL=$(pass show outlook_ics)
+
+$WGET -O $ICSFILE $URL
+cd $HOME/repos/ical2org;
+$ICS2ORG $ICSFILE $ORGFILE
+cd -
+rm -f $ICSFILE

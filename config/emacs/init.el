@@ -39,6 +39,8 @@
     (recentf-mode 1)
     (global-auto-revert-mode 1) ;; refresh buffers with file changes
 
+    (setq frame-inhibit-implied-resize t)
+
     (setq use-short-answers t)
 
     (setq scroll-step            1
@@ -46,7 +48,6 @@
 
     (setq display-line-numbers-type 'relative)
 
-    (global-visual-line-mode t)
     (setq-default display-line-numbers-width 3) ;; make line numbers column three digits wide
 
     (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
@@ -94,11 +95,11 @@
 (use-package doom-themes
   :config
    ;; Global settings (defaults)
-   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-   (load-theme 'doom-gruvbox t)
-   ;; Corrects (and improves) org-mode's native fontification
-   (doom-themes-org-config))
+   (setq doom-themes-enable-bold t) ;; if nil, bold is universally disabled
+         doom-themes-enable-italic t) ;; if nil, italics is universally disabled
+(load-theme 'doom-gruvbox t)
+;; Corrects (and improves) org-mode's native fontification
+(doom-themes-org-config)
 
 (use-package vertico
   :init (vertico-mode 1))
@@ -215,6 +216,7 @@
                tab-width 4)
 
 (add-hook 'prog-mode-hook 'hl-line-mode)
+;; (add-hook 'prog-mode-hook 'visual-line-mode)
 
 (global-set-key (kbd "C-S-v") 'yank) ;; added this for pasting URLs into minibuffer
 
@@ -354,7 +356,8 @@
 (with-eval-after-load 'evil-maps
   (define-key evil-motion-state-map (kbd "SPC") nil)
   (define-key evil-motion-state-map (kbd "RET") nil)
-  (define-key evil-motion-state-map (kbd "TAB") nil))
+  (define-key evil-motion-state-map (kbd "TAB") nil)
+  (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop))
 ;; set ENTER key in org-mode to follow links
 (setq org-return-follows-link t)
 
@@ -413,10 +416,16 @@
   (set-face-attribute 'org-super-agenda-header nil :inherit 'outline-1 :height 1.2 :weight 'bold))
 (add-hook 'org-agenda-mode-hook #'my/org-agenda-font-setup)
 
-(setq org-agenda-span 1
+(setq org-agenda-span 7
       org-agenda-start-day "+0d"
       org-agenda-block-separator nil
       org-agenda-compact-blocks t)
+
+;; separator line between days in org-agenda calendar view
+(setq org-agenda-format-date (lambda (date) (concat "\n"
+                                                    (make-string (window-width) 9472)
+                                                    "\n"
+                                                    (org-agenda-format-date-aligned date))))
 
 ;; (setq org-agenda-tags-column 0) ;; put agenda view tags straight after items 
 ;; (setq org-agenda-hide-tags-regexp (regexp-opt '("Inbox-Phone" "Intray" "Research" "Teaching" "Service" "Perso" "Technology"))) ;; hide specific agenda view tags (filetags)
@@ -477,7 +486,12 @@
         ("u" "By headline"
          ((todo "" ((org-agenda-span 'day)
           (org-super-agenda-groups
-           '((:auto-parent t)))))))))
+           '((:auto-parent t)))))))
+        ("A" "Week plan"
+         ((agenda "" ((org-agenda-span 7)
+          (org-agenda-start-day "+0d")
+          (org-agenda-include-deadlines t)
+          (org-super-agenda-groups nil)))))))
 
 ;; evil key configurations for org-agenda
 (evil-set-initial-state 'org-agenda-mode 'normal)
@@ -660,11 +674,15 @@
                           :type built-in)
              :commands (mu4e)
              :config
+             (evil-define-key 'normal mu4e-main-mode-map (kbd "q") 'bury-buffer) ;; bury buffer instead of quitting
              (setq
                mu4e-change-filenames-when-moving t ;; avoid syncing issues with mbsync
                mu4e-view-show-images t
                mu4e-view-show-addresses t
+               mu4e-compose-context-policy nil
                mu4e-compose-complete-only-personal t
+               ;; mu4e-compose-in-new-frame t
+               mu4e-compose-format-flowed t
                mu4e-confirm-quit nil
                mu4e-hide-index-messages t
 
@@ -675,13 +693,29 @@
                ;; mu4e-header-highlight-face (underline nil)
                mu4e-headers-auto-update t
                mu4e-headers-advance-after-mark t
-               
+
+               mu4e-trash-without-flag t ;; otherwise trashing removes emails from server
+
                mu4e-maildir "~/mail"
-               mu4e-get-mail-command "true" ;; using cron job to get mail
+               mu4e-get-mail-command "true" ;; using cron job and goimapnotify to get mail
                mu4e-update-interval nil)
                            
              (setq mu4e-contexts
                    (list
+                     ;;uoa
+                     (make-mu4e-context
+                       :name "uoa"
+                       :match-func
+                         (lambda (msg)
+                           (when msg
+                             (string-prefix-p "/uoa" (mu4e-message-field msg :maildir))))
+                         :vars '((user-mail-address . "l.baldwin-ramult@auckland.ac.nz")
+                                 (user-full-name . "Leo Baldwin-Ramult")
+                                 (mu4e-sent-folder . "/uoa/Sent Items")
+                                 (mu4e-drafts-folder . "/uoa/Drafts")
+                                 (mu4e-refile-folder . "/uoa/Archive")
+                                 (mu4e-trash-folder . "/uoa/Deleted Items")))
+
                      ;; perso
                      (make-mu4e-context
                        :name "perso"
@@ -694,20 +728,8 @@
                                  (mu4e-sent-folder . "/perso/Sent")
                                  (mu4e-drafts-folder . "/perso/Drafts")
                                  (mu4e-refile-folder . "/perso/Archive")
-                                 (mu4e-trash-folder . "/perso/Trash")))
-                     ;; uoa
-                     (make-mu4e-context
-                       :name "uoa"
-                       :match-func
-                         (lambda (msg)
-                           (when msg
-                             (string-prefix-p "/uoa" (mu4e-message-field msg :maildir))))
-                         :vars '((user-mail-address . "l.baldwin-ramult@auckland.ac.nz")
-                                 (user-full-name . "Leo Baldwin-Ramult")
-                                 (mu4e-sent-folder . "/uoa/Sent Items")
-                                 (mu4e-drafts-folder . "/uoa/Drafts")
-                                 (mu4e-refile-folder . "/uoa/Archive")
-                                 (mu4e-trash-folder . "/uoa/Trash")))))
+                                 (mu4e-trash-folder . "/perso/Trash")))))
+                     
              ;; sending email
              (setq sendmail-program "/usr/bin/msmtp" 
                    send-mail-function #'smtpmail-multi-send-it
@@ -715,18 +737,21 @@
                    message-sendmail-extra-arguments '("--read-envelope-from")
                    message-send-mail-function #'message-send-mail-with-sendmail)
 
-             ;; ask for context when sending mail, if context hasn't already been chosen
-             (setq mu4e-compose-context-policy 'ask-if-none)
+             ;; don't ask for context when starting mu4e (default to uoa) 
+             (setq mu4e-context-policy 'pick-first)
 
              (setq mu4e-maildir-shortcuts
                    '((:maildir "/perso/Inbox"       :key ?p)
                      (:maildir "/perso/Sent"        :key ?w)
                      (:maildir "/uoa/Inbox"         :key ?i)
                      (:maildir "/uoa/Sent Items"    :key ?s)))
+
+             (mu4e t)
 )
 ;; spell check
 (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
-(add-hook 'mu4e-view-mode-hook #'visual-line-mode)
+
+;; (setq truncate-partial-width-windows nil) 
 
 ;; email alerts
 (add-hook 'mu4e-index-updated-hook

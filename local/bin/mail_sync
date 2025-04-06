@@ -1,10 +1,10 @@
 #!/bin/sh
 
-pidof -q "mbsync" && exit 1
+pidof -q "mbsync" && exit 0
 
 mbsync -qac "${XDG_CONFIG_HOME}/mbsync/config" &
 
-wait
+wait && sleep 1
 
 pkill -RTMIN+1 waybar
 
