@@ -310,10 +310,7 @@
       "w l" '(evil-window-right :wk "Window right")
       "w w" '(evil-window-next :wk "Goto next window")
       ;; move windows
-      "w H" '(buf-move-left :wk "Buffer move left")
-      "w J" '(buf-move-down :wk "Buffer move down")
-      "w K" '(buf-move-up :wk "Buffer move up")
-      "w L" '(buf-move-right :wk "Buffer move right")))
+      "w a" '(evil-window-rotate-upwards :wk "Switch windows around")))
 
 (use-package mixed-pitch
     :hook (text-mode . mixed-pitch-mode))
@@ -530,6 +527,20 @@
     "b k" 'org-agenda-quit
 )
 
+;; calendar
+(use-package calfw)
+
+(setq cfw:fchar-junction ?╋
+      cfw:fchar-vertical-line ?┃
+      cfw:fchar-horizontal-line ?━
+      cfw:fchar-left-junction ?┣
+      cfw:fchar-right-junction ?┫
+      cfw:fchar-top-junction ?┯
+      cfw:fchar-top-left-corner ?┏
+      cfw:fchar-top-right-corner ?┓)
+
+(use-package calfw-org)
+
 ;; refile
 (setq org-refile-targets
       '((nil :maxlevel . 3)
@@ -666,6 +677,15 @@
         ))
 
 (setq citar-org-roam-capture-template-key "r")
+
+;; update last_modified timestamp for org-roam files
+(add-hook 'org-mode-hook (lambda ()
+                             (setq-local time-stamp-active t
+                                         time-stamp-line-limit 18
+                                         time-stamp-start "^#\\+last_modified: [ \t]*"
+                                         time-stamp-end "$"
+                                         time-stamp-format "\[%Y-%m-%d %a %H:%M:%S\]")
+                             (add-hook 'before-save-hook 'time-stamp nil 'local)))
 
 ;; email
 (use-package mu4e
