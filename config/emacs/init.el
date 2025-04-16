@@ -48,6 +48,11 @@
 
     (setq display-line-numbers-type 'relative)
 
+    (setq-default tab-width 2) ;; visual tab width of 2
+    (setq-default standard-indent 2) ;; insert 2 spaces with TAB
+    (setq-default electric-indent-mode nil) ;; no automatic identation
+    (setq-default indent-tabs-mode nil) ;; use spaces everywhere
+        
     (setq-default display-line-numbers-width 3) ;; make line numbers column three digits wide
 
     (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
@@ -57,12 +62,10 @@
     ;; needed for fonts to show properly in emacsclient
     (add-to-list 'default-frame-alist '(font . "Mononoki Nerd Font Mono-12"))
 
-    ;; italics for comments and keywords (works on emacsclient)
+    ;; italics for comments (works on emacsclient)
     (set-face-attribute 'font-lock-comment-face nil
       :slant 'italic)
-    (set-face-attribute 'font-lock-keyword-face nil
-      :slant 'italic)
-      
+          
     ;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
     (setq wl-copy-process nil)
     (defun wl-copy (text)
@@ -84,6 +87,16 @@
     (setq sentence-end-double-space nil) ;; Make sure sentences end with one space
 
     (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
+
+;; indentation
+(defun my/indentation-config ()
+  (setq tab-width 2)
+  (setq standard-indent 2)
+  (setq electric-indent-mode nil)
+  (setq indent-tabs-mode nil))
+(add-hook 'prog-mode-hook 'my/indentation-config)
+(add-hook 'text-mode-hook 'my/indentation-config)
+(add-hook 'org-mode-hook 'my/indentation-config)
 
 (use-package xclip
   :config
@@ -211,15 +224,10 @@
 (use-package flyspell-correct-avy-menu
   :after flyspell-correct)
 
-(setq-default indent-tabs-mode nil
-               electric-indent-mode nil
-               tab-width 4)
-
 (add-hook 'prog-mode-hook 'hl-line-mode)
 ;; (add-hook 'prog-mode-hook 'visual-line-mode)
 
 (global-set-key (kbd "C-S-v") 'yank) ;; added this for pasting URLs into minibuffer
-
 
 (use-package general
   :config
@@ -271,6 +279,7 @@
       ;; org
       "o" '(:ignore t :wk "Org")
       "o a" '(org-agenda :wk "Org agenda")
+      "o s" '(org-insert-source-code-block :wk "Insert Org source code block")
       "o t" '(org-todo :wk "Org todo")
       "o T" '(org-todo-list :wk "Org todo list")
       ;; references
@@ -311,6 +320,16 @@
       "w w" '(evil-window-next :wk "Goto next window")
       ;; move windows
       "w a" '(evil-window-rotate-upwards :wk "Switch windows around")))
+
+(defun org-insert-source-code-block ()
+  "Insert source code block and optionally set a lanugage"
+  (interactive)
+  (let ((col (current-column))
+        (lang (read-from-minibuffer "Source block language (blank for none): ")))
+    (insert (format "#+begin_src%s" (if (string-empty-p lang) "" (concat " " lang))))
+    (newline)(newline)
+    (move-to-column col t)(insert "#+end_src")(newline)
+    (forward-line -2)(move-to-column col t)))
 
 (use-package mixed-pitch
     :hook (text-mode . mixed-pitch-mode))
@@ -359,8 +378,6 @@
 (setq org-return-follows-link t)
 
 (add-hook 'org-mode-hook 'org-indent-mode)
-
-(require 'org-tempo) ;; source code block with <s TAB
 
 (setq org-directory "~/org/")
 
