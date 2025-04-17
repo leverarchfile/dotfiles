@@ -48,11 +48,9 @@
 
     (setq display-line-numbers-type 'relative)
 
-    (setq-default tab-width 2) ;; visual tab width of 2
-    (setq-default standard-indent 2) ;; insert 2 spaces with TAB
     (setq-default electric-indent-mode nil) ;; no automatic identation
     (setq-default indent-tabs-mode nil) ;; use spaces everywhere
-        
+  
     (setq-default display-line-numbers-width 3) ;; make line numbers column three digits wide
 
     (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
@@ -65,7 +63,7 @@
     ;; italics for comments (works on emacsclient)
     (set-face-attribute 'font-lock-comment-face nil
       :slant 'italic)
-          
+
     ;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
     (setq wl-copy-process nil)
     (defun wl-copy (text)
@@ -88,16 +86,6 @@
 
     (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
 
-;; indentation
-(defun my/indentation-config ()
-  (setq tab-width 2)
-  (setq standard-indent 2)
-  (setq electric-indent-mode nil)
-  (setq indent-tabs-mode nil))
-(add-hook 'prog-mode-hook 'my/indentation-config)
-(add-hook 'text-mode-hook 'my/indentation-config)
-(add-hook 'org-mode-hook 'my/indentation-config)
-
 (use-package xclip
   :config
   (setq xclip-program "wl-copy")
@@ -113,6 +101,11 @@
 (load-theme 'doom-gruvbox t)
 ;; Corrects (and improves) org-mode's native fontification
 (doom-themes-org-config)
+
+(custom-set-faces
+  `(org-block-begin-line ((t (:background ,(doom-color 'bg)))))
+  `(org-block-end-line ((t (:background ,(doom-color 'bg)))))
+  `(org-quote ((t (:background ,(doom-color 'bg))))))
 
 (use-package vertico
   :init (vertico-mode 1))
@@ -354,16 +347,37 @@
 (use-package org-appear
   :hook (org-mode . org-appear-mode))
 
+(require 'org-indent)
+(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-statup-indented t)
+
 (use-package org-modern
   :custom
-    (org-modern-star nil)
-    (org-modern-block-name nil))
+    (org-modern-star nil))
 (with-eval-after-load 'org (global-org-modern-mode))
 
-(setq-default prettify-symbols-alist
-                '(("#+begin_src"    . "≫")
-                  ("#+end_src"      . "≫")))
-(add-hook 'org-mode-hook 'prettify-symbols-mode)
+(use-package org-modern-indent
+  :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+  :config
+  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+
+(set-face-attribute 'org-quote nil :italic nil)
+
+(with-eval-after-load 'org-modern
+  (set-face-attribute 'org-block-begin-line nil
+                      :height 0.8
+                      :inherit 'fixed-pitch)
+  (set-face-attribute 'org-modern-block-name nil
+                      :inherit 'org-block-begin-line
+                      :height 0.8))
+
+(with-eval-after-load 'org-modern-indent
+  (set-face-attribute 'org-modern-indent-bracket-line nil
+                      :family "Font Awesome"))
+
+(setq org-fontify-quote-and-verse-blocks t)
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode))
@@ -377,7 +391,8 @@
 ;; set ENTER key in org-mode to follow links
 (setq org-return-follows-link t)
 
-(add-hook 'org-mode-hook 'org-indent-mode)
+;; open org-link in current window (rather than using a horizontal split)
+;; (setq org-link-frame-setup '((file    . find-file)))
 
 (setq org-directory "~/org/")
 
@@ -386,16 +401,15 @@
 (setq org-hide-emphasis-markers t)
 (setq org-pretty-entities t)
 (setq org-ellipsis " [+]")
-;; (setq org-ellipsis " ▼")
 (setq org-use-sub-superscripts "{}")
 (setq org-M-RET-may-split-line '((default . nil)))
 
 (setq org-cycle-separator-lines -1)
 
 (setq org-src-fontify-natively t
-      org-src-tab-acts-natively t)
-      ;; org-edit-src-content-indentation 0)
-      ;; org-src-preserve-indentation t)
+      org-src-tab-acts-natively t
+      org-edit-src-content-indentation 0
+      org-src-preserve-indentation t)
 
 (defun my/org-font-setup()
   (set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
@@ -782,6 +796,9 @@
                      (:maildir "/perso/Sent"        :key ?w)
                      (:maildir "/uoa/Inbox"         :key ?i)
                      (:maildir "/uoa/Sent Items"    :key ?s)))
+
+             ;; view messages in browser with 'aV'
+             (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
 
              (mu4e t)
 )
