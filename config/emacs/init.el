@@ -95,7 +95,6 @@
 
 (use-package doom-themes
   :config
-   ;; Global settings (defaults)
    (setq doom-themes-enable-bold t) ;; if nil, bold is universally disabled
          doom-themes-enable-italic t) ;; if nil, italics is universally disabled
 (load-theme 'doom-gruvbox t)
@@ -170,7 +169,6 @@
           evil-split-window-below t
           evil-undo-system 'undo-redo ;; add C-r redo functionality
           evil-respect-visual-line-mode t)
-          ;; evil-default-cursor "#2ecc71"
   :config
   (evil-mode 1))
 
@@ -218,7 +216,7 @@
   :after flyspell-correct)
 
 (add-hook 'prog-mode-hook 'hl-line-mode)
-;; (add-hook 'prog-mode-hook 'visual-line-mode)
+(setq hl-line-sticky-flag nil) ;; only highlight line in active window
 
 (global-set-key (kbd "C-S-v") 'yank) ;; added this for pasting URLs into minibuffer
 
@@ -355,7 +353,8 @@
 
 (use-package org-modern
   :custom
-    (org-modern-star nil))
+    (org-modern-star nil)
+    (org-modern-table nil))
 (with-eval-after-load 'org (global-org-modern-mode))
 
 (use-package org-modern-indent
@@ -363,7 +362,7 @@
   :config
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
-(set-face-attribute 'org-quote nil :italic nil)
+(set-face-attribute 'org-quote nil :italic nil :inherit 'variable-pitch)
 
 (with-eval-after-load 'org-modern
   (set-face-attribute 'org-block-begin-line nil
@@ -371,7 +370,10 @@
                       :inherit 'fixed-pitch)
   (set-face-attribute 'org-modern-block-name nil
                       :inherit 'org-block-begin-line
-                      :height 0.8))
+                      :height 0.8)
+  (set-face-attribute 'org-block-end-line nil
+                      :height 0.8
+                      :inherit 'fixed-pitch))
 
 (with-eval-after-load 'org-modern-indent
   (set-face-attribute 'org-modern-indent-bracket-line nil
@@ -392,7 +394,7 @@
 (setq org-return-follows-link t)
 
 ;; open org-link in current window (rather than using a horizontal split)
-;; (setq org-link-frame-setup '((file    . find-file)))
+;; (setq org-link-frame-setup '((file . find-file)))
 
 (setq org-directory "~/org/")
 
@@ -455,8 +457,6 @@
                                                     "\n"
                                                     (org-agenda-format-date-aligned date))))
 
-;; (setq org-agenda-tags-column 0) ;; put agenda view tags straight after items 
-;; (setq org-agenda-hide-tags-regexp (regexp-opt '("Inbox-Phone" "Intray" "Research" "Teaching" "Service" "Perso" "Technology"))) ;; hide specific agenda view tags (filetags)
 (setq org-agenda-hide-tags-regexp ".*") ;; hide all agenda view tags
 
 (use-package org-super-agenda
@@ -732,6 +732,7 @@
                mu4e-view-show-addresses t
                mu4e-compose-context-policy nil
                mu4e-compose-complete-only-personal t
+               mu4e-compose-dont-reply-to-self t
                ;; mu4e-compose-in-new-frame t
                mu4e-compose-format-flowed t
                mu4e-confirm-quit nil
@@ -804,8 +805,6 @@
 )
 ;; spell check
 (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
-
-;; (setq truncate-partial-width-windows nil) 
 
 ;; email alerts
 (add-hook 'mu4e-index-updated-hook
