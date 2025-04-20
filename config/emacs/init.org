@@ -1,3 +1,13 @@
+#+TITLE: Emacs init file
+#+PROPERTY: Header-args :tangle "init.el"
+
+My configuration for GNU Emacs.
+
+Comments/suggestions welcome.
+
+* Bootstrap code for straight.el
+
+#+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
 
 (defvar bootstrap-version)
@@ -19,6 +29,11 @@
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 
+#+end_src
+
+* General defaults
+
+#+begin_src emacs-lisp
 (use-package emacs
   :config
     (setq custom-file null-device) ; persistent customize settings need to be made with init.el
@@ -74,14 +89,22 @@
     (setq sentence-end-double-space nil) ; Make sure sentences end with one space
 
     (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package xclip
   :config
   (setq xclip-program "wl-copy")
   (setq xclip-select-enable-clipboard t)
   (setq xclip-mode t)
   (setq xclip-method (quote wl-copy)))
+#+end_src
 
+* Interface
+
+** Fonts
+
+#+begin_src emacs-lisp
 (defun my/fonts ()
   (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
   (set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
@@ -94,7 +117,11 @@
 
 (use-package mixed-pitch
     :hook (text-mode . mixed-pitch-mode))
+#+end_src
 
+** Theme
+
+#+begin_src emacs-lisp
 (use-package ef-themes
   :config
   (setq ef-themes-common-palette-overrides
@@ -119,7 +146,11 @@
 (ef-themes-select 'ef-dream)
 
 (setq ef-themes-to-toggle '(ef-dream ef-summer))
+#+end_src
 
+** Interface general
+
+#+begin_src emacs-lisp
 (use-package spacious-padding
     :init 
     (spacious-padding-mode 1))
@@ -147,7 +178,11 @@
 (setq hl-line-sticky-flag nil) ; only highlight line in active window
 
 (global-set-key (kbd "C-S-v") 'yank) ; added this for pasting URLs into minibuffer
+#+end_src
 
+** Completion
+
+#+begin_src emacs-lisp
 (use-package vertico
   :init (vertico-mode 1))
 
@@ -201,10 +236,13 @@
     (which-key-max-description-length 40)
     (which-key-lighter nil)
     (which-key-sort-order 'which-key-description-order))
+#+end_src
 
+** Olivetti mode
+#+begin_src emacs-lisp
 (use-package olivetti
   :config
-    (setq olivetti-body-width 100)
+  (setq olivetti-body-width 100)
   :hook (text-mode . olivetti-mode))
 
 (add-hook 'text-mode-hook (lambda () 
@@ -214,7 +252,11 @@
 (add-hook 'prog-mode-hook (lambda ()
                             (fringe-mode -1)
                             (display-line-numbers-mode 1)))
+#+end_src
 
+** Evil
+
+#+begin_src emacs-lisp
 (use-package evil
   :init
   (setq evil-want-integration t ; optional since it's already set to t by default
@@ -235,7 +277,11 @@
   :after evil
   :config
   (global-evil-surround-mode 1))
+#+end_src
 
+** Spelling
+
+#+begin_src emacs-lisp
 (use-package flyspell
   :init (flyspell-mode)
   :custom
@@ -255,7 +301,11 @@
 
 (use-package flyspell-correct-avy-menu
   :after flyspell-correct)
+#+end_src
 
+* Keybindings
+
+#+begin_src emacs-lisp
 (use-package general
   :config
     (general-evil-setup)
@@ -364,7 +414,12 @@
   (ef-themes-toggle)
   (my/org-font-setup)
   (my/org-mode-face-edits))
+#+end_src
 
+* Org mode
+
+** Org general
+#+begin_src emacs-lisp
 (use-package toc-org
     :commands toc-org-enable
     :init (add-hook 'org-mode-hook 'toc-org-enable))
@@ -451,7 +506,10 @@
       org-src-tab-acts-natively t
       org-edit-src-content-indentation 0
       org-src-preserve-indentation t)
+#+end_src
 
+** Org agenda
+#+begin_src emacs-lisp
 (setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
 
 (setq org-agenda-window-setup 'only-window) ; agenda uses whole window
@@ -584,7 +642,11 @@
     "/" 'org-agenda-filter-by-tag
     "b k" 'org-agenda-quit
 )
+#+end_src
 
+** Calendar
+
+#+begin_src emacs-lisp
 (use-package calfw)
 
 (setq cfw:fchar-junction ?╋
@@ -597,7 +659,11 @@
       cfw:fchar-top-right-corner ?┓)
 
 (use-package calfw-org)
+#+end_src
 
+** Org refile and capture
+
+#+begin_src emacs-lisp
 ;; refile
 (setq org-refile-targets
       '((nil :maxlevel . 3)
@@ -672,6 +738,11 @@
               (in-mode . "mu4e-headers-mode")
               (in-mode . "mu4e-view-mode")))))
 
+#+end_src
+
+** References
+
+#+begin_src emacs-lisp
 (setq org-cite-csl-styles-dir
       (expand-file-name "~/.local/share/zotero/styles"))
 
@@ -706,7 +777,11 @@
   :after citar embark
   :no-require
   :config (citar-embark-mode))
+#+end_src
 
+** Org roam
+
+#+begin_src emacs-lisp
 (use-package org-roam
              :custom
              (org-roam-directory "~/slips")
@@ -742,6 +817,10 @@
                                          time-stamp-format "\[%Y-%m-%d %a %H:%M:%S\]")
                              (add-hook 'before-save-hook 'time-stamp nil 'local)))
 
+#+end_src
+
+* Email
+#+begin_src emacs-lisp
 (use-package mu4e
              :straight
              (:local-repo "/usr/share/emacs/site-lisp/mu4e/"
@@ -835,3 +914,4 @@
     (shell-command "mail_alert&")))
 ;; prevent buffer showing output
 (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
+#+end_src
