@@ -52,18 +52,7 @@
     (setq-default indent-tabs-mode nil) ;; use spaces everywhere
   
     (setq-default display-line-numbers-width 3) ;; make line numbers column three digits wide
-
-    (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
-    (set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
-    (set-face-attribute 'variable-pitch nil :family "Atkinson Hyperlegible" :weight 'medium :height 120)
-
-    ;; needed for fonts to show properly in emacsclient
-    (add-to-list 'default-frame-alist '(font . "Mononoki Nerd Font Mono-12"))
-
-    ;; italics for comments (works on emacsclient)
-    (set-face-attribute 'font-lock-comment-face nil
-      :slant 'italic)
-
+     
     ;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
     (setq wl-copy-process nil)
     (defun wl-copy (text)
@@ -93,18 +82,46 @@
   (setq xclip-mode t)
   (setq xclip-method (quote wl-copy)))
 
-(use-package doom-themes
-  :config
-   (setq doom-themes-enable-bold t) ;; if nil, bold is universally disabled
-         doom-themes-enable-italic t) ;; if nil, italics is universally disabled
-(load-theme 'doom-gruvbox t)
-;; Corrects (and improves) org-mode's native fontification
-(doom-themes-org-config)
+(defun my/fonts ()
+  (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
+  (set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
+  (set-face-attribute 'variable-pitch nil :family "Atkinson Hyperlegible" :weight 'medium :height 120)
+  (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+  ;; needed for fonts to show properly in emacsclient
+  (add-to-list 'default-frame-alist '(font . "Mononoki Nerd Font Mono-12")))
+(my/fonts)
 
-(custom-set-faces
-  `(org-block-begin-line ((t (:background ,(doom-color 'bg)))))
-  `(org-block-end-line ((t (:background ,(doom-color 'bg)))))
-  `(org-quote ((t (:background ,(doom-color 'bg))))))
+(use-package ef-themes
+  :config
+  (setq ef-themes-common-palette-overrides
+      '((prose-done fg-dim)))
+  (setq ef-elea-dark-palette-overrides
+      '((bg-main "#282828")
+        (comment fg-dim)
+        (overline-heading-1 red-cooler)
+        (bg-inactive bg-alt))))
+
+(defun my-ef-themes-custom-faces ()
+  (ef-themes-with-colors
+    (custom-set-faces
+     `(org-block-begin-line ((,c :background ,bg-main :foreground ,fg-dim)))
+     `(org-block-end-line ((,c :background ,bg-main :foreground ,fg-dim)))
+     `(org-quote ((,c :background ,bg-main)))
+     ;; `(org-ellipsis ((,c :foreground ,fg-alt)))
+     `(line-number-current-line ((,c :foreground ,fg-dim)))
+     `(line-number ((,c :foreground ,border))))))
+(add-hook 'ef-themes-post-load-hook #'my-ef-themes-custom-faces)
+
+(ef-themes-select 'ef-elea-dark)
+(setq ef-themes-to-toggle '(ef-summer ef-elea-dark))
+
+(use-package spacious-padding
+    :init 
+    (spacious-padding-mode 1))
+
+(setq spacious-padding-widths
+        '( :right-divider-width 1
+           :mode-line-width 0))
 
 (use-package vertico
   :init (vertico-mode 1))
@@ -270,7 +287,7 @@
       ;; org
       "o" '(:ignore t :wk "Org")
       "o a" '(org-agenda :wk "Org agenda")
-      "o s" '(org-insert-source-code-block :wk "Insert Org source code block")
+      "o s" '(my-org-insert-source-code-block :wk "Insert Org source code block")
       "o t" '(org-todo :wk "Org todo")
       "o T" '(org-todo-list :wk "Org todo list")
       ;; references
@@ -293,6 +310,7 @@
       "s t" '(org-roam-buffer-toggle :wk "Toggle buffer with org-roam backlinks")
       ;; toggle
       "t" '(:ignore t :wk "Toggle")
+      "t e" '(my-switch-theme :wk "Toggle ef-themes")
       "t f" '(flyspell-mode :wk "Toggle flyspell")
       "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
       "t r" '(rainbow-mode :wk "Toggle rainbow mode")
@@ -312,7 +330,7 @@
       ;; move windows
       "w a" '(evil-window-rotate-upwards :wk "Switch windows around")))
 
-(defun org-insert-source-code-block ()
+(defun my-org-insert-source-code-block ()
   "Insert source code block and optionally set a lanugage"
   (interactive)
   (let ((col (current-column))
@@ -321,6 +339,12 @@
     (newline)(newline)
     (move-to-column col t)(insert "#+end_src")(newline)
     (forward-line -2)(move-to-column col t)))
+
+(defun my-switch-theme ()
+  (interactive)
+  (ef-themes-toggle)
+  (my/org-font-setup)
+  (my/org-mode-face-edits))
 
 (use-package mixed-pitch
     :hook (text-mode . mixed-pitch-mode))
@@ -362,24 +386,37 @@
   :config
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
-(set-face-attribute 'org-quote nil :italic nil :inherit 'variable-pitch)
+(defun my/org-mode-face-edits ()
+  (set-face-attribute 'org-quote nil :italic nil :inherit 'variable-pitch)
+  (with-eval-after-load 'org-modern
+   (set-face-attribute 'org-block-begin-line nil
+                       :height 0.8
+                       :inherit 'fixed-pitch)
+   (set-face-attribute 'org-modern-block-name nil
+                       :inherit 'org-block-begin-line
+                       :height 0.8)
+   (set-face-attribute 'org-block-end-line nil
+                       :height 0.8
+                       :inherit 'fixed-pitch))
+   (with-eval-after-load 'org-modern-indent
+    (set-face-attribute 'org-modern-indent-bracket-line nil
+                       :family "Font Awesome")))
+(my/org-mode-face-edits)
 
-(with-eval-after-load 'org-modern
-  (set-face-attribute 'org-block-begin-line nil
-                      :height 0.8
-                      :inherit 'fixed-pitch)
-  (set-face-attribute 'org-modern-block-name nil
-                      :inherit 'org-block-begin-line
-                      :height 0.8)
-  (set-face-attribute 'org-block-end-line nil
-                      :height 0.8
-                      :inherit 'fixed-pitch))
-
-(with-eval-after-load 'org-modern-indent
-  (set-face-attribute 'org-modern-indent-bracket-line nil
-                      :family "Font Awesome"))
+(defun my/org-font-setup ()
+  (set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold :overline t)
+  (set-face-attribute 'org-level-2 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-3 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-4 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-5 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-6 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-7 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
+  (set-face-attribute 'org-level-8 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold))
+(add-hook 'org-mode-hook #'my/org-font-setup)
 
 (setq org-fontify-quote-and-verse-blocks t)
+
+(setq org-fontify-whole-heading-line t) ;; e.g. to have an overline extend beyond the text
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode))
@@ -412,17 +449,6 @@
       org-src-tab-acts-natively t
       org-edit-src-content-indentation 0
       org-src-preserve-indentation t)
-
-(defun my/org-font-setup()
-  (set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-  (set-face-attribute 'org-level-2 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-  (set-face-attribute 'org-level-3 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-  (set-face-attribute 'org-level-4 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-  (set-face-attribute 'org-level-5 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-  (set-face-attribute 'org-level-6 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-  (set-face-attribute 'org-level-7 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
-  (set-face-attribute 'org-level-8 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold))
-(add-hook 'org-mode-hook #'my/org-font-setup)
 
 ;; agenda
 (setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
