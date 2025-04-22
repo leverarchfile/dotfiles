@@ -34,21 +34,20 @@ Resources I've found particularly useful:
 
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
-
 #+end_src
 
 * General defaults
 
+** Main settings
 #+begin_src emacs-lisp
 (use-package emacs
   :config
-  (setq custom-file null-device) ; persistent customize settings need to be made with init.el
+  (setq custom-file null-device) ; persistent settings need to be made with init.el
+  (setq backup-directory-alist '((".*" . "~/.local/share/Trash/files")))
 
   (setq-default 
     inhibit-startup-screen t
     inhibit-startup-message t)
-    
-  (setq backup-directory-alist '((".*" . "~/.local/share/Trash/files")))
 
   (menu-bar-mode -1) 
   (scroll-bar-mode -1)
@@ -70,14 +69,23 @@ Resources I've found particularly useful:
     scroll-conservatively  10000)
 
   (setq display-line-numbers-type 'relative)
+  (setq-default display-line-numbers-width 3) ; make line numbers column three digits wide
 
   (setq-default electric-indent-mode nil) ; no automatic identation
   (setq-default indent-tabs-mode nil) ; use spaces everywhere
   
-  (setq-default display-line-numbers-width 3) ; make line numbers column three digits wide
-     
-  ;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
+  (setq truncate-string-ellipsis "…") ; Unicode ellipsis rather than "..."
+  (setq sentence-end-double-space nil)) ; Make sure sentences end with one space
+#+end_src
+
+** Copy and paste
+
+#+begin_src emacs-lisp
+;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
+(use-package emacs
+  :config
   (setq wl-copy-process nil)
+
   (defun wl-copy (text)
     (setq wl-copy-process (make-process :name "wl-copy"
                                         :buffer nil
@@ -86,17 +94,14 @@ Resources I've found particularly useful:
                                         :noquery t))
       (process-send-string wl-copy-process text)
       (process-send-eof wl-copy-process))
+
   (defun wl-paste ()
     (if (and wl-copy-process (process-live-p wl-copy-process))
          nil ; should return nil if we're the current paste owner
         (shell-command-to-string "wl-paste -n | tr -d \r")))
+
   (setq interprogram-cut-function 'wl-copy)
-  (setq interprogram-paste-function 'wl-paste)
-
-  (setq truncate-string-ellipsis "…") ; Unicode ellipsis rather than "..."
-  (setq sentence-end-double-space nil) ; Make sure sentences end with one space
-
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
+  (setq interprogram-paste-function 'wl-paste))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -106,15 +111,6 @@ Resources I've found particularly useful:
   (setq xclip-select-enable-clipboard t)
   (setq xclip-mode t)
   (setq xclip-method (quote wl-copy)))
-#+end_src
-
-#+begin_src emacs-lisp
-;; run a single instance of Emacs and use it to act as a server (alternative to the daemon)
-;; only start the server if one isn't already running
-;; (use-package server
-;;   :config
-;;   (unless (server-running-p)
-;;     (server-start)))
 #+end_src
 
 * Interface
@@ -201,10 +197,7 @@ Resources I've found particularly useful:
   :hook ((lisp-mode emacs-lisp-mode) . rainbow-delimiters-mode))
 
 (add-hook 'prog-mode-hook 'hl-line-mode)
-
 (setq hl-line-sticky-flag nil) ; only highlight line in active window
-
-(global-set-key (kbd "C-S-v") 'yank) ; added this for pasting URLs into minibuffer
 #+end_src
 
 ** Olivetti mode
@@ -336,6 +329,15 @@ Resources I've found particularly useful:
 
 * Keybindings
 
+** General key edits
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "C-S-v") 'yank) ; added this for pasting URLs into minibuffer
+#+end_src
+
+** Keybindings with SPACE leader key 
+
 #+begin_src emacs-lisp
 (use-package general
   :config
@@ -431,6 +433,8 @@ Resources I've found particularly useful:
     "w a" '(evil-window-rotate-upwards :wk "Switch windows around")))
 #+end_src
 
+** Edits to Evil keys
+
 #+begin_src emacs-lisp
 ;; unmap keys in 'evil-maps, otherwise (setq org-return-follows-link t) will not work
 (with-eval-after-load 'evil-maps
@@ -438,6 +442,44 @@ Resources I've found particularly useful:
   (define-key evil-motion-state-map (kbd "RET") nil)
   (define-key evil-motion-state-map (kbd "TAB") nil)
   (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop))
+#+end_src
+
+** Org agenda keybindings
+
+#+begin_src emacs-lisp
+;; evil key configurations for org-agenda
+(evil-set-initial-state 'org-agenda-mode 'normal)
+(defvar org-agenda-mode-map)
+(general-define-key
+  :keymaps 'org-agenda-mode-map
+    "l" 'org-agenda-later
+    "h" 'org-agenda-earlier
+    "j" 'org-agenda-next-line
+    "k" 'org-agenda-previous-line
+    (kbd "RET") 'org-agenda-switch-to
+    [escape] 'org-agenda-quit
+    "q" 'org-agenda-quit
+    "s" 'org-save-all-org-buffers
+    "t" 'org-agenda-todo
+    "T" 'org-agenda-set-tags
+    "g" 'org-agenda-redo
+    "v" 'org-agenda-view-mode-dispatch
+    "." 'org-agenda-goto-today
+    "J" 'gs/org-agenda-next-section
+    "K" 'gs/org-agenda-prev-section
+    "c" 'org-agenda-goto-calendar
+    "i" 'org-agenda-clock-in
+    "o" 'org-agenda-clock-out
+    "E" 'org-agenda-entry-text-mode)
+
+(general-define-key
+  :keymaps 'org-agenda-mode-map
+  :prefix "SPC"
+  :states '(normal motion)
+    "" '(:ignore t :which-key "Agenda")
+    "t" 'org-agenda-todo
+    "/" 'org-agenda-filter-by-tag
+    "b k" 'org-agenda-quit)
 #+end_src
 
 * Org mode
@@ -448,8 +490,11 @@ Resources I've found particularly useful:
 (use-package org
   :init
   (setq org-directory "~/org/")
+  (setq org-archive-location "~/org/archive/%s::")
   :config
   (setq org-hide-emphasis-markers t)
+  (setq org-hide-leading-stars t)
+  (setq org-cycle-include-plain-lists nil)
   (setq org-pretty-entities t)
   (setq org-ellipsis " [+]")
   (setq org-use-sub-superscripts "{}")
@@ -458,9 +503,8 @@ Resources I've found particularly useful:
   (setq org-startup-with-inline-images t)
   (setq org-startup-folded t)
   (setq org-statup-indented t)    
-  (add-hook 'org-mode-hook 'org-indent-mode)
-  (setq org-todo-keywords '((type "ONGO" "NEXT" "TODO" "WAIT" "|" "DONE" "CAND")))
   (setq org-enforce-todo-dependencies t)
+  (setq org-insert-heading-respect-content t)
   (setq org-cycle-separator-lines -1)
   (setq org-fontify-quote-and-verse-blocks t)
   (setq org-fontify-whole-heading-line t) ; e.g. to have an overline extend beyond the text
@@ -468,7 +512,42 @@ Resources I've found particularly useful:
     org-src-tab-acts-natively t
     org-edit-src-content-indentation 0
     org-src-preserve-indentation t))
+
+(add-hook 'org-mode-hook 'org-indent-mode)
 #+end_src
+
+** Org todos and tags
+
+#+begin_src emacs-lisp
+(use-package org
+  :config
+  (setq org-todo-keywords
+    '((sequence "ONGO(o)" "NEXT(n)" "TODO(t)" "WAIT(w)" "|" "DONE(d)" "SKIP(s)")))
+  
+  (setq org-tag-alist
+          '((:startgroup)
+	    ("Teaching" . ?t)
+	    (:grouptags)
+	    ("FA205" . ?f) ("DES102G" . ?g) ("DES303" . ?d) ("DES232" . ?s) ("PhD" . ?p)
+	    (:endgroup)
+            (:startgroup)
+	    ("Service" . ?s)
+	    (:grouptags)
+	    ("Extern" . ?e) ("ReDes" . ?r) ("PRoT" . ?p) ("AIsc" . ?a) ("IJETA" . ?i)
+	    (:endgroup)
+            (:startgroup)
+	    ("Perso" . ?p)
+	    (:grouptags)
+	    ("CV" . ?c) ("Divers" . ?d)
+	    (:endgroup)
+            (:startgroup)
+	    ("Computing" . ?c)
+	    (:grouptags)
+	    ("Emacs" . ?e) ("FW13" . ?f) ("SprN" . ?n) ("Server" . ?s)
+	    (:endgroup))))
+#+end_src
+
+** Org structure templates
 
 #+begin_src emacs-lisp
 ;; org-insert-structure-template and create new line inside the block
@@ -485,18 +564,20 @@ Resources I've found particularly useful:
 
 #+begin_src emacs-lisp
 ;; options for source blocks when using org-insert-structure-template (SPC-o-s)
-(setq org-structure-template-alist
-        '(("s" . "src")
-          ("e" . "src emacs-lisp")
-          ("b" . "src bash")
-          ("j" . "src javascript")
-          ("p" . "src python")
-          ("q" . "quote")
-          ("x" . "example")
-          ("X" . "export")))
+(use-package org
+  :config
+  (setq org-structure-template-alist
+          '(("s" . "src")
+            ("e" . "src emacs-lisp")
+            ("b" . "src bash")
+            ("j" . "src javascript")
+            ("p" . "src python")
+            ("q" . "quote")
+            ("x" . "example")
+            ("X" . "export"))))
 #+end_src
 
-** Org fonts/faces
+** Org fonts
 
 #+begin_src emacs-lisp
 (defun my/org-mode-face-edits ()
@@ -526,6 +607,117 @@ Resources I've found particularly useful:
   (set-face-attribute 'org-level-7 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
   (set-face-attribute 'org-level-8 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold))
 (add-hook 'org-mode-hook #'my/org-font-setup)
+#+end_src
+
+** Org agenda general
+
+#+begin_src emacs-lisp
+(use-package org
+  :config
+  (setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
+  (setq org-agenda-window-setup 'only-window) ; agenda uses whole window
+  (setq org-agenda-restore-windows-after-quit t) ; restore window configuration on exit
+  
+  (setq org-agenda-span 7
+      org-agenda-start-day "+0d"
+      org-agenda-block-separator nil
+      org-agenda-compact-blocks t)
+  
+  ;; separator line between days in org-agenda calendar view
+  (setq org-agenda-format-date (lambda (date) (concat "\n"
+                                                    (make-string (window-width) 9472)
+                                                    "\n"
+                                                    (org-agenda-format-date-aligned date)))))
+
+  ;; (setq org-agenda-hide-tags-regexp ".*")) ; hide all agenda view tags 
+#+end_src
+
+** Org agenda custom commands
+
+#+begin_src emacs-lisp
+(use-package org
+  :config
+  (setq org-agenda-custom-commands
+      '(;; done/skipped tasks to archive
+        ("#" "To archive" todo "DONE|SKIP")
+
+        ;; scheduled tasks for this week
+        ("w" . "This week's scheduled/deadline tasks")
+        ("we" "This week's tasks" agenda "Scheduled tasks for this week"
+         (org-agenda-use-time-grid nil))
+        ("ww" "This week's work tasks" agenda "Scheduled work tasks for this week"
+         ((org-agenda-category-filter-preset '("-Perso" "-Computing")) 
+         (org-agenda-use-time-grid nil)))
+        ("wp" "This week's perso tasks" agenda "Scheduled non-work tasks for this week"
+         ((org-agenda-category-filter-preset '("+Perso" "+Computing")) 
+         (org-agenda-use-time-grid nil)))
+
+        ;; view for ONGO & NEXT tasks 
+        ("n" . "What's next")
+        ("nn" "All ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}")
+        ("nw" "Work ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+         ((org-agenda-category-filter-preset '("-Perso" "-Computing"))))
+        ("nu" "Perso/Comp ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+         ((org-agenda-category-filter-preset '("+Perso" "+Computing"))))
+        ("nr" "Research ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+         ((org-agenda-category-filter-preset '("+Research"))))
+        ("ns" "Service ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+         ((org-agenda-category-filter-preset '("+Service"))))
+        ("nt" "Teaching ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+         ((org-agenda-category-filter-preset '("+Teaching"))))
+        ("nc" "Computing ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+         ((org-agenda-category-filter-preset '("+Computing"))))
+        ("np" "Perso ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+         ((org-agenda-category-filter-preset '("+Perso"))))
+        
+        ;; view for TODO tasks without SCHEDULED/DEADLINE
+        (";" . "What is there to do?")
+        (";;" "All TODOs" tags-todo "TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\"")
+        (";w" "Work TODOs" tags-todo "TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\""
+         ((org-agenda-category-filter-preset '("-Perso" "-Computing"))))
+        (";p" "Perso/Comp TODOs" tags-todo "TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\""
+         ((org-agenda-category-filter-preset '("+Perso" "+Computing"))))
+
+        ;; view for WAIT tasks without SCHEDULED/DEADLINE
+        ("h" . "What is waiting?")
+        ("hh" "All WAITs" tags-todo "TODO={WAIT}+DEADLINE=\"\"+SCHEDULED=\"\"")
+        ("hw" "Work WAITs" tags-todo "TODO={WAIT}+DEADLINE=\"\"+SCHEDULED=\"\""
+         ((org-agenda-category-filter-preset '("-Perso" "-Computing"))))
+        ("hp" "Perso/Comp WAIT" tags-todo "TODO={WAIT}+DEADLINE=\"\"+SCHEDULED=\"\""
+         ((org-agenda-category-filter-preset '("+Perso" "+Computing"))))
+
+        ;; view for deadlines within a range of 60 days +- of their warning period 
+        ("!" . "Deadlines")
+	  ("!!" "All deadlines" agenda "Past and upcoming deadlines"
+	   ((org-agenda-span 1)
+	    (org-deadline-warning-days 60)
+	    (org-agenda-entry-types '(:deadline))))
+	  ("!w" "Work deadlines" agenda "Past and upcoming work deadlines"
+	   ((org-agenda-span 1)
+	    (org-agenda-category-filter-preset '("-Perso" "-Computing"))
+	    (org-deadline-warning-days 60)
+	    (org-agenda-entry-types '(:deadline))))
+	  ("!p" "Perso/Comp deadlines" agenda "Past and upcoming perso/comp deadlines"
+	   ((org-agenda-span 1)
+	    (org-agenda-category-filter-preset '("+Perso" "+Computing"))
+	    (org-deadline-warning-days 60)
+	    (org-agenda-entry-types '(:deadline)))))))
+#+end_src
+
+** Org agenda as startup screen
+
+#+begin_src emacs-lisp
+;; show org-agenda list on startup
+(add-hook 'server-after-make-frame-hook (lambda ()
+                                          (fringe-mode 1)
+                                          (setq olivetti-body-width 100)
+                                          (olivetti-mode)
+                                          (org-agenda nil "t")))
+
+(add-hook 'org-agenda-mode-hook (lambda ()
+                                  (fringe-mode 1)
+                                  (setq olivetti-body-width 100)
+                                  (olivetti-mode)))
 #+end_src
 
 ** Org interface
@@ -559,142 +751,6 @@ Resources I've found particularly useful:
   :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
   :config
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
-#+end_src
-
-** Org agenda
-#+begin_src emacs-lisp
-(setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
-
-(setq org-agenda-window-setup 'only-window) ; agenda uses whole window
-(setq org-agenda-restore-windows-after-quit t) ; restore window configuration on exit
-
-;; show org-agenda list on startup
-(add-hook 'server-after-make-frame-hook (lambda ()
-                                          (fringe-mode 1)
-                                          (setq olivetti-body-width 100)
-                                          (olivetti-mode)
-                                          (org-agenda nil "t")))
-
-(add-hook 'org-agenda-mode-hook (lambda ()
-                                  (fringe-mode 1)
-                                  (setq olivetti-body-width 100)
-                                  (olivetti-mode)))
-
-(defun my/org-agenda-font-setup()
-  (set-face-attribute 'org-super-agenda-header nil :inherit 'outline-1 :height 1.2 :weight 'bold))
-(add-hook 'org-agenda-mode-hook #'my/org-agenda-font-setup)
-
-(setq org-agenda-span 7
-      org-agenda-start-day "+0d"
-      org-agenda-block-separator nil
-      org-agenda-compact-blocks t)
-
-;; separator line between days in org-agenda calendar view
-(setq org-agenda-format-date (lambda (date) (concat "\n"
-                                                    (make-string (window-width) 9472)
-                                                    "\n"
-                                                    (org-agenda-format-date-aligned date))))
-
-(setq org-agenda-hide-tags-regexp ".*") ; hide all agenda view tags
-
-(use-package org-super-agenda
-    :hook (org-agenda-mode . org-super-agenda-mode))
-
-(setq org-super-agenda-groups
-      '(
-        (:name "Today"
-               :time-grid t
-               :date today
-               :scheduled today
-               :order 1)
-        (:name "Overdue"
-               :scheduled past
-               :order 2
-               :face 'error)
-        (:name "Refile"
-               :tag "Intray" 
-               :tag "Inbox-Phone"
-               :order 3)
-        (:name "Research"
-              :tag "Research"
-              :order 4)
-        (:name "Teaching"
-              :tag "Teaching"
-              :order 5)
-        (:name "Service"
-              :tag "Service"
-              :order 6)
-        (:name "Perso"
-              :tag "Perso"
-              :order 7)
-        (:name "Technology"
-              :tag "Technology"
-              :order 8)))
-
-(setq org-agenda-custom-commands
-      '(("z" "Teaching"
-         ((todo "" ((org-agenda-span 'day)
-          (org-super-agenda-groups
-           '(
-              (:name "FA205 Creative Computing"
-               :tag "FA205"
-               :order 1)
-              (:name "DES102G Design for Sustainable Futures"
-               :tag "DES102G"
-               :order 2)
-              (:name "DES303 Design Research Practice"
-               :tag "DES303"
-               :order 3)
-              (:name "DES232 Smart Homes and Cities"
-               :tag "DES232"
-               :order 4)
-              (:discard (:anything t))))))))
-        ("u" "By headline"
-         ((todo "" ((org-agenda-span 'day)
-          (org-super-agenda-groups
-           '((:auto-parent t)))))))
-        ("A" "Week plan"
-         ((agenda "" ((org-agenda-span 7)
-          (org-agenda-start-day "+0d")
-          (org-agenda-include-deadlines t)
-          (org-super-agenda-groups nil)))))))
-
-;; evil key configurations for org-agenda
-(evil-set-initial-state 'org-agenda-mode 'normal)
-(defvar org-agenda-mode-map)
-(general-define-key
-  ;; :keymaps 'org-agenda-mode-map
-  :keymaps 'org-super-agenda-header-map
-  ;; :states '(normal motion)
-    "l" 'org-agenda-later
-    "h" 'org-agenda-earlier
-    "j" 'org-agenda-next-line
-    "k" 'org-agenda-previous-line
-    (kbd "RET") 'org-agenda-switch-to
-    [escape] 'org-agenda-quit
-    "q" 'org-agenda-quit
-    "s" 'org-save-all-org-buffers
-    "t" 'org-agenda-todo
-    "T" 'org-agenda-set-tags
-    "g" 'org-agenda-redo
-    "v" 'org-agenda-view-mode-dispatch
-    "." 'org-agenda-goto-today
-    "J" 'gs/org-agenda-next-section
-    "K" 'gs/org-agenda-prev-section
-    "c" 'org-agenda-goto-calendar
-    "i" 'org-agenda-clock-in
-    "o" 'org-agenda-clock-out
-    "E" 'org-agenda-entry-text-mode
-)
-(general-define-key
-  :keymaps 'org-agenda-mode-map
-  :prefix "SPC"
-  :states '(normal motion)
-    "" '(:ignore t :which-key "Agenda")
-    "t" 'org-agenda-todo
-    "/" 'org-agenda-filter-by-tag
-    "b k" 'org-agenda-quit
-)
 #+end_src
 
 ** Calendar
@@ -796,8 +852,7 @@ Resources I've found particularly useful:
 ** References
 
 #+begin_src emacs-lisp
-(setq org-cite-csl-styles-dir
-      (expand-file-name "~/.local/share/zotero/styles"))
+(setq org-cite-csl-styles-dir (expand-file-name "~/.local/share/zotero/styles"))
 
 (setq org-cite-global-bibliography '("~/.local/share/zotero/storage/my_library.bib"))
 
@@ -812,19 +867,19 @@ Resources I've found particularly useful:
   (setq org-cite-csl-activate-use-document-style t))
 
 (use-package citar
-             :straight (citar :type git :host github :repo "emacs-citar/citar" :includes (citar-org))
-             :custom
-             (citar-bibliography org-cite-global-bibliography)
-             (citar-notes-paths '("~/slips/references"))
-             :hook
-             (org-mode . citar-capf-setup))
+  :straight (citar :type git :host github :repo "emacs-citar/citar" :includes (citar-org))
+  :custom
+  (citar-bibliography org-cite-global-bibliography)
+  (citar-notes-paths '("~/slips/references"))
+  :hook
+  (org-mode . citar-capf-setup))
 
 (use-package citar-org
-             :after oc
-             :custom
-             (org-cite-insert-processor 'citar)
-             (org-cite-follow-processor 'citar)
-             (org-cite-activate-processor 'citar))
+  :after oc
+  :custom
+  (org-cite-insert-processor 'citar)
+  (org-cite-follow-processor 'citar)
+  (org-cite-activate-processor 'citar))
 
 (use-package citar-embark
   :after citar embark
@@ -836,15 +891,15 @@ Resources I've found particularly useful:
 
 #+begin_src emacs-lisp
 (use-package org-roam
-             :custom
-             (org-roam-directory "~/slips")
-             :config
-             (org-roam-db-autosync-mode))
+  :custom
+  (org-roam-directory "~/slips")
+  :config
+  (org-roam-db-autosync-mode))
 
 (use-package citar-org-roam
-             :after (citar org-roam)
-             :config (citar-org-roam-mode)
-             (setq citar-org-roam-note-title-template "${author} — ${title}"))
+  :after (citar org-roam)
+  :config (citar-org-roam-mode)
+  (setq citar-org-roam-note-title-template "${author} — ${title}"))
 
 (setq org-roam-capture-templates
       '(("d" "default" plain
@@ -869,102 +924,119 @@ Resources I've found particularly useful:
                                          time-stamp-end "$"
                                          time-stamp-format "\[%Y-%m-%d %a %H:%M:%S\]")
                              (add-hook 'before-save-hook 'time-stamp nil 'local)))
-
 #+end_src
 
 * Email
+
+** General mu4e  settings
+
 #+begin_src emacs-lisp
 (use-package mu4e
-             :straight
-             (:local-repo "/usr/share/emacs/site-lisp/mu4e/"
-                          :type built-in)
-             :commands (mu4e)
-             :config
-             (evil-define-key 'normal mu4e-main-mode-map (kbd "q") 'bury-buffer) ; bury buffer instead of quitting
-             (setq
-               mu4e-change-filenames-when-moving t ; avoid syncing issues with mbsync
-               mu4e-view-show-images t
-               mu4e-view-show-addresses t
-               mu4e-compose-context-policy nil
-               mu4e-compose-complete-only-personal t
-               mu4e-compose-dont-reply-to-self t
-               ;; mu4e-compose-in-new-frame t
-               mu4e-compose-format-flowed t
-               mu4e-confirm-quit nil
-               mu4e-hide-index-messages t
+  :straight
+  (:local-repo "/usr/share/emacs/site-lisp/mu4e/"
+               :type built-in)
+  :commands (mu4e)
+  :config
+  (setq
+    mu4e-maildir "~/mail"
+    mu4e-get-mail-command "true" ; using cron job and goimapnotify to get mail
+    mu4e-update-interval nil
+    mu4e-change-filenames-when-moving t ; avoid syncing issues with mbsync
+    mu4e-view-show-images t
+    mu4e-view-show-addresses t
+    mu4e-compose-context-policy nil
+    mu4e-compose-complete-only-personal t
+    mu4e-compose-dont-reply-to-self t
+    mu4e-compose-format-flowed t
+    mu4e-confirm-quit nil
+    mu4e-hide-index-messages t
 
-               ;; disable threading
-               mu4e-headers-show-threads nil
-               mu4e-headers-include-related nil
+    ;; disable threading
+    mu4e-headers-show-threads nil
+    mu4e-headers-include-related nil
 
-               ;; mu4e-header-highlight-face (underline nil)
-               mu4e-headers-auto-update t
-               mu4e-headers-advance-after-mark t
+    ;; mu4e-header-highlight-face (underline nil)
+    mu4e-headers-auto-update t
+    mu4e-headers-advance-after-mark t
 
-               mu4e-trash-without-flag t ; otherwise trashing removes emails from server
+    mu4e-trash-without-flag t) ; otherwise trashing removes emails from server
+    
+  (setq mu4e-maildir-shortcuts
+        '((:maildir "/perso/Inbox"       :key ?p)
+          (:maildir "/perso/Sent"        :key ?w)
+          (:maildir "/uoa/Inbox"         :key ?i)
+          (:maildir "/uoa/Sent Items"    :key ?s)))
 
-               mu4e-maildir "~/mail"
-               mu4e-get-mail-command "true" ; using cron job and goimapnotify to get mail
-               mu4e-update-interval nil)
-                           
-             (setq mu4e-contexts
-                   (list
-                     ;;uoa
-                     (make-mu4e-context
-                       :name "uoa"
-                       :match-func
-                         (lambda (msg)
-                           (when msg
-                             (string-prefix-p "/uoa" (mu4e-message-field msg :maildir))))
-                         :vars '((user-mail-address . "l.baldwin-ramult@auckland.ac.nz")
-                                 (user-full-name . "Leo Baldwin-Ramult")
-                                 (mu4e-sent-folder . "/uoa/Sent Items")
-                                 (mu4e-drafts-folder . "/uoa/Drafts")
-                                 (mu4e-refile-folder . "/uoa/Archive")
-                                 (mu4e-trash-folder . "/uoa/Deleted Items")))
+  ;; view messages in browser with 'aV'
+  (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
 
-                     ;; perso
-                     (make-mu4e-context
-                       :name "perso"
-                       :match-func
-                         (lambda (msg)
-                           (when msg
-                             (string-prefix-p "/perso" (mu4e-message-field msg :maildir))))
-                         :vars '((user-mail-address . "mail@leverarchfile.org")
-                                 (user-full-name . "Leo Baldwin-Ramult")
-                                 (mu4e-sent-folder . "/perso/Sent")
-                                 (mu4e-drafts-folder . "/perso/Drafts")
-                                 (mu4e-refile-folder . "/perso/Archive")
-                                 (mu4e-trash-folder . "/perso/Trash")))))
-                     
-             ;; sending email
-             (setq sendmail-program "/usr/bin/msmtp" 
-                   send-mail-function #'smtpmail-multi-send-it
-                   message-sendmail-f-is-evil t
-                   message-sendmail-extra-arguments '("--read-envelope-from")
-                   message-send-mail-function #'message-send-mail-with-sendmail)
+  ;; spell check
+  (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
 
-             ;; don't ask for context when starting mu4e (default to uoa) 
-             (setq mu4e-context-policy 'pick-first)
+  ;; bury buffer instead of quitting
+  (evil-define-key 'normal mu4e-main-mode-map (kbd "q") 'bury-buffer)) 
+#+end_src
 
-             (setq mu4e-maildir-shortcuts
-                   '((:maildir "/perso/Inbox"       :key ?p)
-                     (:maildir "/perso/Sent"        :key ?w)
-                     (:maildir "/uoa/Inbox"         :key ?i)
-                     (:maildir "/uoa/Sent Items"    :key ?s)))
+** Email accounts/'contexts'
 
-             ;; view messages in browser with 'aV'
-             (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+#+begin_src emacs-lisp
+(use-package mu4e
+  :config
+  (setq mu4e-contexts
+       (list
+         ;;uoa
+         (make-mu4e-context
+           :name "uoa"
+           :match-func
+             (lambda (msg)
+               (when msg
+                 (string-prefix-p "/uoa" (mu4e-message-field msg :maildir))))
+             :vars '((user-mail-address . "l.baldwin-ramult@auckland.ac.nz")
+                     (user-full-name . "Leo Baldwin-Ramult")
+                     (mu4e-sent-folder . "/uoa/Sent Items")
+                     (mu4e-drafts-folder . "/uoa/Drafts")
+                     (mu4e-refile-folder . "/uoa/Archive")
+                     (mu4e-trash-folder . "/uoa/Deleted Items")))
 
-             (mu4e t)
-)
-;; spell check
-(add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
+         ;; perso
+         (make-mu4e-context
+           :name "perso"
+           :match-func
+             (lambda (msg)
+               (when msg
+                 (string-prefix-p "/perso" (mu4e-message-field msg :maildir))))
+             :vars '((user-mail-address . "mail@leverarchfile.org")
+                     (user-full-name . "Leo Baldwin-Ramult")
+                     (mu4e-sent-folder . "/perso/Sent")
+                     (mu4e-drafts-folder . "/perso/Drafts")
+                     (mu4e-refile-folder . "/perso/Archive")
+                     (mu4e-trash-folder . "/perso/Trash")))))
+  
+  ;; don't ask for context when starting mu4e (default to uoa) 
+  (setq mu4e-context-policy 'pick-first)) 
+#+end_src
 
+** Sending email
+
+#+begin_src emacs-lisp
+(use-package mu4e
+  :config
+  (setq sendmail-program "/usr/bin/msmtp" 
+        send-mail-function #'smtpmail-multi-send-it
+        message-sendmail-f-is-evil t
+        message-sendmail-extra-arguments '("--read-envelope-from")
+        message-send-mail-function #'message-send-mail-with-sendmail))
+#+end_src
+
+** Email alerts
+
+#+begin_src emacs-lisp
 ;; email alerts
-(add-hook 'mu4e-index-updated-hook
+(use-package mu4e
+  :config
+  (add-hook 'mu4e-index-updated-hook
   (defun new-mail-alert ()
-    (shell-command "mail_alert&")))
-;; prevent buffer showing output
-(add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
+    (shell-command "mail_alert&"))) ; calls a script in ~/.local/bin
+  ;; prevent buffer showing output
+  (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))) 
 #+end_src
