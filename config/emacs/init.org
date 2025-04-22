@@ -1,9 +1,15 @@
 #+TITLE: Emacs init file
 #+PROPERTY: Header-args :tangle "init.el"
 
-My configuration for GNU Emacs.
+* About
 
-Comments/suggestions welcome.
+My configuration for GNU Emacs. Comments/suggestions welcome.
+
+Resources I've found particularly useful:
++ Bastien Guerry's [[https://codeberg.org/bzg/dotemacs/src/branch/master/emacs.org][configuration]] and [[https://bzg.fr/en/the-zen-of-task-management-with-org/][article]] on org-mode for task management 
++ David Wilson's (System Crafters) /Emacs from Scratch/ [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][video guide]] 
++ Protesilaos Stavrou's [[https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-emacs.org][configuration]] and [[https://protesilaos.com/][website]]
++ Nicolas P. Rougier's [[https://github.com/rougier/dotemacs/blob/master/dotemacs.org][configuration]] 
 
 * Bootstrap code for straight.el
 
@@ -36,59 +42,61 @@ Comments/suggestions welcome.
 #+begin_src emacs-lisp
 (use-package emacs
   :config
-    (setq custom-file null-device) ; persistent customize settings need to be made with init.el
+  (setq custom-file null-device) ; persistent customize settings need to be made with init.el
 
-    (setq inhibit-startup-screen t)
+  (setq-default 
+    inhibit-startup-screen t
+    inhibit-startup-message t)
     
-    (setq backup-directory-alist '((".*" . "~/.local/share/Trash/files")))
+  (setq backup-directory-alist '((".*" . "~/.local/share/Trash/files")))
 
-    (menu-bar-mode -1) 
-    (scroll-bar-mode -1)
-    (horizontal-scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (tooltip-mode -1)
-    (blink-cursor-mode -1)
+  (menu-bar-mode -1) 
+  (scroll-bar-mode -1)
+  (horizontal-scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (tooltip-mode -1)
+  (blink-cursor-mode -1)
 
-    (save-place-mode 1) 
-    (savehist-mode 1)
-    (recentf-mode 1)
-    (global-auto-revert-mode 1) ; refresh buffers with file changes
+  (save-place-mode 1) 
+  (savehist-mode 1)
+  (recentf-mode 1)
+  (global-auto-revert-mode 1) ; refresh buffers with file changes
 
-    (setq frame-inhibit-implied-resize t)
+  (setq frame-inhibit-implied-resize t)
 
-    (setq use-short-answers t)
+  (setq use-short-answers t)
 
-    (setq scroll-step            1
-      scroll-conservatively  10000)
+  (setq scroll-step            1
+    scroll-conservatively  10000)
 
-    (setq display-line-numbers-type 'relative)
+  (setq display-line-numbers-type 'relative)
 
-    (setq-default electric-indent-mode nil) ; no automatic identation
-    (setq-default indent-tabs-mode nil) ; use spaces everywhere
+  (setq-default electric-indent-mode nil) ; no automatic identation
+  (setq-default indent-tabs-mode nil) ; use spaces everywhere
   
-    (setq-default display-line-numbers-width 3) ; make line numbers column three digits wide
+  (setq-default display-line-numbers-width 3) ; make line numbers column three digits wide
      
-    ;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
-    (setq wl-copy-process nil)
-    (defun wl-copy (text)
-      (setq wl-copy-process (make-process :name "wl-copy"
+  ;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
+  (setq wl-copy-process nil)
+  (defun wl-copy (text)
+    (setq wl-copy-process (make-process :name "wl-copy"
                                         :buffer nil
                                         :command '("wl-copy" "-f" "-n")
                                         :connection-type 'pipe
                                         :noquery t))
       (process-send-string wl-copy-process text)
       (process-send-eof wl-copy-process))
-    (defun wl-paste ()
-      (if (and wl-copy-process (process-live-p wl-copy-process))
-          nil ; should return nil if we're the current paste owner
-          (shell-command-to-string "wl-paste -n | tr -d \r")))
-    (setq interprogram-cut-function 'wl-copy)
-    (setq interprogram-paste-function 'wl-paste)
+  (defun wl-paste ()
+    (if (and wl-copy-process (process-live-p wl-copy-process))
+         nil ; should return nil if we're the current paste owner
+        (shell-command-to-string "wl-paste -n | tr -d \r")))
+  (setq interprogram-cut-function 'wl-copy)
+  (setq interprogram-paste-function 'wl-paste)
 
-    (setq truncate-string-ellipsis "…") ; Unicode ellipsis rather than "..."
-    (setq sentence-end-double-space nil) ; Make sure sentences end with one space
+  (setq truncate-string-ellipsis "…") ; Unicode ellipsis rather than "..."
+  (setq sentence-end-double-space nil) ; Make sure sentences end with one space
 
-    (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -98,6 +106,15 @@ Comments/suggestions welcome.
   (setq xclip-select-enable-clipboard t)
   (setq xclip-mode t)
   (setq xclip-method (quote wl-copy)))
+#+end_src
+
+#+begin_src emacs-lisp
+;; run a single instance of Emacs and use it to act as a server (alternative to the daemon)
+;; only start the server if one isn't already running
+;; (use-package server
+;;   :config
+;;   (unless (server-running-p)
+;;     (server-start)))
 #+end_src
 
 * Interface
@@ -146,6 +163,12 @@ Comments/suggestions welcome.
 (ef-themes-select 'ef-dream)
 
 (setq ef-themes-to-toggle '(ef-dream ef-summer))
+
+(defun my-switch-theme ()
+  (interactive)
+  (ef-themes-toggle)
+  (my/org-font-setup)
+  (my/org-mode-face-edits))
 #+end_src
 
 ** Interface general
@@ -153,6 +176,7 @@ Comments/suggestions welcome.
 #+begin_src emacs-lisp
 (use-package spacious-padding
     :init 
+    (setq spacious-padding-subtle-mode-line t)
     (spacious-padding-mode 1))
 
 (setq spacious-padding-widths
@@ -168,6 +192,9 @@ Comments/suggestions welcome.
           doom-modeline-icon nil))
 
 (use-package rainbow-mode
+  :init
+  (setq rainbow-ansi-colors nil)
+  (setq rainbow-x-colors nil)
   :hook prog-mode)
 
 (use-package rainbow-delimiters
@@ -178,6 +205,26 @@ Comments/suggestions welcome.
 (setq hl-line-sticky-flag nil) ; only highlight line in active window
 
 (global-set-key (kbd "C-S-v") 'yank) ; added this for pasting URLs into minibuffer
+#+end_src
+
+** Olivetti mode
+
+#+begin_src emacs-lisp
+(use-package olivetti
+  :config
+  (setq olivetti-body-width 100)
+  ;; (setq olivetti-body-width 0.7)
+  ;; (setq olivetti-minimum-body-width 80)
+  (setq olivetti-recall-visual-line-mode-entry-state t) 
+  :hook (text-mode . olivetti-mode))
+
+(add-hook 'text-mode-hook (lambda () 
+                            (fringe-mode 1) ; needed for olivetti to work
+                            (display-line-numbers-mode -1)))
+
+(add-hook 'prog-mode-hook (lambda ()
+                            (fringe-mode -1)
+                            (display-line-numbers-mode 1)))
 #+end_src
 
 ** Completion
@@ -238,22 +285,6 @@ Comments/suggestions welcome.
     (which-key-sort-order 'which-key-description-order))
 #+end_src
 
-** Olivetti mode
-#+begin_src emacs-lisp
-(use-package olivetti
-  :config
-  (setq olivetti-body-width 100)
-  :hook (text-mode . olivetti-mode))
-
-(add-hook 'text-mode-hook (lambda () 
-                            (fringe-mode 1) ; needed for olivetti to work
-                            (display-line-numbers-mode -1)))
-
-(add-hook 'prog-mode-hook (lambda ()
-                            (fringe-mode -1)
-                            (display-line-numbers-mode 1)))
-#+end_src
-
 ** Evil
 
 #+begin_src emacs-lisp
@@ -308,142 +339,166 @@ Comments/suggestions welcome.
 #+begin_src emacs-lisp
 (use-package general
   :config
-    (general-evil-setup)
-    ;; use SPACE as global leader key
-    (general-create-definer my/leader-keys
-      :states '(normal insert visual emacs)
-      :keymaps 'override
-      :prefix "SPC" ; set leader
-      :global-prefix "M-SPC") ; use leader in insert mode
-    (my/leader-keys
-      "f" '(:ignore t :wk "Files")
-      "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
-      "f d" '(kill-current-buffer :wk "Kill current buffer")
-      "f f" '(basic-save-buffer :wk "Save buffer")
-      "f h" '(consult-org-heading :wk "Find org heading")
-      "f l" '(consult-line :wk "Find line in current buffer")
-      "f p" '(consult-yank-pop :wk "Search clipboard to paste")
-      "f r" '(consult-recent-file :wk "Find recent files")
-      "f s" '(find-file :wk "Find file")
-      ;; links
-      "l" '(:ignore t :wk "Links")
-      "l l" '(org-insert-link :wk "Insert a link")
-      "l s" '(org-store-link :wk "Store a link")
-      ;; buffers
-      "b" '(:ignore t :wk "Buffers")
-      "b b" '(consult-buffer :wk "Show buffers")
-      "b c" '(clone-indirect-buffer :wk "Create indirect buffer copy in a split")
-      "b C" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer in new window")
-      "b k" '(kill-current-buffer :wk "Kill current buffer")
-      "b n" '(next-buffer :wk "Next buffer")
-      "b p" '(previous-buffer :wk "Previous buffer")
-      "b r" '(revert-buffer :wk "Reload buffer")
-      ;; capture
-      "c" '(:ignore t :wk "Capture")
-      "c c" '(org-capture :wk "New capture")
-      "c f" '(org-capture-finalize :wk "Finish")
-      "c r" '(org-capture-refile :wk "Refile")
-      "c k" '(org-capture-kill :wk "Abort")
-      ;; dired
-      "d" '(:ignore t :wk "Dired")
-      "d d" '(dired :wk "Open dired")
-      "d j" '(dired-jump :wk "Dired jump to current")
-      ;; comments
-      "g c" '(comment-line :wk "Comment lines")
-      ;; mail
-      "m" '(:ignore t :wk "Org")
-      "m m" '(mu4e :wk "Start mu4e")
-      ;; org
-      "o" '(:ignore t :wk "Org")
-      "o a" '(org-agenda :wk "Org agenda")
-      "o s" '(my-org-insert-source-code-block :wk "Insert Org source code block")
-      "o t" '(org-todo :wk "Org todo")
-      "o T" '(org-todo-list :wk "Org todo list")
-      ;; references
-      "q" '(:ignore t :wk "References")
-      "q k" '(citar-org-kill-citation :wk "Kill citation")
-      "q o" '(citar-open :wk "Open library, notes etc")
-      "q p" '(org-cite-csl-activate-render-all :wk "Fontify citations in the buffer")
-      "q q" '(citar-insert-citation :wk "Insert citation")
-      "q r" '(citar-insert-reference :wk "Insert reference")
-      "q u" '(citar-org-update-prefix-suffix :wk "Update citation prefix/suffix")
-      ;; refile
-      "r" '(:ignore t :wk "Refile")
-      "r r" '(org-refile :wk "Org refile")
-      "r c" '(org-refile-copy :wk "Org refile copy, original item stays in place")
-      "r g" '(org-refile-goto-last-stored :wk "Jump to location of last refiled item")
-      ;; org-roam
-      "s" '(:ignore t :wk "Org-roam")
-      "s f" '(org-roam-node-find :wk "Open or create org-roam node")
-      "s i" '(org-roam-node-insert :wk "Insert an org-roam node link") 
-      "s t" '(org-roam-buffer-toggle :wk "Toggle buffer with org-roam backlinks")
-      ;; toggle
-      "t" '(:ignore t :wk "Toggle")
-      "t e" '(my-switch-theme :wk "Toggle ef-themes")
-      "t f" '(flyspell-mode :wk "Toggle flyspell")
-      "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
-      "t r" '(rainbow-mode :wk "Toggle rainbow mode")
-      "t t" '(visual-line-mode :wk "Toggle truncated lines")
-      ;; windows
-      "w" '(:ignore t :wk "Windows")
-      "w c" '(evil-window-delete :wk "Close window")
-      "w n" '(evil-window-new :wk "New window")
-      "w s" '(evil-window-split :wk "Horizontal split window")
-      "w v" '(evil-window-vsplit :wk "Vertical split window")
-      ;; window motions
-      "w h" '(evil-window-left :wk "Window left")
-      "w j" '(evil-window-down :wk "Window down")
-      "w k" '(evil-window-up :wk "Window up")
-      "w l" '(evil-window-right :wk "Window right")
-      "w w" '(evil-window-next :wk "Goto next window")
-      ;; move windows
-      "w a" '(evil-window-rotate-upwards :wk "Switch windows around")))
+  (general-evil-setup)
+  ;; use SPACE as global leader key
+  (general-create-definer my/leader-keys
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "SPC" ; set leader
+    :global-prefix "M-SPC") ; use leader in insert mode
+  (my/leader-keys
+    "f" '(:ignore t :wk "Files")
+    "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
+    "f d" '(kill-current-buffer :wk "Kill current buffer")
+    "f f" '(basic-save-buffer :wk "Save buffer")
+    "f h" '(consult-org-heading :wk "Find org heading")
+    "f l" '(consult-line :wk "Find line in current buffer")
+    "f p" '(consult-yank-pop :wk "Search clipboard to paste")
+    "f r" '(consult-recent-file :wk "Find recent files")
+    "f s" '(find-file :wk "Find file")
+    ;; links
+    "l" '(:ignore t :wk "Links")
+    "l l" '(org-insert-link :wk "Insert a link")
+    "l s" '(org-store-link :wk "Store a link")
+    ;; buffers
+    "b" '(:ignore t :wk "Buffers")
+    "b b" '(consult-buffer :wk "Show buffers")
+    "b c" '(clone-indirect-buffer :wk "Create indirect buffer copy in a split")
+    "b C" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer in new window")
+    "b k" '(kill-current-buffer :wk "Kill current buffer")
+    "b n" '(next-buffer :wk "Next buffer")
+    "b p" '(previous-buffer :wk "Previous buffer")
+    "b r" '(revert-buffer :wk "Reload buffer")
+    ;; capture
+    "c" '(:ignore t :wk "Capture")
+    "c c" '(org-capture :wk "New capture")
+    "c f" '(org-capture-finalize :wk "Finish")
+    "c r" '(org-capture-refile :wk "Refile")
+    "c k" '(org-capture-kill :wk "Abort")
+    ;; dired
+    "d" '(:ignore t :wk "Dired")
+    "d d" '(dired :wk "Open dired")
+    "d j" '(dired-jump :wk "Dired jump to current")
+    ;; comments
+    "g c" '(comment-line :wk "Comment lines")
+    ;; mail
+    "m" '(:ignore t :wk "Org")
+    "m m" '(mu4e :wk "Start mu4e")
+    ;; org
+    "o" '(:ignore t :wk "Org")
+    "o a" '(org-agenda :wk "Org agenda")
+    "o s" '(my/org-insert-str-template :wk "Insert Org source code block")
+    "o t" '(org-todo :wk "Org todo")
+    "o T" '(org-todo-list :wk "Org todo list")
+    ;; references
+    "q" '(:ignore t :wk "References")
+    "q k" '(citar-org-kill-citation :wk "Kill citation")
+    "q o" '(citar-open :wk "Open library, notes etc")
+    "q p" '(org-cite-csl-activate-render-all :wk "Fontify citations in the buffer")
+    "q q" '(citar-insert-citation :wk "Insert citation")
+    "q r" '(citar-insert-reference :wk "Insert reference")
+    "q u" '(citar-org-update-prefix-suffix :wk "Update citation prefix/suffix")
+    ;; refile
+    "r" '(:ignore t :wk "Refile")
+    "r r" '(org-refile :wk "Org refile")
+    "r c" '(org-refile-copy :wk "Org refile copy, original item stays in place")
+    "r g" '(org-refile-goto-last-stored :wk "Jump to location of last refiled item")
+    ;; org-roam
+    "s" '(:ignore t :wk "Org-roam")
+    "s f" '(org-roam-node-find :wk "Open or create org-roam node")
+    "s i" '(org-roam-node-insert :wk "Insert an org-roam node link") 
+    "s t" '(org-roam-buffer-toggle :wk "Toggle buffer with org-roam backlinks")
+    ;; toggle
+    "t" '(:ignore t :wk "Toggle")
+    "t e" '(my-switch-theme :wk "Toggle ef-themes")
+    "t f" '(flyspell-mode :wk "Toggle flyspell")
+    "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
+    "t r" '(rainbow-mode :wk "Toggle rainbow mode")
+    "t t" '(visual-line-mode :wk "Toggle truncated lines")
+    ;; windows
+    "w" '(:ignore t :wk "Windows")
+    "w c" '(evil-window-delete :wk "Close window")
+    "w n" '(evil-window-new :wk "New window")
+    "w s" '(evil-window-split :wk "Horizontal split window")
+    "w v" '(evil-window-vsplit :wk "Vertical split window")
+    ;; window motions
+    "w h" '(evil-window-left :wk "Window left")
+    "w j" '(evil-window-down :wk "Window down")
+    "w k" '(evil-window-up :wk "Window up")
+    "w l" '(evil-window-right :wk "Window right")
+    "w w" '(evil-window-next :wk "Goto next window")
+    ;; move windows
+    "w a" '(evil-window-rotate-upwards :wk "Switch windows around")))
+#+end_src
 
-(defun my-org-insert-source-code-block ()
-  "Insert source code block and optionally set a lanugage"
-  (interactive)
-  (let ((col (current-column))
-        (lang (read-from-minibuffer "Source block language (blank for none): ")))
-    (insert (format "#+begin_src%s" (if (string-empty-p lang) "" (concat " " lang))))
-    (newline)(newline)
-    (move-to-column col t)(insert "#+end_src")(newline)
-    (forward-line -2)(move-to-column col t)))
-
-(defun my-switch-theme ()
-  (interactive)
-  (ef-themes-toggle)
-  (my/org-font-setup)
-  (my/org-mode-face-edits))
+#+begin_src emacs-lisp
+;; unmap keys in 'evil-maps, otherwise (setq org-return-follows-link t) will not work
+(with-eval-after-load 'evil-maps
+  (define-key evil-motion-state-map (kbd "SPC") nil)
+  (define-key evil-motion-state-map (kbd "RET") nil)
+  (define-key evil-motion-state-map (kbd "TAB") nil)
+  (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop))
 #+end_src
 
 * Org mode
 
 ** Org general
+
 #+begin_src emacs-lisp
-(use-package toc-org
-    :commands toc-org-enable
-    :init (add-hook 'org-mode-hook 'toc-org-enable))
-
-(use-package org-appear
-  :hook (org-mode . org-appear-mode))
-
-(require 'org-indent)
-(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
-
-(add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-statup-indented t)
-
-(use-package org-modern
-  :custom
-    (org-modern-star nil)
-    (org-modern-table nil))
-(with-eval-after-load 'org (global-org-modern-mode))
-
-(use-package org-modern-indent
-  :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+(use-package org
+  :init
+  (setq org-directory "~/org/")
   :config
-  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+  (setq org-hide-emphasis-markers t)
+  (setq org-pretty-entities t)
+  (setq org-ellipsis " [+]")
+  (setq org-use-sub-superscripts "{}")
+  (setq org-M-RET-may-split-line '((default . nil)))
+  (setq org-return-follows-link t) ; use ENTER key to follow links
+  (setq org-startup-with-inline-images t)
+  (setq org-startup-folded t)
+  (setq org-statup-indented t)    
+  (add-hook 'org-mode-hook 'org-indent-mode)
+  (setq org-todo-keywords '((type "ONGO" "NEXT" "TODO" "WAIT" "|" "DONE" "CAND")))
+  (setq org-enforce-todo-dependencies t)
+  (setq org-cycle-separator-lines -1)
+  (setq org-fontify-quote-and-verse-blocks t)
+  (setq org-fontify-whole-heading-line t) ; e.g. to have an overline extend beyond the text
+  (setq org-src-fontify-natively t
+    org-src-tab-acts-natively t
+    org-edit-src-content-indentation 0
+    org-src-preserve-indentation t))
+#+end_src
 
+#+begin_src emacs-lisp
+;; org-insert-structure-template and create new line inside the block
+(defun my/org-insert-str-template ()
+  (interactive)
+  (let ((pt (point)))
+    (call-interactively #'org-insert-structure-template)
+    (goto-char pt)
+    (search-forward "#+begin_src")
+    (forward-line 1)
+    (insert "\n")
+    (forward-line -1)))
+#+end_src
+
+#+begin_src emacs-lisp
+;; options for source blocks when using org-insert-structure-template (SPC-o-s)
+(setq org-structure-template-alist
+        '(("s" . "src")
+          ("e" . "src emacs-lisp")
+          ("b" . "src bash")
+          ("j" . "src javascript")
+          ("p" . "src python")
+          ("q" . "quote")
+          ("x" . "example")
+          ("X" . "export")))
+#+end_src
+
+** Org fonts/faces
+
+#+begin_src emacs-lisp
 (defun my/org-mode-face-edits ()
   (set-face-attribute 'org-quote nil :italic nil :inherit 'variable-pitch)
   (with-eval-after-load 'org-modern
@@ -459,7 +514,7 @@ Comments/suggestions welcome.
    (with-eval-after-load 'org-modern-indent
     (set-face-attribute 'org-modern-indent-bracket-line nil
                        :family "Font Awesome")))
-(my/org-mode-face-edits)
+(add-hook 'org-mode-hook #'my/org-mode-face-edits)
 
 (defun my/org-font-setup ()
   (set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold :overline t)
@@ -471,41 +526,39 @@ Comments/suggestions welcome.
   (set-face-attribute 'org-level-7 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
   (set-face-attribute 'org-level-8 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold))
 (add-hook 'org-mode-hook #'my/org-font-setup)
+#+end_src
 
-(setq org-fontify-quote-and-verse-blocks t)
+** Org interface
 
-(setq org-fontify-whole-heading-line t) ; e.g. to have an overline extend beyond the text
+#+begin_src emacs-lisp
+(use-package toc-org
+  :commands toc-org-enable
+  :init (add-hook 'org-mode-hook 'toc-org-enable))
 
-(use-package org-bullets
-  :hook (org-mode . org-bullets-mode))
+(use-package org-appear
+  :hook (org-mode . org-appear-mode))
 
-;; unmap keys in 'evil-maps, otherwise (setq org-return-follows-link t) will not work
-(with-eval-after-load 'evil-maps
-  (define-key evil-motion-state-map (kbd "SPC") nil)
-  (define-key evil-motion-state-map (kbd "RET") nil)
-  (define-key evil-motion-state-map (kbd "TAB") nil)
-  (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop))
-;; set ENTER key in org-mode to follow links
-(setq org-return-follows-link t)
+(require 'org-indent)
+(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+  
+(use-package org-modern
+  :custom
+  ;; (org-modern-todo-faces
+  ;;  '(("ONGO" . (:inverse-video t))
+  ;;    ("NEXT" . (:weight bold))
+  ;;    ("TODO" . (:weight bold))
+  ;;    ("WAIT" . (:inverse-video t))
+  ;;    ("CAND" . (:inverse-video t))))
+  (org-modern-table nil))
+(with-eval-after-load 'org (global-org-modern-mode))
 
-;; open org-link in current window (rather than using a horizontal split)
-;; (setq org-link-frame-setup '((file . find-file)))
+(setq org-modern-star 'replace
+      org-modern-replace-stars '("◉" "○" "★" "◇" "◇" "◇" "◇" "◇"))
 
-(setq org-directory "~/org/")
-(setq org-startup-with-inline-images t)
-(setq org-startup-folded t)
-(setq org-hide-emphasis-markers t)
-(setq org-pretty-entities t)
-(setq org-ellipsis " [+]")
-(setq org-use-sub-superscripts "{}")
-(setq org-M-RET-may-split-line '((default . nil)))
-
-(setq org-cycle-separator-lines -1)
-
-(setq org-src-fontify-natively t
-      org-src-tab-acts-natively t
-      org-edit-src-content-indentation 0
-      org-src-preserve-indentation t)
+(use-package org-modern-indent
+  :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+  :config
+  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 #+end_src
 
 ** Org agenda
