@@ -101,13 +101,21 @@
 (use-package ef-themes
   :config
   (setq ef-themes-common-palette-overrides
-      '((prose-done fg-dim)))
-  (setq ef-elea-dark-palette-overrides
-      '((bg-main "#282828")
-        (comment fg-dim)
-        (overline-heading-1 red-cooler)
-        (bg-inactive bg-alt))))
-
+      '((prose-done fg-dim))))
+  ;; (setq ef-themes-mixed-fonts t
+  ;;       ef-themes-headings
+  ;;       '((0 . (variable-pitch light 1.8))
+  ;;         (1 . (variable-pitch 1.2)) ; absence of weight means bold
+  ;;         (2 . (variable-pitch 1.2))
+  ;;         (3 . (variable-pitch 1.2))
+  ;;         (4 . (variable-pitch 1.2))
+  ;;         (5 . (variable-pitch 1.2)) 
+  ;;         (6 . (variable-pitch 1.2))
+  ;;         (7 . (variable-pitch 1.2))
+  ;;         (agenda-date . (semilight 1.5))
+  ;;         (agenda-structure . (variable-pitch light 1.8))
+  ;;         (t . (variable-pitch 1.1)))))
+  
 (defun my-ef-themes-custom-faces ()
   (ef-themes-with-colors
     (custom-set-faces
@@ -157,6 +165,10 @@
 
 (add-hook 'prog-mode-hook 'hl-line-mode)
 (setq hl-line-sticky-flag nil) ; only highlight line in active window
+
+;; force horizontal split for minibuffer
+;; (setq split-width-threshold nil)
+;; (setq split-height-threshold 0)
 
 (use-package olivetti
   :config
@@ -322,6 +334,10 @@
     ;; org
     "o" '(:ignore t :wk "Org")
     "o a" '(org-agenda :wk "Org agenda")
+    "o c" '(org-timestamp :wk "Set Org timestamp")
+    "o d" '(my/org-insert-scheduled :wk "Insert scheduled and timestamp")
+    "o g" '(org-set-tags-command :wk "Set Org tags")
+    "o q" '(org-insert-structure-template :wk "Insert structure template")
     "o s" '(my/org-insert-str-template :wk "Insert Org source code block")
     "o t" '(org-todo :wk "Org todo")
     "o T" '(org-todo-list :wk "Org todo list")
@@ -374,37 +390,16 @@
 
 ;; evil key configurations for org-agenda
 (evil-set-initial-state 'org-agenda-mode 'normal)
-(defvar org-agenda-mode-map)
-(general-define-key
-  :keymaps 'org-agenda-mode-map
-    "l" 'org-agenda-later
-    "h" 'org-agenda-earlier
-    "j" 'org-agenda-next-line
-    "k" 'org-agenda-previous-line
-    (kbd "RET") 'org-agenda-switch-to
-    [escape] 'org-agenda-quit
-    "q" 'org-agenda-quit
-    "s" 'org-save-all-org-buffers
-    "t" 'org-agenda-todo
-    "T" 'org-agenda-set-tags
-    "g" 'org-agenda-redo
-    "v" 'org-agenda-view-mode-dispatch
-    "." 'org-agenda-goto-today
-    "J" 'gs/org-agenda-next-section
-    "K" 'gs/org-agenda-prev-section
-    "c" 'org-agenda-goto-calendar
-    "i" 'org-agenda-clock-in
-    "o" 'org-agenda-clock-out
-    "E" 'org-agenda-entry-text-mode)
-
 (general-define-key
   :keymaps 'org-agenda-mode-map
   :prefix "SPC"
   :states '(normal motion)
-    "" '(:ignore t :which-key "Agenda")
-    "t" 'org-agenda-todo
-    "/" 'org-agenda-filter-by-tag
-    "b k" 'org-agenda-quit)
+    "a" '(:ignore t :wk "Agenda")
+    "a e" '(org-agenda-earlier :wk "Earlier view")
+    "a l" '(org-agenda-later :wk "Later view")
+    "a m" '(org-agenda-month-view :wk "Month view")
+    "a t" '(org-agenda-todo :wk "All todos")
+    "a /" 'org-agenda-filter-by-tag :wk "Filter by tag")
 
 (use-package org
   :init
@@ -436,30 +431,34 @@
 
 (use-package org
   :config
+  (setq org-tags-column 0) ; put tags one space after headline text
+  (setq org-use-property-inheritance t)   
+  (setq org-enforce-todo-dependencies t)
+
   (setq org-todo-keywords
     '((sequence "ONGO(o)" "NEXT(n)" "TODO(t)" "WAIT(w)" "|" "DONE(d)" "SKIP(s)")))
-  
+   
   (setq org-tag-alist
-          '((:startgroup)
-	    ("Teaching" . ?t)
-	    (:grouptags)
-	    ("FA205" . ?f) ("DES102G" . ?g) ("DES303" . ?d) ("DES232" . ?s) ("PhD" . ?p)
-	    (:endgroup)
-            (:startgroup)
-	    ("Service" . ?s)
-	    (:grouptags)
-	    ("Extern" . ?e) ("ReDes" . ?r) ("PRoT" . ?p) ("AIsc" . ?a) ("IJETA" . ?i)
-	    (:endgroup)
-            (:startgroup)
-	    ("Perso" . ?p)
-	    (:grouptags)
-	    ("CV" . ?c) ("Divers" . ?d)
-	    (:endgroup)
-            (:startgroup)
-	    ("Computing" . ?c)
-	    (:grouptags)
-	    ("Emacs" . ?e) ("FW13" . ?f) ("SprN" . ?n) ("Server" . ?s)
-	    (:endgroup))))
+    '((:startgroup)
+      ("Teaching" . ?t)
+      (:grouptags)
+      ("FA205" . ?f) ("DES102G" . ?g) ("DES303" . ?d) ("DES232" . ?h) ("PhD" . ?p)
+      (:endgroup)
+      (:startgroup)
+      ("Service" . ?s)
+      (:grouptags)
+      ("Extern" . ?x) ("ReDes" . ?r) ("TnL" . ?l) ("AIsc" . ?a) ("IJETA" . ?i)
+      (:endgroup)
+      (:startgroup)
+      ("Perso" . ?u)
+      (:grouptags)
+      ("CV" . ?v) ("Divers" . ?y)
+      (:endgroup)
+      (:startgroup)
+      ("Computing" . ?c)
+      (:grouptags)
+      ("Emacs" . ?e) ("FW13" . ?w) ("SprN" . ?n) ("Server" . ?b)
+      (:endgroup))))
 
 ;; org-insert-structure-template and create new line inside the block
 (defun my/org-insert-str-template ()
@@ -520,17 +519,23 @@
   (setq org-agenda-restore-windows-after-quit t) ; restore window configuration on exit
   
   (setq org-agenda-span 7
-      org-agenda-start-day "+0d"
-      org-agenda-block-separator nil
-      org-agenda-compact-blocks t)
+        org-agenda-start-day "+0d"
+        org-agenda-block-separator nil
+        org-agenda-compact-blocks t)
   
-  ;; separator line between days in org-agenda calendar view
-  (setq org-agenda-format-date (lambda (date) (concat "\n"
-                                                    (make-string (window-width) 9472)
-                                                    "\n"
-                                                    (org-agenda-format-date-aligned date)))))
+  (setq org-deadline-warning-days 3)
+ 
+  ;; empty line between days in agenda to space things out 
+  (setq org-agenda-format-date
+    (lambda (date)
+      (concat "\n"
+                (org-agenda-format-date-aligned date)))))
 
-  ;; (setq org-agenda-hide-tags-regexp ".*")) ; hide all agenda view tags
+(defun my/org-insert-scheduled ()
+  "Insert SCHEDULED with a timestamp for an org heading"
+  (interactive)
+  (insert "SCHEDULED: ")
+  (org-time-stamp nil))
 
 (use-package org
   :config
@@ -541,7 +546,8 @@
         ;; scheduled tasks for this week
         ("w" . "This week's scheduled/deadline tasks")
         ("we" "This week's tasks" agenda "Scheduled tasks for this week"
-         (org-agenda-use-time-grid nil))
+         ((org-agenda-files '("~/org/projects.org" "~/org/intray.org"))
+         (org-agenda-use-time-grid nil)))
         ("ww" "This week's work tasks" agenda "Scheduled work tasks for this week"
          ((org-agenda-category-filter-preset '("-Perso" "-Computing")) 
          (org-agenda-use-time-grid nil)))
@@ -549,25 +555,25 @@
          ((org-agenda-category-filter-preset '("+Perso" "+Computing")) 
          (org-agenda-use-time-grid nil)))
 
-        ;; view for ONGO & NEXT tasks 
+        ;; views for ONGO & NEXT tasks 
         ("n" . "What's next")
-        ("nn" "All ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}")
-        ("nw" "Work ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+        ("nn" "All ONGO & NEXT" tags-todo "TODO={ONGO\\|NEXT}")
+        ("nw" "Work ONGO & NEXT" tags-todo "TODO={ONGO\\|NEXT}"
          ((org-agenda-category-filter-preset '("-Perso" "-Computing"))))
-        ("nu" "Perso/Comp ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+        ("nu" "Perso/Comp ONGO & NEXT" tags-todo "TODO={ONGO\\|NEXT}"
          ((org-agenda-category-filter-preset '("+Perso" "+Computing"))))
-        ("nr" "Research ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+        ("nr" "Research ONGO & NEXT" tags-todo "TODO={ONGO\\|NEXT}"
          ((org-agenda-category-filter-preset '("+Research"))))
-        ("ns" "Service ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+        ("ns" "Service ONGO & NEXT" tags-todo "TODO={ONGO\\|NEXT}"
          ((org-agenda-category-filter-preset '("+Service"))))
-        ("nt" "Teaching ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+        ("nt" "Teaching ONGO & NEXT" tags-todo "TODO={ONGO\\|NEXT}"
          ((org-agenda-category-filter-preset '("+Teaching"))))
-        ("nc" "Computing ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+        ("nc" "Computing ONGO & NEXT" tags-todo "TODO={ONGO\\|NEXT}"
          ((org-agenda-category-filter-preset '("+Computing"))))
-        ("np" "Perso ONGO & NEXT" tags-todo "TODO={ONGO\\NEXT}"
+        ("np" "Perso ONGO & NEXT" tags-todo "TODO={ONGO\\|NEXT}"
          ((org-agenda-category-filter-preset '("+Perso"))))
         
-        ;; view for TODO tasks without SCHEDULED/DEADLINE
+        ;; views for TODO tasks without SCHEDULED/DEADLINE
         (";" . "What is there to do?")
         (";;" "All TODOs" tags-todo "TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\"")
         (";w" "Work TODOs" tags-todo "TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\""
@@ -575,30 +581,30 @@
         (";p" "Perso/Comp TODOs" tags-todo "TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\""
          ((org-agenda-category-filter-preset '("+Perso" "+Computing"))))
 
-        ;; view for WAIT tasks without SCHEDULED/DEADLINE
+        ;; views for WAIT tasks without SCHEDULED/DEADLINE
         ("h" . "What is waiting?")
         ("hh" "All WAITs" tags-todo "TODO={WAIT}+DEADLINE=\"\"+SCHEDULED=\"\"")
         ("hw" "Work WAITs" tags-todo "TODO={WAIT}+DEADLINE=\"\"+SCHEDULED=\"\""
          ((org-agenda-category-filter-preset '("-Perso" "-Computing"))))
         ("hp" "Perso/Comp WAIT" tags-todo "TODO={WAIT}+DEADLINE=\"\"+SCHEDULED=\"\""
          ((org-agenda-category-filter-preset '("+Perso" "+Computing"))))
-
-        ;; view for deadlines within a range of 60 days +- of their warning period 
+        
+        ;; views for deadlines within a range of 60 days +- of their warning period 
         ("!" . "Deadlines")
-	  ("!!" "All deadlines" agenda "Past and upcoming deadlines"
-	   ((org-agenda-span 1)
-	    (org-deadline-warning-days 60)
-	    (org-agenda-entry-types '(:deadline))))
-	  ("!w" "Work deadlines" agenda "Past and upcoming work deadlines"
-	   ((org-agenda-span 1)
-	    (org-agenda-category-filter-preset '("-Perso" "-Computing"))
-	    (org-deadline-warning-days 60)
-	    (org-agenda-entry-types '(:deadline))))
-	  ("!p" "Perso/Comp deadlines" agenda "Past and upcoming perso/comp deadlines"
-	   ((org-agenda-span 1)
-	    (org-agenda-category-filter-preset '("+Perso" "+Computing"))
-	    (org-deadline-warning-days 60)
-	    (org-agenda-entry-types '(:deadline)))))))
+        ("!!" "All deadlines" agenda "Past and upcoming deadlines"
+	 ((org-agenda-span 1)
+	  (org-deadline-warning-days 60)
+	  (org-agenda-entry-types '(:deadline))))
+        ("!w" "Work deadlines" agenda "Past and upcoming work deadlines"
+	 ((org-agenda-span 1)
+	  (org-agenda-category-filter-preset '("-Perso" "-Computing"))
+	  (org-deadline-warning-days 60)
+	  (org-agenda-entry-types '(:deadline))))
+        ("!p" "Perso/Comp deadlines" agenda "Past and upcoming perso/comp deadlines"
+	 ((org-agenda-span 1)
+	  (org-agenda-category-filter-preset '("+Perso" "+Computing"))
+	  (org-deadline-warning-days 60)
+	  (org-agenda-entry-types '(:deadline)))))))
 
 ;; show org-agenda list on startup
 (add-hook 'server-after-make-frame-hook (lambda ()
@@ -621,20 +627,19 @@
 
 (require 'org-indent)
 (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
-  
+
+;; (use-package org-bullets
+;;   :init
+;;   (setopt org-bullets-bullet-list '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
+;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+ 
 (use-package org-modern
   :custom
-  ;; (org-modern-todo-faces
-  ;;  '(("ONGO" . (:inverse-video t))
-  ;;    ("NEXT" . (:weight bold))
-  ;;    ("TODO" . (:weight bold))
-  ;;    ("WAIT" . (:inverse-video t))
-  ;;    ("CAND" . (:inverse-video t))))
   (org-modern-table nil))
 (with-eval-after-load 'org (global-org-modern-mode))
 
 (setq org-modern-star 'replace
-      org-modern-replace-stars '("◉" "○" "★" "◇" "◇" "◇" "◇" "◇"))
+      org-modern-replace-stars '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
 
 (use-package org-modern-indent
   :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
@@ -661,70 +666,63 @@
 
 ;; capture
 (setq org-capture-templates
-                   '(("t" "TODO for intray" entry
-                      (file+headline "intray.org" "Refile")
-                      "* TODO %?")
-                     ("c" "TODO from quote for intray" entry
-                      (file+headline "intray.org" "Refile")
-                      "* TODO %^{Heading for TODO}\n%i %?")
-                     ("e" "TODO from email for intray" entry
-                      (file+headline "intray.org" "Refile")
-                      "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n :END:")
-                     ("r" "Schedule reminder for today" entry
-                      (file+headline "intray.org" "Reminders")
-                      "* %^{Title for reminder}\nSCHEDULED: %t\n %?")
-                     ("l" "Schedule reminder for another day" entry
-                      (file+headline "intray.org" "Reminders")
-                      "* %^{Title for reminder}\nSCHEDULED: %^t\n %?")
-                     ("m" "Appointments")
-                     ("mw" "Work meeting" entry
-                      (file+headline "meetings.org" "Work")
-                      "* Meeting with %^{With?}\n %?\n SCHEDULED: %^t")
-                     ("me" "Work meeting from email" entry
-                      (file+headline "meetings.org" "Work")
-                      "* Meeting with %^{With?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
-                     ("mm" "Personal meeting from email" entry
-                      (file+headline "meetings.org" "Personal")
-                      "* Meeting %^{With/About?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
-                     ("mp" "Personal appointment" entry
-                      (file+headline "meetings.org" "Personal")
-                      "* Meeting %^{Title?}\n %?\n SCHEDULED: %^t")
-                     ("a" "Add TODO in location")
-                     ("ar" "TODO for research" entry
-                      (file+function "research.org" org-ask-location)
-                      "* TODO %?")
-                     ("at" "TODO for teaching" entry
-                      (file+function "teaching.org" org-ask-location)
-                      "* TODO %?")
-                     ("as" "TODO for service" entry
-                      (file+function "service.org" org-ask-location)
-                      "* TODO %?")
-                     ("ap" "TODO for perso" entry
-                      (file+function "perso.org" org-ask-location)
-                      "* TODO %?")
-                     ("ai" "TODO for technology" entry
-                      (file+function "technology.org" org-ask-location)
-                      "* TODO %?")))
+  '(;; todos for intray (to refile later)
+    ("t" "TODO for intray" entry
+     (file+headline "intray.org" "Refile")
+     "* TODO %?")
+    ("e" "TODO from email for intray" entry
+     (file+headline "intray.org" "Refile")
+     "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n :END:")
 
-(defun org-ask-location (&optional prompt targets)
-      (let* ((loc-prompt (or prompt "Headline"))
-            (org-refile-targets (or targets '((nil :maxlevel . 1))))
-            (hd (condition-case nil
-                   (car (org-refile-get-location loc-prompt nil t))
-                   (error (car org-refile-history)))))
-        (goto-char (point-min))
-        (outline-next-heading)
-        (if (re-search-forward
-             (format org-complex-heading-regexp-format (regexp-quote hd))
-             nil t)
-          (goto-char (point-at-bol))
-        (goto-char (point-max)))))
+    ;; reminders
+    ("r" "Schedule reminder for today" entry
+     (file+headline "intray.org" "Reminders")
+     "* %^{Title for reminder}\nSCHEDULED: %t\n %?")
+    ("l" "Schedule reminder for another day" entry
+     (file+headline "intray.org" "Reminders")
+     "* %^{Title for reminder}\nSCHEDULED: %^t\n %?")
+
+    ;; appointments or meetings
+    ("m" "Appointments")
+    ("mw" "Work appointment" entry
+     (file+headline "meetings.org" "Work")
+     "* %^{Title?}\n %?\n SCHEDULED: %^t")
+    ("me" "Work appointment from email" entry
+     (file+headline "meetings.org" "Work")
+     "* %^{Title?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
+    ("mp" "Personal appointment" entry
+     (file+headline "meetings.org" "Personal")
+     "* %^{Title?}\n %?\n SCHEDULED: %^t")
+    ("mm" "Personal appointment from email" entry
+     (file+headline "meetings.org" "Personal")
+     "* %^{Title?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
+
+    ;; todos in location
+    ("a" "Add TODO in location")
+    ("ar" "TODO for research" entry
+     (file+headline "projects.org" "Research")
+     "* TODO %?")
+    ("at" "TODO for teaching" entry
+     (file+headline "projects.org" "Teaching")
+     "* TODO %?")
+    ("as" "TODO for service" entry
+     (file+headline "projects.org" "Service")
+     "* TODO %?")
+    ("ap" "TODO for perso" entry
+     (file+headline "projects.org" "Perso")
+     "* TODO %?")
+    ("ac" "TODO for computing" entry
+     (file+headline "projects.org" "Computing")
+     "* TODO %?")))
 
 (setq org-capture-templates-contexts
       '(("e" ((in-mode . "message-mode")
               (in-mode . "mu4e-headers-mode")
               (in-mode . "mu4e-view-mode")))
         ("me" ((in-mode . "message-mode")
+              (in-mode . "mu4e-headers-mode")
+              (in-mode . "mu4e-view-mode")))
+        ("mm" ((in-mode . "message-mode")
               (in-mode . "mu4e-headers-mode")
               (in-mode . "mu4e-view-mode")))))
 
