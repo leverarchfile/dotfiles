@@ -56,6 +56,12 @@
   (setq truncate-string-ellipsis "…") ; Unicode ellipsis rather than "..."
   (setq sentence-end-double-space nil)) ; Make sure sentences end with one space
 
+(use-package emacs
+  :config
+  (setq tab-always-indent 'complete)
+  (setq-default tab-width 2
+                indent-tabs-mode nil))
+
 ;; make copy and paste work on wayland (https://www.emacswiki.org/emacs/CopyAndPaste) 
 (use-package emacs
   :config
@@ -138,21 +144,21 @@
   (my/org-mode-face-edits))
 
 (use-package spacious-padding
-    :init 
-    (setq spacious-padding-subtle-mode-line t)
-    (spacious-padding-mode 1))
+  :init 
+  (setq spacious-padding-subtle-mode-line t)
+  (spacious-padding-mode 1))
 
 (setq spacious-padding-widths
         '( :right-divider-width 1
            :mode-line-width 0))
 
 (use-package doom-modeline
-   :init (doom-modeline-mode 1)
-   :config
-    (setq doom-modeline-height 15
-          doom-modeline-enable-word-count t
-          doom-modeline-buffer-encoding nil
-          doom-modeline-icon nil))
+  :init (doom-modeline-mode 1)
+  :config
+   (setq doom-modeline-height 15
+         doom-modeline-enable-word-count t
+         doom-modeline-buffer-encoding nil
+         doom-modeline-icon nil))
 
 (use-package rainbow-mode
   :init
@@ -165,6 +171,9 @@
 
 (add-hook 'prog-mode-hook 'hl-line-mode)
 (setq hl-line-sticky-flag nil) ; only highlight line in active window
+;; disable hl-line-mode for insert mode
+(add-hook 'evil-insert-state-entry-hook (lambda () (when hl-line-mode (hl-line-mode -1))))
+(add-hook 'evil-insert-state-exit-hook  (lambda () (when (derived-mode-p 'prog-mode) (hl-line-mode 1))))
 
 ;; force horizontal split for minibuffer
 ;; (setq split-width-threshold nil)
@@ -188,6 +197,14 @@
 
 (use-package vertico
   :init (vertico-mode 1))
+
+(use-package corfu
+  :hook (after-init . global-corfu-mode)
+  :config
+  ;; sort by input history
+  (with-eval-after-load 'savehist
+    (corfu-history-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
 
 (use-package orderless
   :custom
@@ -236,9 +253,9 @@
 (use-package which-key
   :config (which-key-mode)
   :custom
-    (which-key-max-description-length 40)
-    (which-key-lighter nil)
-    (which-key-sort-order 'which-key-description-order))
+  (which-key-max-description-length 40)
+  (which-key-lighter nil)
+  (which-key-sort-order 'which-key-description-order))
 
 (use-package evil
   :init
@@ -294,19 +311,6 @@
     :prefix "SPC" ; set leader
     :global-prefix "M-SPC") ; use leader in insert mode
   (my/leader-keys
-    "f" '(:ignore t :wk "Files")
-    "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
-    "f d" '(kill-current-buffer :wk "Kill current buffer")
-    "f f" '(basic-save-buffer :wk "Save buffer")
-    "f h" '(consult-org-heading :wk "Find org heading")
-    "f l" '(consult-line :wk "Find line in current buffer")
-    "f p" '(consult-yank-pop :wk "Search clipboard to paste")
-    "f r" '(consult-recent-file :wk "Find recent files")
-    "f s" '(find-file :wk "Find file")
-    ;; links
-    "l" '(:ignore t :wk "Links")
-    "l l" '(org-insert-link :wk "Insert a link")
-    "l s" '(org-store-link :wk "Store a link")
     ;; buffers
     "b" '(:ignore t :wk "Buffers")
     "b b" '(consult-buffer :wk "Show buffers")
@@ -326,8 +330,22 @@
     "d" '(:ignore t :wk "Dired")
     "d d" '(dired :wk "Open dired")
     "d j" '(dired-jump :wk "Dired jump to current")
+    ;; files
+    "f" '(:ignore t :wk "Files")
+    "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
+    "f d" '(kill-current-buffer :wk "Kill current buffer")
+    "f f" '(basic-save-buffer :wk "Save buffer")
+    "f h" '(consult-org-heading :wk "Find org heading")
+    "f l" '(consult-line :wk "Find line in current buffer")
+    "f p" '(consult-yank-pop :wk "Search clipboard to paste")
+    "f r" '(consult-recent-file :wk "Find recent files")
+    "f s" '(find-file :wk "Find file")
     ;; comments
     "g c" '(comment-line :wk "Comment lines")
+    ;; links
+    "l" '(:ignore t :wk "Links")
+    "l l" '(org-insert-link :wk "Insert a link")
+    "l s" '(org-store-link :wk "Store a link")
     ;; mail
     "m" '(:ignore t :wk "Org")
     "m m" '(mu4e :wk "Start mu4e")
@@ -336,6 +354,7 @@
     "o a" '(org-agenda :wk "Org agenda")
     "o c" '(org-timestamp :wk "Set Org timestamp")
     "o d" '(my/org-insert-scheduled :wk "Insert scheduled and timestamp")
+    "o e" `(,(general-simulate-key "C-c '") :wk "Edit src block or exit edit")
     "o g" '(org-set-tags-command :wk "Set Org tags")
     "o q" '(org-insert-structure-template :wk "Insert structure template")
     "o s" '(my/org-insert-str-template :wk "Insert Org source code block")
@@ -381,12 +400,18 @@
     ;; move windows
     "w a" '(evil-window-rotate-upwards :wk "Switch windows around")))
 
+(use-package evil
+  :config 
+  (setq-default tab-width 2
+                indent-tabs-mode nil)
+  (define-key evil-insert-state-map (kbd "TAB") 'indent-for-tab-command))
+
 ;; unmap keys in 'evil-maps, otherwise (setq org-return-follows-link t) will not work
 (with-eval-after-load 'evil-maps
   (define-key evil-motion-state-map (kbd "SPC") nil)
   (define-key evil-motion-state-map (kbd "RET") nil)
   (define-key evil-motion-state-map (kbd "TAB") nil)
-  (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop))
+  (define-key evil-insert-state-map (kbd "TAB") 'indent-for-tab-command))
 
 ;; evil key configurations for org-agenda
 (evil-set-initial-state 'org-agenda-mode 'normal)
@@ -399,7 +424,7 @@
     "a l" '(org-agenda-later :wk "Later view")
     "a m" '(org-agenda-month-view :wk "Month view")
     "a t" '(org-agenda-todo :wk "All todos")
-    "a /" 'org-agenda-filter-by-tag :wk "Filter by tag")
+    "a /" '(org-agenda-filter-by-tag :wk "Filter by tag"))
 
 (use-package org
   :init
