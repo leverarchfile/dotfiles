@@ -241,7 +241,7 @@ Resources I've found particularly useful:
   :hook (text-mode . olivetti-mode))
 
 (add-hook 'text-mode-hook (lambda () 
-                            (fringe-mode 1) ; needed for olivetti to work
+                            (fringe-mode 1)
                             (display-line-numbers-mode -1)))
 
 (add-hook 'prog-mode-hook (lambda ()
@@ -427,12 +427,15 @@ Resources I've found particularly useful:
     ;; org
     "o" '(:ignore t :wk "Org")
     "o a" '(org-agenda :wk "Org agenda")
-    "o c" '(org-timestamp :wk "Set Org timestamp")
-    "o d" '(my/org-insert-scheduled :wk "Insert scheduled and timestamp")
+    "o A" '(org-archive-subtree :wk "Move current subtree to the archive")
+    "o c" '(my/org-insert-str-template :wk "Insert Org source code block")
+    "o d" `(,(general-simulate-key "C-c C-d") :wk "Org deadline")
     "o e" `(,(general-simulate-key "C-c '") :wk "Edit src block or exit edit")
+    "o f" `(,(lambda() (interactive)(find-file "~/org/projects.org")) :wk "Open projects.org")
     "o g" '(org-set-tags-command :wk "Set Org tags")
+    "o h" `(,(general-simulate-key "C-c .") :wk "Org timestamp")
     "o q" '(org-insert-structure-template :wk "Insert structure template")
-    "o s" '(my/org-insert-str-template :wk "Insert Org source code block")
+    "o s" `(,(general-simulate-key "C-c C-s") :wk "Org schedule")
     "o t" '(org-todo :wk "Org todo")
     "o T" '(org-todo-list :wk "Org todo list")
     ;; references
@@ -443,6 +446,7 @@ Resources I've found particularly useful:
     "q q" '(citar-insert-citation :wk "Insert citation")
     "q r" '(citar-insert-reference :wk "Insert reference")
     "q u" '(citar-org-update-prefix-suffix :wk "Update citation prefix/suffix")
+    "q w" '(my/org-cite-noauthor :wk "Insert narrative citation")
     ;; refile
     "r" '(:ignore t :wk "Refile")
     "r r" '(org-refile :wk "Org refile")
@@ -450,8 +454,9 @@ Resources I've found particularly useful:
     "r g" '(org-refile-goto-last-stored :wk "Jump to location of last refiled item")
     ;; org-roam
     "s" '(:ignore t :wk "Org-roam")
-    "s f" '(org-roam-node-find :wk "Open or create org-roam node")
+    "s f" '(org-roam-node-find :wk "Open or create an org-roam node")
     "s i" '(org-roam-node-insert :wk "Insert an org-roam node link") 
+    "s s" '(org-roam-capture :wk "Create an org-roam node")
     "s t" '(org-roam-buffer-toggle :wk "Toggle buffer with org-roam backlinks")
     ;; toggle
     "t" '(:ignore t :wk "Toggle")
@@ -666,14 +671,6 @@ Resources I've found particularly useful:
                 (org-agenda-format-date-aligned date)))))
 #+end_src
 
-#+begin_src emacs-lisp
-(defun my/org-insert-scheduled ()
-  "Insert SCHEDULED with a timestamp for an org heading"
-  (interactive)
-  (insert "SCHEDULED: ")
-  (org-time-stamp nil))
-#+end_src
-
 ** Org agenda custom commands
 
 #+begin_src emacs-lisp
@@ -747,7 +744,7 @@ Resources I've found particularly useful:
 	  (org-agenda-entry-types '(:deadline)))))))
 #+end_src
 
-** Org agenda as startup screen
+** Org agenda startup screen
 
 #+begin_src emacs-lisp
 ;; show org-agenda list on startup
@@ -798,7 +795,26 @@ Resources I've found particularly useful:
 ** Calendar
 
 #+begin_src emacs-lisp
+(setq calendar-holidays
+      '((holiday-fixed 1 1 "New Year's Day")
+        (holiday-fixed 2 6 "Waitangi Day")
+        (holiday-fixed 2 14 "Valentine's Day")
+        (holiday-fixed 4 25 "Anzac Day")
+        (holiday-fixed 12 25 "Christmas Day")
+        (holiday-fixed 12 26 "Boxing Day")
+        (holiday-easter-etc -21 "UK Mother's Day")
+        (holiday-easter-etc -2 "Good Friday")
+        (holiday-easter-etc 0 "Easter Sunday")
+        (holiday-easter-etc 1 "Easter Monday")
+        (holiday-float 6 0 3 "UK Father's Day")
+        (holiday-float 6 1 1 "King's Birthday")
+        (holiday-float 10 1 4 "Labour Day")))
+#+end_src
+
+#+begin_src emacs-lisp
 (use-package calfw)
+
+(setq cfw:display-calendar-holidays nil)
 
 (setq cfw:fchar-junction ?╋
       cfw:fchar-vertical-line ?┃
@@ -838,7 +854,7 @@ Resources I've found particularly useful:
      (file+headline "intray.org" "Reminders")
      "* %^{Title for reminder}\nSCHEDULED: %^t\n %?")
 
-    ;; appointments or meetings
+    ;; appointments (scheduled and repeating events)
     ("m" "Appointments")
     ("mw" "Work appointment" entry
      (file+headline "meetings.org" "Work")
@@ -890,7 +906,7 @@ Resources I've found particularly useful:
 
 (setq org-cite-global-bibliography '("~/.local/share/zotero/storage/my_library.bib"))
 
-(setq org-cite-export-processors '((t csl)))
+(setq org-cite-export-processors '((t csl "apa.csl")))
 
 (use-package citeproc)
 
@@ -919,6 +935,19 @@ Resources I've found particularly useful:
   :after citar embark
   :no-require
   :config (citar-embark-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun my/org-cite-noauthor ()
+  "Insert citation with 'noauthor' style, e.g. for APA narrative citation"
+  (interactive)
+   (let ((start (point)))
+    (call-interactively #'org-cite-insert)
+    (when (looking-back "\\[cite:\\(.*?\\)\\]" (line-beginning-position))
+      (let* ((match (match-string 0))
+             (keys (match-string 1))
+             (styled (format "[cite/na:%s]" keys)))
+        (replace-match styled t t)))))
 #+end_src
 
 ** Org roam
