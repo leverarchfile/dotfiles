@@ -53,7 +53,7 @@
  ("string-inflection" . "617df25e91351feffe6aff4d9e4724733449d608")
  ("toc-org" . "6d3ae0fc47ce79b1ea06cabe21a3c596395409cd")
  ("transient" . "41b6e06cf56c029465fae72dc4c6e16cfd304e47")
- ("use-package" . "a6e856418d2ebd053b34e0ab2fda328abeba731c")
+ ("use-package" . "bbfe01bdf15eeb61babffd1c5b6facd3d2ce3630")
  ("vertico" . "7741da042ddf4102d2f87a8110028363f36bc9e8")
  ("with-editor" . "cc86ac08bdea5bbe2503ac1df3506b5e81330e16")
  ("xclip" . "9ab22517f3f2044e1c8c19be263da9803fbca26a"))

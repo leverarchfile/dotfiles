@@ -17,7 +17,10 @@
   (load bootstrap-file nil 'nomessage))
 
 (straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
+
+(use-package straight
+  :custom
+  (straight-use-package-by-default t))
 
 (use-package emacs
   :config
