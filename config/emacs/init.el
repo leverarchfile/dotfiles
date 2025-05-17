@@ -91,6 +91,8 @@
   (setq xclip-mode t)
   (setq xclip-method (quote wl-copy)))
 
+(use-package magit)
+
 (defun my/fonts ()
   (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
   (set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
@@ -158,6 +160,10 @@
    (setq doom-modeline-height 15
          doom-modeline-enable-word-count t
          doom-modeline-buffer-encoding nil
+         doom-modeline-percent-position nil
+         doom-modeline-total-line-number t
+         doom-modeline-buffer-file-name-style 'file-name
+         doom-modeline-mu4e nil
          doom-modeline-icon nil))
 
 (use-package rainbow-mode
@@ -174,6 +180,11 @@
 ;; disable hl-line-mode for insert mode
 (add-hook 'evil-insert-state-entry-hook (lambda () (when hl-line-mode (hl-line-mode -1))))
 (add-hook 'evil-insert-state-exit-hook  (lambda () (when (derived-mode-p 'prog-mode) (hl-line-mode 1))))
+
+(use-package pulsar
+  :config
+  (setq pulsar-pulse-on-window-change t)
+  (pulsar-global-mode 1))
 
 ;; force horizontal split for minibuffer
 ;; (setq split-width-threshold nil)
@@ -335,6 +346,7 @@
     "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
     "f d" '(kill-current-buffer :wk "Kill current buffer")
     "f f" '(basic-save-buffer :wk "Save buffer")
+    "f g" `(,(general-simulate-key "C-x g") :wk "Magit status buffer")
     "f h" '(consult-org-heading :wk "Find org heading")
     "f l" '(consult-line :wk "Find line in current buffer")
     "f p" '(consult-yank-pop :wk "Search clipboard to paste")
@@ -866,6 +878,7 @@
     mu4e-compose-format-flowed t
     mu4e-confirm-quit nil
     mu4e-hide-index-messages t
+    mu4e-modeline-support nil
 
     ;; disable threading
     mu4e-headers-show-threads nil

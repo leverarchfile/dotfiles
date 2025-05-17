@@ -123,6 +123,12 @@ Resources I've found particularly useful:
   (setq xclip-method (quote wl-copy)))
 #+end_src
 
+** Magit
+
+#+begin_src emacs-lisp
+(use-package magit)
+#+end_src
+
 * Interface
 
 ** Fonts
@@ -203,6 +209,10 @@ Resources I've found particularly useful:
    (setq doom-modeline-height 15
          doom-modeline-enable-word-count t
          doom-modeline-buffer-encoding nil
+         doom-modeline-percent-position nil
+         doom-modeline-total-line-number t
+         doom-modeline-buffer-file-name-style 'file-name
+         doom-modeline-mu4e nil
          doom-modeline-icon nil))
 
 (use-package rainbow-mode
@@ -219,6 +229,11 @@ Resources I've found particularly useful:
 ;; disable hl-line-mode for insert mode
 (add-hook 'evil-insert-state-entry-hook (lambda () (when hl-line-mode (hl-line-mode -1))))
 (add-hook 'evil-insert-state-exit-hook  (lambda () (when (derived-mode-p 'prog-mode) (hl-line-mode 1))))
+
+(use-package pulsar
+  :config
+  (setq pulsar-pulse-on-window-change t)
+  (pulsar-global-mode 1))
 #+end_src
 
 ** Minibuffer
@@ -410,6 +425,7 @@ Resources I've found particularly useful:
     "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
     "f d" '(kill-current-buffer :wk "Kill current buffer")
     "f f" '(basic-save-buffer :wk "Save buffer")
+    "f g" `(,(general-simulate-key "C-x g") :wk "Magit status buffer")
     "f h" '(consult-org-heading :wk "Find org heading")
     "f l" '(consult-line :wk "Find line in current buffer")
     "f p" '(consult-yank-pop :wk "Search clipboard to paste")
@@ -991,7 +1007,7 @@ Resources I've found particularly useful:
 
 * Email
 
-** General mu4e  settings
+** General mu4e settings
 
 #+begin_src emacs-lisp
 (use-package mu4e
@@ -1013,6 +1029,7 @@ Resources I've found particularly useful:
     mu4e-compose-format-flowed t
     mu4e-confirm-quit nil
     mu4e-hide-index-messages t
+    mu4e-modeline-support nil
 
     ;; disable threading
     mu4e-headers-show-threads nil
