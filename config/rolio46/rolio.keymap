@@ -20,18 +20,30 @@
 /* custom behaviors */
 
 // em dash
-ZMK_UNICODE_SINGLE(em_dash, N2, N0, N1, N4)
+ZMK_BEHAVIOR(em_dash, macro,
+    wait-ms = <5>;
+    tap-ms = <5>;
+    bindings = <&macro_press &kp LCTRL &kp LSHFT> ,
+               <&macro_tap &kp U &kp N2 &kp N0 &kp N1 &kp N4 &kp SPACE> ,
+               <&macro_release &kp LSHFT &kp LCTRL>;
+)
 
 // en dash
-ZMK_UNICODE_SINGLE(en_dash, N2, N0, N1, N3)
+ZMK_BEHAVIOR(en_dash, macro,
+    wait-ms = <5>;
+    tap-ms = <5>;
+    bindings = <&macro_press &kp LCTRL &kp LSHFT> ,
+               <&macro_tap &kp U &kp N2 &kp N0 &kp N1 &kp N3 &kp SPACE> ,
+               <&macro_release &kp LSHFT &kp LCTRL>;
+)
 
 // multiplication sign
-ZMK_UNICODE_SINGLE(multip, N0, N0, D, N7)
-
-// dashes key: 1 tap for hyphen/minus, 2 for em-dash, 3 for en-dash
-ZMK_BEHAVIOR(dashes, tap_dance,
-    tapping-term-ms = <200>;
-    bindings = <&kp MINUS>, <&em_dash>, <&en_dash>;
+ZMK_BEHAVIOR(multip, macro,
+    wait-ms = <5>;
+    tap-ms = <5>;
+    bindings = <&macro_press &kp LCTRL &kp LSHFT> ,
+               <&macro_tap &kp U &kp N0 &kp N0 &kp D &kp N7 &kp SPACE> ,
+               <&macro_release &kp LSHFT &kp LCTRL>;
 )
 
 // tilde and backtick key
@@ -126,7 +138,7 @@ ZMK_LAYER(base,
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────┤                               ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
           &esc_hom      &kp A         &kp S         &kp D         &kp F         &kp G                                         &kp H         &kp J         &kp K         &kp L         &kp SEMI      &sqt_end
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────┤─────────────┤   ├─────────────├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-          &st_ctr       &kp Z         &kp X         &kp C         &kp V         &kp B         &kp F16           &kp F17       &kp N         &kp M         &kp COMMA     &kp DOT       &kp FSLH      &dashes
+          &st_ctr       &kp Z         &kp X         &kp C         &kp V         &kp B         &kp F16           &kp F17       &kp N         &kp M         &kp COMMA     &kp DOT       &kp FSLH      &kp MINUS
      // ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────┤─────────────┤   ├─────────────├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────╯
                                       &some_l       &fnav         &st_sft       &num_sym      LSFT_ENT          RSFT_SPC      &num_sym      &stk_sup      &und_alt      &some_r 
      //                             ╰─────────────┴─────────────┴─────────────┴─────────────┴─────────────╯   ╰─────────────┴─────────────┴─────────────┴─────────────┴─────────────╯
@@ -139,7 +151,7 @@ ZMK_LAYER(num-sym,
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────┤                               ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
           &trans        EXCLAM        &kp AT_SIGN   &kp HASH      &kp DOLLAR    &kp PERCENT                                   &kp CARET     &kp AMPERSAND L_PAREN       R_PAREN       &kp ASTERISK  &trans
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────┤─────────────┤   ├─────────────├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-          &trans        &tilde_bkt    L_BRACE       R_BRACE       &kp PIPE      &kp EQUAL     &trans            &trans        &kp PLUS      &kp BACKSLASH &trans        &trans        &trans        &trans
+          &trans        &tilde_bkt    L_BRACE       R_BRACE       &kp PIPE      &kp EQUAL     &trans            &trans        &kp PLUS      &kp BACKSLASH &trans        &trans        &trans        &em_dash
      // ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────┤─────────────┤   ├─────────────├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────╯
                                       &trans        &trans        &trans        &tog NUM_SYM  &trans            &trans        &tog NUM_SYM  &trans        &trans        &trans
      //                             ╰─────────────┴─────────────┴─────────────┴─────────────┴─────────────╯   ╰─────────────┴─────────────┴─────────────┴─────────────┴─────────────╯
@@ -152,7 +164,7 @@ ZMK_LAYER(f-nav,
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────┤                               ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
           &trans        &kp F11       &kp F12       &kp DEL       &kp PAGE_DOWN &kp PAGE_UP                                   &kp LEFT      &kp DOWN      &kp UP        &kp RIGHT     &trans        &trans
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────┤─────────────┤   ├─────────────├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-          &trans        &trans        &trans        &trans        &trans        &trans        &trans            &trans        &trans        &trans        L_BRACK       R_BRACK       &multip       &trans
+          &trans        &trans        &trans        &trans        &trans        &trans        &trans            &trans        &trans        &trans        L_BRACK       R_BRACK       &multip       &en_dash
      // ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────┤─────────────┤   ├─────────────├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤─────────────╯
                                       &trans        &tog F_NAV    &trans        &trans        &trans            &trans        &trans        &trans        &trans        &trans
      //                             ╰─────────────┴─────────────┴─────────────┴─────────────┴─────────────╯   ╰─────────────┴─────────────┴─────────────┴─────────────┴─────────────╯
