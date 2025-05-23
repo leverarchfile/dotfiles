@@ -97,56 +97,70 @@
 (use-package magit)
 
 (defun my/fonts ()
-  (set-face-attribute 'default nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
-  (set-face-attribute 'fixed-pitch nil :family "Mononoki Nerd Font Mono" :weight 'light :height 120)
-  (set-face-attribute 'variable-pitch nil :family "Atkinson Hyperlegible" :weight 'medium :height 120)
+  (set-face-attribute 'default nil :family "Iosevka" :weight 'regular :height 120)
+  (set-face-attribute 'fixed-pitch nil :family "Iosevka" :weight 'regular :height 120)
+  (set-face-attribute 'variable-pitch nil :family "Aporetic Serif" :weight 'regular :height 120)
   (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
   ;; needed for fonts to show properly in emacsclient
-  (add-to-list 'default-frame-alist '(font . "Mononoki Nerd Font Mono-12")))
+  (add-to-list 'default-frame-alist '(font . "Iosevka-12")))
 
 (my/fonts)
 
 (use-package mixed-pitch
     :hook (text-mode . mixed-pitch-mode))
 
-(use-package ef-themes
-  :config
-  (setq ef-themes-common-palette-overrides
-      '((prose-done fg-dim))))
-  ;; (setq ef-themes-mixed-fonts t
-  ;;       ef-themes-headings
-  ;;       '((0 . (variable-pitch light 1.8))
-  ;;         (1 . (variable-pitch 1.2)) ; absence of weight means bold
-  ;;         (2 . (variable-pitch 1.2))
-  ;;         (3 . (variable-pitch 1.2))
-  ;;         (4 . (variable-pitch 1.2))
-  ;;         (5 . (variable-pitch 1.2)) 
-  ;;         (6 . (variable-pitch 1.2))
-  ;;         (7 . (variable-pitch 1.2))
-  ;;         (agenda-date . (semilight 1.5))
-  ;;         (agenda-structure . (variable-pitch light 1.8))
-  ;;         (t . (variable-pitch 1.1)))))
-  
-(defun my-ef-themes-custom-faces ()
-  (ef-themes-with-colors
-    (custom-set-faces
-     `(org-block-begin-line ((,c :background ,bg-main :foreground ,fg-dim)))
-     `(org-block-end-line ((,c :background ,bg-main :foreground ,fg-dim)))
-     `(org-quote ((,c :background ,bg-main)))
-     `(line-number-current-line ((,c :foreground ,fg-dim)))
-     `(line-number ((,c :foreground ,border))))))
+  (use-package ef-themes
+    :config
+    (setq ef-themes-common-palette-overrides
+        '((prose-done fg-dim))))
+    ;; (setq ef-themes-mixed-fonts t
+    ;;       ef-themes-headings
+    ;;       '((0 . (variable-pitch light 1.8))
+    ;;         (1 . (variable-pitch 1.2)) ; absence of weight means bold
+    ;;         (2 . (variable-pitch 1.2))
+    ;;         (3 . (variable-pitch 1.2))
+    ;;         (4 . (variable-pitch 1.2))
+    ;;         (5 . (variable-pitch 1.2)) 
+    ;;         (6 . (variable-pitch 1.2))
+    ;;         (7 . (variable-pitch 1.2))
+    ;;         (agenda-date . (semilight 1.5))
+    ;;         (agenda-structure . (variable-pitch light 1.8))
+    ;;         (t . (variable-pitch 1.1)))))
+    
+  ;; (defun my-ef-themes-custom-faces ()
+  ;;   (ef-themes-with-colors
+  ;;     (custom-set-faces
+  ;;      `(org-block-begin-line ((,c :background ,bg-main :foreground ,fg-dim)))
+  ;;      `(org-block-end-line ((,c :background ,bg-main :foreground ,fg-dim)))
+  ;;      `(org-quote ((,c :background ,bg-main)))
+  ;;      `(line-number-current-line ((,c :foreground ,fg-dim)))
+  ;;      `(org-ellipsis ((,c :foreground ,fg-alt)))
+  ;;      `(line-number ((,c :foreground ,border))))))
 
-(add-hook 'ef-themes-post-load-hook #'my-ef-themes-custom-faces)
+  (defun my-ef-themes-custom-faces ()
+    (ef-themes-with-colors
+      (custom-set-faces
+       `(line-number-current-line ((,c :foreground ,fg-dim)))
+       `(org-ellipsis ((,c :foreground ,fg-alt)))
+       `(line-number ((,c :foreground ,border))))))
 
-(ef-themes-select 'ef-dream)
+  (add-hook 'ef-themes-post-load-hook #'my-ef-themes-custom-faces)
 
-(setq ef-themes-to-toggle '(ef-dream ef-summer))
+  (ef-themes-select 'ef-dream)
 
-(defun my-switch-theme ()
-  (interactive)
-  (ef-themes-toggle)
-  (my/org-font-setup)
-  (my/org-mode-face-edits))
+  (setq ef-themes-to-toggle '(ef-dream ef-summer))
+
+  (defun my-switch-theme ()
+    (interactive)
+    (ef-themes-toggle)
+    (my/org-font-setup)
+    (my/org-mode-face-edits))
+
+(use-package doric-themes
+  :straight
+  (:local-repo "~/repos/doric-themes/"))
+  ;; :config
+  ;; (doric-themes-select 'doric-obsidian))
 
 (use-package spacious-padding
   :init 
@@ -545,7 +559,7 @@
     (set-face-attribute 'org-modern-indent-bracket-line nil
                        :family "Font Awesome")))
 (add-hook 'org-mode-hook #'my/org-mode-face-edits)
-
+ 
 (defun my/org-font-setup ()
   (set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold :overline t)
   (set-face-attribute 'org-level-2 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
@@ -556,6 +570,9 @@
   (set-face-attribute 'org-level-7 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
   (set-face-attribute 'org-level-8 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold))
 (add-hook 'org-mode-hook #'my/org-font-setup)
+
+;; (with-eval-after-load 'org
+;;   (set-face-attribute 'org-todo nil :inherit 'fixed-pitch))
 
 (use-package org
   :config
@@ -667,23 +684,23 @@
 (require 'org-indent)
 (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
 
-;; (use-package org-bullets
-;;   :init
-;;   (setopt org-bullets-bullet-list '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
-;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+(use-package org-bullets
+  :init
+  (setopt org-bullets-bullet-list '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
  
-(use-package org-modern
-  :custom
-  (org-modern-table nil))
-(with-eval-after-load 'org (global-org-modern-mode))
+;; (use-package org-modern
+;;   :custom
+;;   (org-modern-table nil))
+;; (with-eval-after-load 'org (global-org-modern-mode))
 
-(setq org-modern-star 'replace
-      org-modern-replace-stars '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
+;; (setq org-modern-star 'replace
+;;       org-modern-replace-stars '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
 
-(use-package org-modern-indent
-  :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
-  :config
-  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+;; (use-package org-modern-indent
+;;   :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+;;   :config
+;;   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
 (setq calendar-holidays
       '((holiday-fixed 1 1 "New Year's Day")
