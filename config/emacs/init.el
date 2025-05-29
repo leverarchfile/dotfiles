@@ -96,15 +96,29 @@
 
 (use-package magit)
 
-(defun my/fonts ()
-  (set-face-attribute 'default nil :family "Iosevka" :weight 'regular :height 120)
-  (set-face-attribute 'fixed-pitch nil :family "Iosevka" :weight 'regular :height 120)
-  (set-face-attribute 'variable-pitch nil :family "Aporetic Serif" :weight 'regular :height 120)
-  (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
-  ;; needed for fonts to show properly in emacsclient
-  (add-to-list 'default-frame-alist '(font . "Iosevka-12")))
-
-(my/fonts)
+(use-package fontaine
+  :hook
+  ;; Persist the latest font preset when closing/starting Emacs.
+  ((after-init . fontaine-mode)
+   (after-init . (lambda ()
+                   ;; Set last preset or fall back to desired style from `fontaine-presets'.
+                   (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular)))))
+  :config 
+  (setq fontaine-presets
+        '((regular)
+          (alternative
+           :inherit standard
+           :variable-pitch-family "Libertinus Serif")
+          (presentation
+           :default-height 180)
+          (t
+           :default-family "Iosevka"
+           :default-height 115
+           :fixed-pitch-family "Iosevka"
+           :variable-pitch-family "Aporetic Serif"          
+           :variable-pitch-height 1.0)))
+  (with-eval-after-load 'pulsar
+    (add-hook 'fontaine-set-preset-hook #'pulsar-pulse-line)))
 
 (use-package mixed-pitch
     :hook (text-mode . mixed-pitch-mode))
@@ -341,6 +355,7 @@
     ;; mail
     "m" '(:ignore t :wk "Org")
     "m m" '(mu4e :wk "Start mu4e")
+    "m s" '(message-send-and-exit :wk "Send email")
     ;; org
     "o" '(:ignore t :wk "Org")
     "o a" '(org-agenda :wk "Org agenda")
@@ -401,14 +416,14 @@
   :config 
   (setq-default tab-width 2
                 indent-tabs-mode nil)
-  (define-key evil-insert-state-map (kbd "TAB") 'indent-for-tab-command))
-
-;; unmap keys in 'evil-maps, otherwise (setq org-return-follows-link t) will not work
-(with-eval-after-load 'evil-maps
-  (define-key evil-motion-state-map (kbd "SPC") nil)
-  (define-key evil-motion-state-map (kbd "RET") nil)
-  (define-key evil-motion-state-map (kbd "TAB") nil)
-  (define-key evil-insert-state-map (kbd "TAB") 'indent-for-tab-command))
+  (with-eval-after-load 'message
+    (evil-define-key 'insert message-mode-map (kbd "TAB") #'message-tab))
+  ;; unmap keys in 'evil-maps, otherwise (setq org-return-follows-link t) will not work
+  (with-eval-after-load 'evil-maps
+    (define-key evil-motion-state-map (kbd "SPC") nil)
+    (define-key evil-motion-state-map (kbd "RET") nil)
+    (define-key evil-motion-state-map (kbd "TAB") nil)
+    (define-key evil-insert-state-map (kbd "TAB") 'indent-for-tab-command)))
 
 ;; evil key configurations for org-agenda
 (evil-set-initial-state 'org-agenda-mode 'normal)
@@ -871,7 +886,8 @@
                      (mu4e-sent-folder . "/uoa/Sent Items")
                      (mu4e-drafts-folder . "/uoa/Drafts")
                      (mu4e-refile-folder . "/uoa/Archive")
-                     (mu4e-trash-folder . "/uoa/Deleted Items")))
+                     (mu4e-trash-folder . "/uoa/Deleted Items")
+                     (mu4e-sent-messages-behavior . delete))) ; IMAP takes care of this
 
          ;; perso
          (make-mu4e-context
@@ -885,7 +901,8 @@
                      (mu4e-sent-folder . "/perso/Sent")
                      (mu4e-drafts-folder . "/perso/Drafts")
                      (mu4e-refile-folder . "/perso/Archive")
-                     (mu4e-trash-folder . "/perso/Trash")))))
+                     (mu4e-trash-folder . "/perso/Trash")
+                     (mu4e-sent-messages-behavior . sent))))) ; IMAP doesn't take care of this
   
   ;; don't ask for context when starting mu4e (default to uoa) 
   (setq mu4e-context-policy 'pick-first))
