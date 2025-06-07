@@ -7,9 +7,9 @@ My configuration for GNU Emacs. Comments/suggestions welcome.
 
 Resources I've found particularly useful:
 + Bastien Guerry's [[https://codeberg.org/bzg/dotemacs/src/branch/master/emacs.org][configuration]] and [[https://bzg.fr/en/the-zen-of-task-management-with-org/][article]] on org-mode for task management 
-+ David Wilson's (System Crafters) /Emacs from Scratch/ [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][video guide]] 
-+ Protesilaos Stavrou's [[https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-emacs.org][configuration]] and [[https://protesilaos.com/][website]]
 + Nicolas P. Rougier's [[https://github.com/rougier/dotemacs/blob/master/dotemacs.org][configuration]] 
++ Protesilaos Stavrou's [[https://protesilaos.com/emacs/][packages]], [[https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-emacs.org][configuration]], and [[https://protesilaos.com/][website]]
++ David Wilson's (System Crafters) /Emacs from Scratch/ [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][video guide]] 
 
 * Bootstrap code for straight.el
 
@@ -63,6 +63,7 @@ Resources I've found particularly useful:
   (savehist-mode 1)
   (recentf-mode 1)
   (global-auto-revert-mode 1) ; refresh buffers with file changes
+  (setq auto-revert-verbose nil) ; don't clutter minibuffer with "Reverting..." messages
 
   (setq frame-inhibit-implied-resize t)
 
@@ -1075,9 +1076,7 @@ Resources I've found particularly useful:
 ;; email alerts
 (use-package mu4e
   :config
-  (add-hook 'mu4e-index-updated-hook
   (defun new-mail-alert ()
-    (shell-command "mail_alert&"))) ; calls a script in ~/.local/bin
-  ;; prevent buffer showing output
-  (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))) 
+    (start-process-shell-command "mail-alert" nil "mail_alert")) ; calls script in ~/.local/bin
+  (add-hook 'mu4e-index-updated-hook #'new-mail-alert))
 #+end_src

@@ -4,7 +4,19 @@ export WAYLAND_DISPLAY=wayland-1
 
 pkill -RTMIN+1 waybar &
 
+LAST_ALERTS="${XDG_CACHE_HOME:-$HOME/.cache}/mail_alerts"
+
 NEW=$(date +"%Y%m%d%H%M" --date="5 minutes ago")
+
+MESSAGE_IDS=$(mu find flag:unread date:$NEW..now --fields=m | grep -v '^$' | grep -v '/Junk/')
+NEW_IDS=$(comm -23 \
+  <(echo "$MESSAGE_IDS" | sort) \
+  <(sort "$LAST_ALERTS" 2>/dev/null))
+
+[ -z "$NEW_IDS" ] && exit 0
+
+echo "$NEW_IDS" >> "$LAST_ALERTS"
+tail -n 100 "$LAST_ALERTS" > "$LAST_ALERTS.tmp" && mv "$LAST_ALERTS.tmp" "$LAST_ALERTS"
 
 MAIL="$(mu find flag:unread date:$NEW..now --fields l | grep -v '/Junk/' | tac)"
 

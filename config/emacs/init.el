@@ -42,6 +42,7 @@
   (savehist-mode 1)
   (recentf-mode 1)
   (global-auto-revert-mode 1) ; refresh buffers with file changes
+  (setq auto-revert-verbose nil) ; don't clutter minibuffer with "Reverting..." messages
 
   (setq frame-inhibit-implied-resize t)
 
@@ -912,8 +913,6 @@
 ;; email alerts
 (use-package mu4e
   :config
-  (add-hook 'mu4e-index-updated-hook
   (defun new-mail-alert ()
-    (shell-command "mail_alert&"))) ; calls a script in ~/.local/bin
-  ;; prevent buffer showing output
-  (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil))))
+    (start-process-shell-command "mail-alert" nil "mail_alert")) ; calls script in ~/.local/bin
+  (add-hook 'mu4e-index-updated-hook #'new-mail-alert))
