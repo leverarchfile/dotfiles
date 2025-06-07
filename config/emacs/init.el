@@ -98,10 +98,10 @@
 
 (use-package fontaine
   :hook
-  ;; Persist the latest font preset when closing/starting Emacs.
+  ;; keep last font preset when closing/starting Emacs
   ((after-init . fontaine-mode)
    (after-init . (lambda ()
-                   ;; Set last preset or fall back to desired style from `fontaine-presets'.
+                   ;; set last preset or fall back to regular preset
                    (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular)))))
   :config 
   (setq fontaine-presets
@@ -180,15 +180,9 @@
   (setq pulsar-pulse-on-window-change t)
   (pulsar-global-mode 1))
 
-;; force horizontal split for minibuffer
-;; (setq split-width-threshold nil)
-;; (setq split-height-threshold 0)
-
 (use-package olivetti
   :config
   (setq olivetti-body-width 100)
-  ;; (setq olivetti-body-width 0.7)
-  ;; (setq olivetti-minimum-body-width 80)
   (setq olivetti-recall-visual-line-mode-entry-state t) 
   :hook (text-mode . olivetti-mode))
 
@@ -460,9 +454,9 @@
   (setq org-fontify-quote-and-verse-blocks t)
   (setq org-fontify-whole-heading-line t) ; e.g. to have an overline extend beyond the text
   (setq org-src-fontify-natively t
-    org-src-tab-acts-natively t
-    org-edit-src-content-indentation 0
-    org-src-preserve-indentation t))
+        org-src-tab-acts-natively t
+        org-edit-src-content-indentation 0
+        org-src-preserve-indentation t))
 
 (add-hook 'org-mode-hook 'org-indent-mode)
 
