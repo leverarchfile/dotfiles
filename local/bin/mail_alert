@@ -8,19 +8,18 @@ LAST_ALERTS="${XDG_CACHE_HOME:-$HOME/.cache}/mail_alerts"
 
 NEW=$(date +"%Y%m%d%H%M" --date="5 minutes ago")
 
-MESSAGE_IDS=$(mu find flag:unread date:$NEW..now --fields=m | grep -v '^$' | grep -v '/Junk/')
-NEW_IDS=$(comm -23 \
-  <(echo "$MESSAGE_IDS" | sort) \
+MAIL="$(mu find flag:unread date:$NEW..now --fields l | grep -v '/Junk/')"
+
+UNALERTED=$(comm -23 \
+  <(echo "$MAIL" | sort) \
   <(sort "$LAST_ALERTS" 2>/dev/null))
 
-[ -z "$NEW_IDS" ] && exit 0
+[ -z "$UNALERTED" ] && exit 0
 
-echo "$NEW_IDS" >> "$LAST_ALERTS"
+echo "$UNALERTED" >> "$LAST_ALERTS"
 tail -n 100 "$LAST_ALERTS" > "$LAST_ALERTS.tmp" && mv "$LAST_ALERTS.tmp" "$LAST_ALERTS"
 
-MAIL="$(mu find flag:unread date:$NEW..now --fields l | grep -v '/Junk/' | tac)"
-
-SENDERS=$(echo "$MAIL" | xargs grep -m 1 -h -i "^From:" | sed 's/^From: //' | uniq | sed 's/^From: //; s/<[^>]*>//g; s/^[[:space:]]*//' | while read -r sender; do
+SENDERS=$(echo "$UNALERTED" | tac | xargs -d '\n' grep -m 1 -h -i "^From:" | sed 's/^From: //' | uniq | sed 's/^From: //; s/<[^>]*>//g; s/^[[:space:]]*//' | while read -r sender; do
   echo "${sender:0:30}"
 done)
 
