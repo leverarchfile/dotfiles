@@ -470,12 +470,6 @@ Resources I've found particularly useful:
     "s q" '(citar-denote-open-note :wk "Open bib. slip")
     "s r" '(citar-create-note :wk "New bib. slip")
     "s s" '(denote :wk "New slip with Denote")
-    ;; org-roam
-    ;; "s" '(:ignore t :wk "Org-roam")
-    ;; "s f" '(org-roam-node-find :wk "Open or create an org-roam node")
-    ;; "s i" '(org-roam-node-insert :wk "Insert an org-roam node link") 
-    ;; "s s" '(org-roam-capture :wk "Create an org-roam node")
-    ;; "s t" '(org-roam-buffer-toggle :wk "Toggle buffer with org-roam backlinks")
     ;; toggle
     "t" '(:ignore t :wk "Toggle")
     "t e" '(my-switch-theme :wk "Toggle ef-themes")
