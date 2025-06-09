@@ -157,7 +157,7 @@
          doom-modeline-buffer-encoding nil
          doom-modeline-percent-position nil
          doom-modeline-total-line-number t
-         doom-modeline-buffer-file-name-style 'file-name
+         doom-modeline-buffer-file-name-style 'buffer-name
          doom-modeline-mu4e nil
          doom-modeline-icon nil))
 
@@ -218,13 +218,13 @@
   (marginalia-mode 1))
 
 (use-package embark
-   :init)
+  :init)
 
 (use-package embark-consult
-   :after (embark consult)
-   :demand t
-   :hook
-   (embark-collect-mode . consult-preview-at-point-mode))
+  :after (embark consult)
+  :demand t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 (global-set-key (kbd "C->") 'embark-act)
 
@@ -379,12 +379,22 @@
     "r r" '(org-refile :wk "Org refile")
     "r c" '(org-refile-copy :wk "Org refile copy, original item stays in place")
     "r g" '(org-refile-goto-last-stored :wk "Jump to location of last refiled item")
+    ;; slips
+    "s" '(:ignore t :wk "Slips")
+    "s a" '(citar-denote-dwim :wk "Access attachments etc. for bib. slip")
+    "s b" '(denote-backlinks :wk "Backlinks for slip")
+    "s f" '(denote-open-or-create :wk "Open or reate slip")
+    "s l" '(denote-link :wk "Insert Denote link")
+    "s m" '(denote-link-after-creating :wk "Create new slip and link")
+    "s q" '(citar-denote-open-note :wk "Open bib. slip")
+    "s r" '(citar-create-note :wk "New bib. slip")
+    "s s" '(denote :wk "New slip with Denote")
     ;; org-roam
-    "s" '(:ignore t :wk "Org-roam")
-    "s f" '(org-roam-node-find :wk "Open or create an org-roam node")
-    "s i" '(org-roam-node-insert :wk "Insert an org-roam node link") 
-    "s s" '(org-roam-capture :wk "Create an org-roam node")
-    "s t" '(org-roam-buffer-toggle :wk "Toggle buffer with org-roam backlinks")
+    ;; "s" '(:ignore t :wk "Org-roam")
+    ;; "s f" '(org-roam-node-find :wk "Open or create an org-roam node")
+    ;; "s i" '(org-roam-node-insert :wk "Insert an org-roam node link") 
+    ;; "s s" '(org-roam-capture :wk "Create an org-roam node")
+    ;; "s t" '(org-roam-buffer-toggle :wk "Toggle buffer with org-roam backlinks")
     ;; toggle
     "t" '(:ignore t :wk "Toggle")
     "t e" '(my-switch-theme :wk "Toggle ef-themes")
@@ -688,10 +698,11 @@
      "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n :END:")
 
     ;; reminders
-    ("r" "Schedule reminder for today" entry
+    ("d" "Schedule reminder")
+    ("ds" "Schedule reminder for today" entry
      (file+headline "intray.org" "Reminders")
      "* %^{Title for reminder}\nSCHEDULED: %t\n %?")
-    ("l" "Schedule reminder for another day" entry
+    ("dl" "Schedule reminder for another day" entry
      (file+headline "intray.org" "Reminders")
      "* %^{Title for reminder}\nSCHEDULED: %^t\n %?")
 
@@ -739,25 +750,27 @@
               (in-mode . "mu4e-headers-mode")
               (in-mode . "mu4e-view-mode")))))
 
-(setq org-cite-csl-styles-dir (expand-file-name "~/.local/share/zotero/styles"))
-
 (setq org-cite-global-bibliography '("~/.local/share/zotero/storage/my_library.bib"))
-
+(setq org-cite-csl-styles-dir (expand-file-name "~/.local/share/zotero/styles"))
 (setq org-cite-export-processors '((t csl "apa.csl")))
 
 (use-package citeproc)
 
 (use-package oc-csl-activate
-  :straight (oc-csl-activate :type git :host github :repo "andras-simonyi/org-cite-csl-activate") 
+  :straight (oc-csl-activate :type git :host github :repo "andras-simonyi/org-cite-csl-activate")
   :after oc
   :config
   (setq org-cite-csl-activate-use-document-style t))
+
+;; change default fallback CSL style to APA
+(with-eval-after-load 'oc-csl
+  (setq org-cite-csl--fallback-style-file "~/.local/share/zotero/styles/apa.csl"))
 
 (use-package citar
   :straight (citar :type git :host github :repo "emacs-citar/citar" :includes (citar-org))
   :custom
   (citar-bibliography org-cite-global-bibliography)
-  (citar-notes-paths '("~/slips/references"))
+  (citar-notes-paths '("~/slips"))
   :hook
   (org-mode . citar-capf-setup))
 
@@ -784,40 +797,40 @@
              (styled (format "[cite/na:%s]" keys)))
         (replace-match styled t t)))))
 
-(use-package org-roam
-  :custom
-  (org-roam-directory "~/slips")
+(use-package denote
+  :hook (dired-mode . denote-dired-mode)
   :config
-  (org-roam-db-autosync-mode))
+  (setq denote-directory "~/slips")
+  (setq denote-known-keywords nil) 
+  (setq denote-infer-keywords t)
+  (setq denote-sort-keywords t)
+  (setq denote-rename-buffer-format "%t")
+  (denote-rename-buffer-mode 1))
 
-(use-package citar-org-roam
-  :after (citar org-roam)
-  :config (citar-org-roam-mode)
-  (setq citar-org-roam-note-title-template "${author} — ${title}"))
+(setq denote-org-front-matter
+  "#+title:      %1$s
+#+date:       %2$s
+#+modified:   %2$s
+#+filetags:   %3$s
+#+identifier: %4$s
+\n")
 
-(setq org-roam-capture-templates
-      '(("d" "default" plain
-         "%?"
-         :target (file+head "main/%<%Y%m%d%H%M%S>-${slug}.org" 
-                            "#+title: ${title}\n#+created: %U\n#+last_modified: %U\n\n")
-         :unnarrowed t)
-         ("r" "reference" plain
-         "%?"
-         :target (file+head "references/${citar-citekey}.org"
-                            "#+title: ${citar-citekey} (${citar-date}). ${note-title}.\n#+created: %U\n#+last_modified: %U\n\n")
-         :unnarrowed t)
-        ))
-
-(setq citar-org-roam-capture-template-key "r")
-
-;; update last_modified timestamp for org-roam files
+;; update the "modified" timestamp when edits are saved
 (add-hook 'org-mode-hook (lambda ()
-                             (setq-local time-stamp-active t
-                                         time-stamp-line-limit 18
-                                         time-stamp-start "^#\\+last_modified: [ \t]*"
-                                         time-stamp-end "$"
-                                         time-stamp-format "\[%Y-%m-%d %a %H:%M:%S\]")
-                             (add-hook 'before-save-hook 'time-stamp nil 'local)))
+                           (setq-local time-stamp-active t
+                                       time-stamp-line-limit 18
+                                       time-stamp-start "^#\\+modified:[ \t]*"
+                                       time-stamp-end "$"
+                                       time-stamp-format "\[%Y-%m-%d %a %H:%M\]")
+                           (add-hook 'before-save-hook #'time-stamp nil 'local)))
+
+(use-package citar-denote
+  :after (:any citar denote)
+  :custom
+  (citar-denote-title-format "title") ; default (use nil for citation key)
+  (citar-denote-open-attachment nil)  ; don't open attachment when creating new note
+  :init
+  (citar-denote-mode))
 
 (use-package mu4e
   :straight
