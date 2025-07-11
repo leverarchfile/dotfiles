@@ -541,7 +541,7 @@ Resources I've found particularly useful:
   (setq org-hide-leading-stars t)
   (setq org-cycle-include-plain-lists nil)
   (setq org-pretty-entities t)
-  (setq org-ellipsis " [+]")
+  (setq org-ellipsis "⮧")
   (setq org-use-sub-superscripts "{}")
   (setq org-M-RET-may-split-line '((default . nil)))
   (setq org-return-follows-link t) ; use ENTER key to follow links
@@ -893,11 +893,8 @@ Resources I've found particularly useful:
   :straight (oc-csl-activate :type git :host github :repo "andras-simonyi/org-cite-csl-activate")
   :after oc
   :config
-  (setq org-cite-csl-activate-use-document-style t))
-
-;; change default fallback CSL style to APA
-(with-eval-after-load 'oc-csl
-  (setq org-cite-csl--fallback-style-file "~/.local/share/zotero/styles/apa.csl"))
+  (setq org-cite-csl-activate-use-document-style t
+        org-cite-csl-activate-fallback-style "apa.csl"))
 
 (use-package citar
   :straight (citar :type git :host github :repo "emacs-citar/citar" :includes (citar-org))
@@ -974,6 +971,19 @@ Resources I've found particularly useful:
   (citar-denote-open-attachment nil)  ; don't open attachment when creating new note
   :init
   (citar-denote-mode))
+#+end_src
+
+* PDFs
+
+#+begin_src emacs-lisp
+(use-package pdf-tools
+  :init
+  (pdf-tools-install)
+  :bind (:map pdf-view-mode-map
+              ("j" . pdf-view-next-line-or-next-page)
+              ("k" . pdf-view-previous-line-or-previous-page)
+              ("C-+" . pdf-view-enlarge)
+              ("C--" . pdf-view-shrink)))
 #+end_src
 
 * Email

@@ -389,12 +389,6 @@
     "s q" '(citar-denote-open-note :wk "Open bib. slip")
     "s r" '(citar-create-note :wk "New bib. slip")
     "s s" '(denote :wk "New slip with Denote")
-    ;; org-roam
-    ;; "s" '(:ignore t :wk "Org-roam")
-    ;; "s f" '(org-roam-node-find :wk "Open or create an org-roam node")
-    ;; "s i" '(org-roam-node-insert :wk "Insert an org-roam node link") 
-    ;; "s s" '(org-roam-capture :wk "Create an org-roam node")
-    ;; "s t" '(org-roam-buffer-toggle :wk "Toggle buffer with org-roam backlinks")
     ;; toggle
     "t" '(:ignore t :wk "Toggle")
     "t e" '(my-switch-theme :wk "Toggle ef-themes")
@@ -452,7 +446,7 @@
   (setq org-hide-leading-stars t)
   (setq org-cycle-include-plain-lists nil)
   (setq org-pretty-entities t)
-  (setq org-ellipsis " [+]")
+  (setq org-ellipsis "⮧")
   (setq org-use-sub-superscripts "{}")
   (setq org-M-RET-may-split-line '((default . nil)))
   (setq org-return-follows-link t) ; use ENTER key to follow links
@@ -831,6 +825,15 @@
   (citar-denote-open-attachment nil)  ; don't open attachment when creating new note
   :init
   (citar-denote-mode))
+
+(use-package pdf-tools
+  :init
+  (pdf-tools-install)
+  :bind (:map pdf-view-mode-map
+              ("j" . pdf-view-next-line-or-next-page)
+              ("k" . pdf-view-previous-line-or-previous-page)
+              ("C-+" . pdf-view-enlarge)
+              ("C--" . pdf-view-shrink)))
 
 (use-package mu4e
   :straight
