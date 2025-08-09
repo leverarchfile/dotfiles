@@ -1,6 +1,6 @@
 profile docked {
     output eDP-1 enable position 0,0 scale 1.75
-    output DP-11 enable
+		output DP-11 enable
 }
 
 profile undocked {

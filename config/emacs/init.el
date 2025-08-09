@@ -181,6 +181,8 @@
   (setq pulsar-pulse-on-window-change t)
   (pulsar-global-mode 1))
 
+(use-package dired-preview)
+
 (use-package olivetti
   :config
   (setq olivetti-body-width 100)
@@ -559,7 +561,7 @@
         ;; scheduled tasks for this week
         ("w" . "This week's scheduled/deadline tasks")
         ("we" "This week's tasks" agenda "Scheduled tasks for this week"
-         ((org-agenda-files '("~/org/projects.org" "~/org/intray.org"))
+         ((org-agenda-files '("~/org/projects.org" "~/org/agenda.org"))
          (org-agenda-use-time-grid nil)))
         ("ww" "This week's work tasks" agenda "Scheduled work tasks for this week"
          ((org-agenda-category-filter-preset '("-Perso" "-Computing")) 
@@ -685,34 +687,34 @@
 (setq org-capture-templates
   '(;; todos for intray (to refile later)
     ("t" "TODO for intray" entry
-     (file+headline "intray.org" "Refile")
+     (file+headline "agenda.org" "Refile")
      "* TODO %?")
     ("e" "TODO from email for intray" entry
-     (file+headline "intray.org" "Refile")
+     (file+headline "agenda.org" "Refile")
      "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n :END:")
 
     ;; reminders
     ("d" "Schedule reminder")
     ("ds" "Schedule reminder for today" entry
-     (file+headline "intray.org" "Reminders")
+     (file+headline "agenda.org" "Reminders")
      "* %^{Title for reminder}\nSCHEDULED: %t\n %?")
     ("dl" "Schedule reminder for another day" entry
-     (file+headline "intray.org" "Reminders")
+     (file+headline "agenda.org" "Reminders")
      "* %^{Title for reminder}\nSCHEDULED: %^t\n %?")
 
     ;; appointments (scheduled and repeating events)
     ("m" "Appointments")
     ("mw" "Work appointment" entry
-     (file+headline "meetings.org" "Work")
+     (file+headline "agenda.org" "Work")
      "* %^{Title?}\n %?\n SCHEDULED: %^t")
     ("me" "Work appointment from email" entry
-     (file+headline "meetings.org" "Work")
+     (file+headline "agenda.org" "Work")
      "* %^{Title?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
     ("mp" "Personal appointment" entry
-     (file+headline "meetings.org" "Personal")
+     (file+headline "agenda.org" "Personal")
      "* %^{Title?}\n %?\n SCHEDULED: %^t")
     ("mm" "Personal appointment from email" entry
-     (file+headline "meetings.org" "Personal")
+     (file+headline "agenda.org" "Personal")
      "* %^{Title?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
 
     ;; todos in location
@@ -754,11 +756,8 @@
   :straight (oc-csl-activate :type git :host github :repo "andras-simonyi/org-cite-csl-activate")
   :after oc
   :config
-  (setq org-cite-csl-activate-use-document-style t))
-
-;; change default fallback CSL style to APA
-(with-eval-after-load 'oc-csl
-  (setq org-cite-csl--fallback-style-file "~/.local/share/zotero/styles/apa.csl"))
+  (setq org-cite-csl-activate-use-document-style t
+        org-cite-csl-activate-fallback-style "apa.csl"))
 
 (use-package citar
   :straight (citar :type git :host github :repo "emacs-citar/citar" :includes (citar-org))
