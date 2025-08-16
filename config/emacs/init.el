@@ -834,6 +834,74 @@
               ("C-+" . pdf-view-enlarge)
               ("C--" . pdf-view-shrink)))
 
+(use-package elfeed
+  :config
+  (setq elfeed-db-directory "~/.local/share/elfeed"))
+
+(use-package password-store
+  :config
+  (defconst fever-url-zt (password-store-get "zt_server_fever"))
+  (defconst fever-api-url (password-store-get "zt_server_fever_api"))
+  (defconst fever-password (password-store-get "freshrss_api")))
+
+(use-package elfeed-protocol
+  :config
+  (setq elfeed-use-curl t)
+  (elfeed-set-timeout 36000)
+  (setq elfeed-curl-extra-arguments '("--insecure"))
+  (setq elfeed-protocol-fever-fetch-category-as-tag t)
+  (setq elfeed-protocol-fever-update-unread-only t)
+
+  (setq elfeed-protocol-feeds `((,fever-url-zt
+                                 :api-url ,fever-api-url
+                                 :password ,fever-password)))
+
+  (setq elfeed-protocol-enabled-protocols '(fever))
+  (elfeed-protocol-enable))
+
+;; workaround to sync unread status
+;; https://github.com/fasheng/elfeed-protocol/issues/71
+(defun elfeed-protocol-fever-sync-unread-stat ()
+  "Set all entries in search view to read and fetch latest unread entries."
+  (interactive)
+  (mark-whole-buffer)
+  (cl-loop for entry in (elfeed-search-selected)
+           do (elfeed-untag-1 entry 'unread))
+  (let ((clean-url (replace-regexp-in-string "^fever\\+" "" fever-url-zt)))
+  (elfeed-protocol-fever--do-update clean-url 'update-unread)))
+
+;; org-store-link for elfeed
+(org-link-set-parameters "elfeed"
+  :follow #'elfeed-link-open
+  :store  #'elfeed-link-store-link
+  :export #'elfeed-link-export-link)
+
+;; store org link with title and url when viewing an entry (show-mode)
+;; use org-store-link and org-insert-link
+(defun org-elfeed-store-link ()
+  "Store a link to an elfeed entry."
+  (interactive)
+  (cond
+   ((eq major-mode 'elfeed-show-mode)
+    (let* ((title (elfeed-entry-title elfeed-show-entry))
+           (url (elfeed-entry-link elfeed-show-entry))
+           (entry-id (elfeed-entry-id elfeed-show-entry))
+           (entry-id-str (concat (car entry-id)
+                                 "|"
+                                 (cdr entry-id)
+                                 "|"
+                                 url))
+           (org-link (concat "elfeed:entry-id:" entry-id-str)))
+      (org-link-store-props
+       :description title
+       :type "elfeed"
+       :link org-link
+       :url url
+       :entry-id entry-id)
+      (kill-new (concat "[[" url "][" title "]]"))
+      org-link))
+   (t nil)))
+
 (use-package mu4e
   :straight
   (:local-repo "/usr/share/emacs/site-lisp/mu4e/"
