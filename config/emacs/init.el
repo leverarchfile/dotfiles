@@ -95,6 +95,19 @@
   (setq xclip-mode t)
   (setq xclip-method (quote wl-copy)))
 
+(defun copy-link-url-at-point ()
+  "Copy URL of link at point."
+  (interactive)
+  (let ((url (or (thing-at-point 'url t)
+                 (get-text-property (point) 'url)
+                 (when (button-at (point))
+                   (button-get (button-at (point)) 'url)))))
+    (if url
+        (progn
+          (kill-new url)
+          (message "Copied URL: %s" url))
+      (message "No URL found at point"))))
+
 (use-package magit)
 
 (use-package fontaine
@@ -347,6 +360,7 @@
     "g c" '(comment-line :wk "Comment lines")
     ;; links
     "l" '(:ignore t :wk "Links")
+    "l c" '(copy-link-url-at-point :wk "Copy URL of link at point")
     "l l" '(org-insert-link :wk "Insert a link")
     "l s" '(org-store-link :wk "Store a link")
     ;; mail
@@ -693,6 +707,13 @@
      (file+headline "agenda.org" "Refile")
      "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n :END:")
 
+    ;; RSS from elfeed
+    ("r" "RSS from elfeed" entry
+     (file+headline "agenda.org" "Refile")
+     "* [[%:external-link][%:title]]\n"
+     :empty-lines-after 1
+     :immediate-finish t)
+
     ;; reminders
     ("d" "Schedule reminder")
     ("ds" "Schedule reminder for today" entry
@@ -744,7 +765,8 @@
               (in-mode . "mu4e-view-mode")))
         ("mm" ((in-mode . "message-mode")
               (in-mode . "mu4e-headers-mode")
-              (in-mode . "mu4e-view-mode")))))
+              (in-mode . "mu4e-view-mode")))
+        ("r" ((in-mode . "elfeed-show-mode")))))
 
 (setq org-cite-global-bibliography '("~/.local/share/zotero/storage/my_library.bib"))
 (setq org-cite-csl-styles-dir (expand-file-name "~/.local/share/zotero/styles"))
@@ -875,32 +897,6 @@
   :follow #'elfeed-link-open
   :store  #'elfeed-link-store-link
   :export #'elfeed-link-export-link)
-
-;; store org link with title and url when viewing an entry (show-mode)
-;; use org-store-link and org-insert-link
-(defun org-elfeed-store-link ()
-  "Store a link to an elfeed entry."
-  (interactive)
-  (cond
-   ((eq major-mode 'elfeed-show-mode)
-    (let* ((title (elfeed-entry-title elfeed-show-entry))
-           (url (elfeed-entry-link elfeed-show-entry))
-           (entry-id (elfeed-entry-id elfeed-show-entry))
-           (entry-id-str (concat (car entry-id)
-                                 "|"
-                                 (cdr entry-id)
-                                 "|"
-                                 url))
-           (org-link (concat "elfeed:entry-id:" entry-id-str)))
-      (org-link-store-props
-       :description title
-       :type "elfeed"
-       :link org-link
-       :url url
-       :entry-id entry-id)
-      (kill-new (concat "[[" url "][" title "]]"))
-      org-link))
-   (t nil)))
 
 (use-package mu4e
   :straight
