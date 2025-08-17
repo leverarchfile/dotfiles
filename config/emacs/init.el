@@ -345,6 +345,11 @@
     "d" '(:ignore t :wk "Dired")
     "d d" '(dired :wk "Open dired")
     "d j" '(dired-jump :wk "Dired jump to current")
+    ;; elfeed
+    "e" '(:ignore t :wk "Elfeed")
+    "e e" '(elfeed :wk "Open elfeed")
+    "e s" '(elfeed-protocol-fever-sync-unread-stat :wk "Sync unread RSS with elfeed")
+    "e u" '(elfeed-update :wk "Update elfeed")
     ;; files
     "f" '(:ignore t :wk "Files")
     "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
@@ -452,6 +457,18 @@
     "a m" '(org-agenda-month-view :wk "Month view")
     "a t" '(org-agenda-todo :wk "All todos")
     "a /" '(org-agenda-filter-by-tag :wk "Filter by tag"))
+
+;; use 'o' to view elfeed entry in vertical split
+;; make sure 'q' deletes the split window
+(with-eval-after-load 'elfeed
+  (evil-collection-define-key 'normal 'elfeed-search-mode-map
+    "o" #'my-elfeed-search-open-other-window)
+  (evil-collection-define-key 'normal 'elfeed-show-mode-map
+    "q" (lambda ()
+          (interactive)
+          (elfeed-kill-buffer)
+          (when (> (count-windows) 1)
+            (delete-window)))))
 
 (use-package org
   :init
@@ -897,6 +914,20 @@
   :follow #'elfeed-link-open
   :store  #'elfeed-link-store-link
   :export #'elfeed-link-export-link)
+
+(defun my-elfeed-search-open-other-window ()
+  "Open elfeed entry in other window."
+  (interactive)
+  (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                    elfeed-show-entry
+                  (elfeed-search-selected :ignore-region)))
+         (win (selected-window)))
+    (with-current-buffer (get-buffer "*elfeed-search*")
+      (unless (one-window-p)
+        (delete-other-windows win))
+      (split-window win nil 'right)
+      (other-window 1)
+      (elfeed-search-show-entry entry))))
 
 (use-package mu4e
   :straight
