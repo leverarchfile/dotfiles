@@ -341,15 +341,18 @@
     "c f" '(org-capture-finalize :wk "Finish")
     "c r" '(org-capture-refile :wk "Refile")
     "c k" '(org-capture-kill :wk "Abort")
-    ;; dired
+    ;; dired/diff
     "d" '(:ignore t :wk "Dired")
     "d d" '(dired :wk "Open dired")
+    "d e" '(ediff :wk "Ediff two files")
+    "d f" '(diff :wk "Show differences between two files")
     "d j" '(dired-jump :wk "Dired jump to current")
-    ;; elfeed
-    "e" '(:ignore t :wk "Elfeed")
-    "e e" '(elfeed :wk "Open elfeed")
-    "e s" '(elfeed-protocol-fever-sync-unread-stat :wk "Sync unread RSS with elfeed")
-    "e u" '(elfeed-update :wk "Update elfeed")
+    ;; eval
+    "e" '(:ignore t :wk "Eval/Ediff")
+    "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+    "e e" '(eval-expression :wk "Evaluate and elisp expression")
+    "e e" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+    "e r" '(eval-region :wk "Evaluate elisp in region")
     ;; files
     "f" '(:ignore t :wk "Files")
     "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
@@ -417,6 +420,11 @@
     "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
     "t r" '(rainbow-mode :wk "Toggle rainbow mode")
     "t t" '(visual-line-mode :wk "Toggle truncated lines")
+    ;; elfeed
+    "u" '(:ignore t :wk "Elfeed")
+    "u r" '(elfeed-update :wk "Update elfeed")
+    "u s" '(elfeed-protocol-fever-sync-unread-stat :wk "Sync unread RSS with elfeed")
+    "u u" '(elfeed :wk "Open elfeed")
     ;; windows
     "w" '(:ignore t :wk "Windows")
     "w c" '(evil-window-delete :wk "Close window")
@@ -925,7 +933,7 @@
     (with-current-buffer (get-buffer "*elfeed-search*")
       (unless (one-window-p)
         (delete-other-windows win))
-      (split-window win nil 'right)
+      (split-window-sensibly win)
       (other-window 1)
       (elfeed-search-show-entry entry))))
 
