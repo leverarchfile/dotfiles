@@ -37,6 +37,7 @@
   (tool-bar-mode -1)
   (tooltip-mode -1)
   (blink-cursor-mode -1)
+  (fringe-mode 1)
 
   (save-place-mode 1) 
   (savehist-mode 1)
@@ -158,8 +159,7 @@
 (defun my-switch-theme ()
     (interactive)
     (doric-themes-toggle)
-    (my/org-font-setup)
-    (my/org-mode-face-edits))
+    (my/org-font-setup))
 
 (use-package spacious-padding
   :init 
@@ -211,11 +211,9 @@
   :hook (text-mode . olivetti-mode))
 
 (add-hook 'text-mode-hook (lambda () 
-                            (fringe-mode 1)
                             (display-line-numbers-mode -1)))
 
 (add-hook 'prog-mode-hook (lambda ()
-                            (fringe-mode -1)
                             (display-line-numbers-mode 1)))
 
 (use-package vertico
@@ -300,6 +298,9 @@
   :after evil
   :config
   (global-evil-surround-mode 1))
+
+;; use evil in the *Messages* buffer
+(add-to-list 'evil-normal-state-modes 'messages-buffer-mode)
 
 (use-package flyspell
   :init (flyspell-mode)
@@ -671,13 +672,11 @@
 
 ;; show org-agenda list on startup
 (add-hook 'server-after-make-frame-hook (lambda ()
-                                          (fringe-mode 1)
                                           (setq olivetti-body-width 100)
                                           (olivetti-mode)
-                                          (org-agenda nil "t")))
+                                          (org-agenda nil "a")))
 
 (add-hook 'org-agenda-mode-hook (lambda ()
-                                  (fringe-mode 1)
                                   (setq olivetti-body-width 100)
                                   (olivetti-mode)))
 
