@@ -108,6 +108,14 @@
           (message "Copied URL: %s" url))
       (message "No URL found at point"))))
 
+(defun copy-current-file-path ()
+  "Copy current buffer's file path and show it in the minibuffer."
+  (interactive)
+  (let ((file-name (buffer-file-name)))
+    (unless file-name (user-error "Buffer not visiting a file"))
+    (kill-new file-name)
+    (minibuffer-message "%s" file-name)))
+
 (use-package magit)
 
 (use-package fontaine
@@ -356,6 +364,7 @@
     ;; files
     "f" '(:ignore t :wk "Files")
     "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
+    "f c" '(copy-current-file-path :wk "Copy current file path")
     "f d" '(kill-current-buffer :wk "Kill current buffer")
     "f f" '(basic-save-buffer :wk "Save buffer")
     "f g" `(,(general-simulate-key "C-x g") :wk "Magit status buffer")
