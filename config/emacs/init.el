@@ -643,22 +643,22 @@
         ("hp" "Perso/Comp WAIT" tags-todo "TODO={WAIT}+DEADLINE=\"\"+SCHEDULED=\"\""
          ((org-agenda-category-filter-preset '("+Perso" "+Computing"))))
         
-        ;; views for deadlines within a range of 60 days +- of their warning period 
+        ;; views for deadlines within a range of 90 days +- of their warning period 
         ("!" . "Deadlines")
         ("!!" "All deadlines" agenda "Past and upcoming deadlines"
-	 ((org-agenda-span 1)
-	  (org-deadline-warning-days 60)
-	  (org-agenda-entry-types '(:deadline))))
+	       ((org-agenda-span 1)
+	        (org-deadline-warning-days 90)
+	        (org-agenda-entry-types '(:deadline))))
         ("!w" "Work deadlines" agenda "Past and upcoming work deadlines"
-	 ((org-agenda-span 1)
-	  (org-agenda-category-filter-preset '("-Perso" "-Computing"))
-	  (org-deadline-warning-days 60)
-	  (org-agenda-entry-types '(:deadline))))
+	       ((org-agenda-span 1)
+	        (org-agenda-category-filter-preset '("-Perso" "-Computing"))
+	        (org-deadline-warning-days 90)
+	        (org-agenda-entry-types '(:deadline))))
         ("!p" "Perso/Comp deadlines" agenda "Past and upcoming perso/comp deadlines"
-	 ((org-agenda-span 1)
-	  (org-agenda-category-filter-preset '("+Perso" "+Computing"))
-	  (org-deadline-warning-days 60)
-	  (org-agenda-entry-types '(:deadline)))))))
+	       ((org-agenda-span 1)
+	        (org-agenda-category-filter-preset '("+Perso" "+Computing"))
+	        (org-deadline-warning-days 90)
+	        (org-agenda-entry-types '(:deadline)))))))
 
 ;; show org-agenda list on startup
 (add-hook 'server-after-make-frame-hook (lambda ()
