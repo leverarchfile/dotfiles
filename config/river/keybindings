@@ -28,6 +28,9 @@ riverctl map normal Super+Shift C spawn colour-picker
 # Toggle bluetooth
 riverctl map normal Super+Shift Z spawn bt_toggle
 
+# Emacs org capture template
+riverctl map normal Super+Shift D spawn "emacsclient -e '(prot-window-popup-org-capture)'"
+
 # Reload waybar
 riverctl map normal Super+Shift B spawn reload-waybar
 

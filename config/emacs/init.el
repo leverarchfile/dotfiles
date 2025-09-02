@@ -591,21 +591,38 @@
   (setq org-agenda-span 7
         org-agenda-start-day "+0d"
         org-agenda-block-separator nil
-        org-agenda-compact-blocks t)
+        org-agenda-compact-blocks nil) ; hides header when set to true ('t')
   
   (setq org-deadline-warning-days 3)
  
   ;; empty line between days in agenda to space things out 
   (setq org-agenda-format-date
-    (lambda (date)
-      (concat "\n"
-                (org-agenda-format-date-aligned date)))))
+        (lambda (date)
+          (concat "\n"
+                  (org-agenda-format-date-aligned date)))))
 
 (use-package org
   :config
   (setq org-agenda-custom-commands
       '(;; done/skipped tasks to archive
         ("#" "To archive" todo "DONE|SKIP")
+        
+        ;; day view and scheduled/deadlines for next 7 days
+        ("u" "Today and coming up"
+         ((agenda "" ((org-agenda-span 1)
+                      (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
+                      (org-agenda-format-date "%A %d %B %Y")
+                      (org-agenda-overriding-header "\nToday\n")))
+          (agenda "" ((org-agenda-time-grid nil)
+                      (org-agenda-start-on-weekday nil) ; show week ahead
+                      (org-agenda-start-day "+1d") ; start from tomorrow
+                      (org-agenda-span 7)
+                      (org-agenda-show-all-dates nil)
+                      (org-deadline-warning-days 0)
+                      (org-agenda-block-separator nil)
+                      (org-agenda-entry-types '(:deadline :scheduled))
+                      (org-agenda-format-date "\n%a %d %B %Y")
+                      (org-agenda-overriding-header "\nUpcoming (+7d)")))))
 
         ;; scheduled tasks for this week
         ("w" . "This week's scheduled/deadline tasks")
@@ -725,20 +742,25 @@
 
 (use-package calfw-org)
 
-;; refile
 (setq org-refile-targets
       '((nil :maxlevel . 3)
         (org-agenda-files :maxlevel . 3)))
 
-;; capture
 (setq org-capture-templates
-  '(;; todos for intray (to refile later)
-    ("t" "TODO for intray" entry
+  '(;; todos to refile later
+    ("t" "TODO to refile" entry
      (file+headline "agenda.org" "Refile")
-     "* TODO %?")
-    ("e" "TODO from email for intray" entry
+     "* TODO %?"
+     :empty-lines-after 1)
+    ("e" "TODO email to refile" entry
      (file+headline "agenda.org" "Refile")
-     "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n :END:")
+     "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n :END:"
+     :empty-lines-after 1)
+    ("q" "TODO email quick refile" entry
+     (file+headline "agenda.org" "Refile")
+     "* TODO email from %:fromname\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :END:"
+     :empty-lines-after 1
+     :immediate-finish t)
 
     ;; RSS from elfeed
     ("r" "RSS from elfeed" entry
@@ -751,46 +773,60 @@
     ("d" "Schedule reminder")
     ("ds" "Schedule reminder for today" entry
      (file+headline "agenda.org" "Reminders")
-     "* %^{Title for reminder}\nSCHEDULED: %t\n %?")
+     "* %^{Title for reminder}\nSCHEDULED: %t\n %?"
+     :empty-lines-after 1)
     ("dl" "Schedule reminder for another day" entry
      (file+headline "agenda.org" "Reminders")
-     "* %^{Title for reminder}\nSCHEDULED: %^t\n %?")
+     "* %^{Title for reminder}\nSCHEDULED: %^t\n %?"
+     :empty-lines-after 1)
 
     ;; appointments (scheduled and repeating events)
     ("m" "Appointments")
     ("mw" "Work appointment" entry
      (file+headline "agenda.org" "Work")
-     "* %^{Title?}\n %?\n SCHEDULED: %^t")
+     "* %^{Title?}\n %?\n SCHEDULED: %^t"
+     :empty-lines-after 1)
     ("me" "Work appointment from email" entry
      (file+headline "agenda.org" "Work")
-     "* %^{Title?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
+     "* %^{Title?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:"
+     :empty-lines-after 1)
     ("mp" "Personal appointment" entry
      (file+headline "agenda.org" "Personal")
-     "* %^{Title?}\n %?\n SCHEDULED: %^t")
+     "* %^{Title?}\n %?\n SCHEDULED: %^t"
+     :empty-lines-after 1)
     ("mm" "Personal appointment from email" entry
      (file+headline "agenda.org" "Personal")
-     "* %^{Title?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:")
+     "* %^{Title?}\n :PROPERTIES:\n :SUBJECT: %:subject\n :EMAIL: %:fromaddress\n :THREAD: %l\n :DATE: %:date\n :NOTES: %?\n SCHEDULED: %^t\n :END:"
+     :empty-lines-after 1)
 
     ;; todos in location
     ("a" "Add TODO in location")
     ("ar" "TODO for research" entry
      (file+headline "projects.org" "Research")
-     "* TODO %?")
+     "* TODO %?"
+     :empty-lines-after 1)
     ("at" "TODO for teaching" entry
      (file+headline "projects.org" "Teaching")
-     "* TODO %?")
+     "* TODO %?"
+     :empty-lines-after 1)
     ("as" "TODO for service" entry
      (file+headline "projects.org" "Service")
-     "* TODO %?")
+     "* TODO %?"
+     :empty-lines-after 1)
     ("ap" "TODO for perso" entry
      (file+headline "projects.org" "Perso")
-     "* TODO %?")
+     "* TODO %?"
+     :empty-lines-after 1)
     ("ac" "TODO for computing" entry
      (file+headline "projects.org" "Computing")
-     "* TODO %?")))
+     "* TODO %?"
+     :empty-lines-after 1)))
 
 (setq org-capture-templates-contexts
       '(("e" ((in-mode . "message-mode")
+              (in-mode . "mu4e-headers-mode")
+              (in-mode . "mu4e-view-mode")))
+        ("q" ((in-mode . "message-mode")
               (in-mode . "mu4e-headers-mode")
               (in-mode . "mu4e-view-mode")))
         ("me" ((in-mode . "message-mode")
@@ -800,6 +836,38 @@
               (in-mode . "mu4e-headers-mode")
               (in-mode . "mu4e-view-mode")))
         ("r" ((in-mode . "elfeed-show-mode")))))
+
+;; Run capture command in a popup frame
+;; Taken from Protesilaos Stavrou, with some minor modifications
+;; https://protesilaos.com/codelog/2024-09-19-emacs-command-popup-frame-emacsclient/ 
+
+(defun prot-window-delete-popup-frame (&rest _)
+  "Kill selected selected frame if it has parameter `prot-window-popup-frame'. Use this function via a hook."
+  (when (frame-parameter nil 'prot-window-popup-frame)
+    (delete-frame)))
+
+(defmacro prot-window-define-with-popup-frame (command)
+  "Define interactive function which calls COMMAND in a new frame. Make the new frame have the `prot-window-popup-frame' parameter."
+  `(defun ,(intern (format "prot-window-popup-%s" command)) ()
+     ,(format "Run `%s' in a popup frame with `prot-window-popup-frame' parameter. Also see `prot-window-delete-popup-frame'." command)
+     (interactive)
+     (let ((frame (make-frame '((prot-window-popup-frame . t)
+                                (height . 18)
+                                (title . "emacs-window-popup")))))
+       (select-frame frame)
+       (switch-to-buffer " prot-window-hidden-buffer-for-popup-frame")
+       (condition-case nil
+           (call-interactively ',command)
+         ((quit error user-error)
+          (delete-frame frame))))))
+
+(declare-function org-capture "org-capture" (&optional goto keys))
+(defvar org-capture-after-finalize-hook)
+
+;; autoload 'prot-window-popup-org-capture "prot-window"
+(prot-window-define-with-popup-frame org-capture)
+
+(add-hook 'org-capture-after-finalize-hook #'prot-window-delete-popup-frame)
 
 (setq org-cite-global-bibliography '("~/.local/share/zotero/storage/my_library.bib"))
 (setq org-cite-csl-styles-dir (expand-file-name "~/.local/share/zotero/styles"))

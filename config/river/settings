@@ -6,6 +6,7 @@ riverctl set-repeat 50 250
 riverctl default-attach-mode bottom
 
 riverctl rule-add ssd
+riverctl rule-add -title "emacs-window-popup" float
 
 gsettings set "org.gnome.desktop.interface" gtk-theme "Gruvbox-Material-Dark"
 gsettings set "org.gnome.desktop.interface" icon-theme "breeze-dark"
