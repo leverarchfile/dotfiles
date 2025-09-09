@@ -745,9 +745,51 @@ Resources I've found particularly useful:
                       (org-agenda-show-all-dates nil)
                       (org-deadline-warning-days 0)
                       (org-agenda-block-separator nil)
-                      (org-agenda-entry-types '(:deadline :scheduled))
-                      (org-agenda-format-date "\n%a %d %B %Y")
+                      (org-agenda-format-date "\n%a %d %B %Y") ; new line before each day
                       (org-agenda-overriding-header "\nUpcoming (+7d)")))))
+
+        ;; refile 
+        ("r" "Refile"
+         ((tags "CATEGORY=\"Refile\"" ((org-agenda-files '("~/org/agenda.org"))
+                                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'regexp "^\\*+ Refile$")) ; exclude headline itself
+                                       (org-agenda-time-grid nil)
+                                       (org-agenda-prefix-format "  ")
+                                       (org-agenda-remove-tags t)
+                                       (org-agenda-overriding-header "\nRefile")))
+          (tags-todo "TODO={TODO}" ((org-agenda-files '("~/org/inbox-phone.org"))
+                                    (org-agenda-prefix-format "  ")
+                                    (org-agenda-overriding-header "\nRefile (phone)")))))
+
+        ;; views to export, e.g. for desktop widget
+        ("z" . "Desktop views")
+        ("zt" "Today"
+         ((agenda "" ((org-agenda-span 1)
+                      (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
+                      (org-agenda-format-date "%a %d %B %Y")
+                      (org-agenda-time-grid nil)
+                      (org-agenda-overriding-header "")
+                      (org-agenda-remove-tags t)))))
+        ("zu" "Upcoming"
+         ((agenda "" ((org-agenda-span 1) ; separate first entry to avoid empty first line
+                      (org-agenda-start-on-weekday nil)
+                      (org-agenda-start-day "+1d")
+                      (org-agenda-show-all-dates nil)
+                      (org-agenda-block-separator nil)
+                      (org-agenda-format-date "%a %d %B %Y")
+                      (org-agenda-time-grid nil)
+                      (org-deadline-warning-days 0)
+                      (org-agenda-overriding-header "")
+                      (org-agenda-remove-tags t)))
+          (agenda "" ((org-agenda-span 6)
+                      (org-agenda-start-on-weekday nil)
+                      (org-agenda-start-day "+2d")
+                      (org-agenda-show-all-dates nil)
+                      (org-agenda-block-separator nil)
+                      (org-agenda-format-date "\n%a %d %B %Y")
+                      (org-agenda-time-grid nil)
+                      (org-deadline-warning-days 0)
+                      (org-agenda-overriding-header "")
+                      (org-agenda-remove-tags t)))))
 
         ;; scheduled tasks for this week
         ("w" . "This week's scheduled/deadline tasks")
@@ -783,9 +825,9 @@ Resources I've found particularly useful:
         (";" . "What is there to do?")
         (";;" "All TODOs" tags-todo "TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\"")
         (";w" "Work TODOs" tags-todo "TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\""
-         ((org-agenda-category-filter-preset '("-Perso" "-Computing"))))
+         ((org-agenda-category-filter-preset '("+Research" "+Teaching" "+Service"))))
         (";p" "Perso/Comp TODOs" tags-todo "TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\""
-         ((org-agenda-category-filter-preset '("+Perso" "+Computing"))))
+         ((org-agenda-category-filter-preset '("-Research" "-Teaching" "-Service"))))
 
         ;; views for WAIT tasks without SCHEDULED/DEADLINE
         ("h" . "What is waiting?")
@@ -825,6 +867,27 @@ Resources I've found particularly useful:
 (add-hook 'org-agenda-mode-hook (lambda ()
                                   (setq olivetti-body-width 100)
                                   (olivetti-mode)))
+#+end_src
+
+** Org agenda export files
+
+#+begin_src emacs-lisp
+;; automatically export two agenda views as .txt files whenever an org agenda file is saved 
+(defun my-update-desktop-agenda-files ()
+  (let ((inhibit-message t))
+    (save-window-excursion
+      (org-agenda nil "zt")
+      (org-agenda-write "~/.local/share/agenda-today.txt")
+      (org-agenda nil "zu")
+      (org-agenda-write "~/.local/share/agenda-upcoming.txt"))))
+
+(defun my-check-update-desktop-agenda-files ()
+  (when (and buffer-file-name
+             (member (file-truename buffer-file-name) 
+                     (mapcar 'file-truename org-agenda-files)))
+    (my-update-desktop-agenda-files)))
+
+(add-hook 'after-save-hook #'my-check-update-desktop-agenda-files)
 #+end_src
 
 ** Org interface
