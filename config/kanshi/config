@@ -1,8 +1,14 @@
-profile docked {
-    output eDP-1 enable position 0,0 scale 1.75
-		output DP-11 enable
+profile undocked {
+    output eDP-1 enable scale 1.75
 }
 
-profile undocked {
+profile docked {
     output eDP-1 enable position 0,0 scale 1.75
+		output "Dell Inc. DELL S2721QS 6XG8M43" scale 2 
 }
+
+profile uoa {
+    output eDP-1 enable position 0,0 scale 1.75
+    output "Dell Inc. DELL U2718Q H0YFH9BQ0EDL" scale 2
+}
+
