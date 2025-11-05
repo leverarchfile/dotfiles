@@ -66,6 +66,8 @@ Resources I've found particularly useful:
   (global-auto-revert-mode 1) ; refresh buffers with file changes
   (setq auto-revert-verbose nil) ; don't clutter minibuffer with "Reverting..." messages
 
+  (setq cursor-in-non-selected-windows nil) ; hide cursor in non-active windows
+
   (setq frame-inhibit-implied-resize t)
 
   (setq use-short-answers t)
@@ -151,6 +153,25 @@ Resources I've found particularly useful:
     (unless file-name (user-error "Buffer not visiting a file"))
     (kill-new file-name)
     (minibuffer-message "%s" file-name)))
+#+end_src
+
+** Dired
+
+#+begin_src emacs-lisp
+(use-package dired
+  :straight nil
+  :config
+  (setq dired-vc-rename-file t))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package dired-subtree
+  :after dired
+  :bind
+  ( :map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("<backtab>" . dired-subtree-remove)
+    ("<C-tab>" . dired-subtree-cycle)))
 #+end_src
 
 ** Magit
@@ -344,6 +365,14 @@ Resources I've found particularly useful:
   (which-key-max-description-length 40)
   (which-key-lighter nil)
   (which-key-sort-order 'which-key-description-order))
+
+(use-package cape
+  :after corfu
+  :config
+  ;; complete file path
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  ;; comlete word from current buffers
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev))
 #+end_src
 
 ** Evil
@@ -541,8 +570,6 @@ Resources I've found particularly useful:
 #+begin_src emacs-lisp
 (use-package evil
   :config 
-  (setq-default tab-width 2
-                indent-tabs-mode nil)
   (with-eval-after-load 'message
     (evil-define-key 'insert message-mode-map (kbd "TAB") #'message-tab))
   ;; unmap keys in 'evil-maps, otherwise (setq org-return-follows-link t) will not work

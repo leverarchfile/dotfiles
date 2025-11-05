@@ -45,6 +45,8 @@
   (global-auto-revert-mode 1) ; refresh buffers with file changes
   (setq auto-revert-verbose nil) ; don't clutter minibuffer with "Reverting..." messages
 
+  (setq cursor-in-non-selected-windows nil) ; hide cursor in non-active windows
+
   (setq frame-inhibit-implied-resize t)
 
   (setq use-short-answers t)
@@ -116,6 +118,19 @@
     (unless file-name (user-error "Buffer not visiting a file"))
     (kill-new file-name)
     (minibuffer-message "%s" file-name)))
+
+(use-package dired
+  :straight nil
+  :config
+  (setq dired-vc-rename-file t))
+
+(use-package dired-subtree
+  :after dired
+  :bind
+  ( :map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("<backtab>" . dired-subtree-remove)
+    ("<C-tab>" . dired-subtree-cycle)))
 
 (use-package magit)
 
@@ -277,6 +292,14 @@
   (which-key-max-description-length 40)
   (which-key-lighter nil)
   (which-key-sort-order 'which-key-description-order))
+
+(use-package cape
+  :after corfu
+  :config
+  ;; complete file path
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  ;; comlete word from current buffers
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev))
 
 (use-package evil
   :init
@@ -452,8 +475,6 @@
 
 (use-package evil
   :config 
-  (setq-default tab-width 2
-                indent-tabs-mode nil)
   (with-eval-after-load 'message
     (evil-define-key 'insert message-mode-map (kbd "TAB") #'message-tab))
   ;; unmap keys in 'evil-maps, otherwise (setq org-return-follows-link t) will not work
