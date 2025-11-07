@@ -9,7 +9,7 @@ alias ltree="eza --tree --level=2 --long --git -a"
 alias ..="cd .."
 
 alias sync-server="ssh -L 9988:localhost:8384 server"
-alias sync-remote="ssh -L 9987:localhost:8384 jenasoff"
+alias sync-remote="ssh -L 9987:localhost:8384 jenasoffice"
 
 alias restart-emacs="killall emacs || echo 'Emacs server not running'; /usr/bin/emacs --daemon" 
 alias reload-wifi="sudo rmmod mt7921e && sudo modprobe mt7921e"

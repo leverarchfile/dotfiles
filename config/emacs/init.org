@@ -81,8 +81,8 @@ Resources I've found particularly useful:
   (setq-default electric-indent-mode nil) ; no automatic identation
   (setq-default indent-tabs-mode nil) ; use spaces everywhere
   
-  (setq truncate-string-ellipsis "…") ; Unicode ellipsis rather than "..."
-  (setq sentence-end-double-space nil)) ; Make sure sentences end with one space
+  (setq truncate-string-ellipsis "…") ; unicode ellipsis rather than "..."
+  (setq sentence-end-double-space nil)) ; make sure sentences end with one space
 #+end_src
 
 ** Tabs
@@ -496,7 +496,7 @@ Resources I've found particularly useful:
     "l l" '(org-insert-link :wk "Insert a link")
     "l s" '(org-store-link :wk "Store a link")
     ;; mail
-    "m" '(:ignore t :wk "Org")
+    "m" '(:ignore t :wk "Mail")
     "m m" '(mu4e :wk "Start mu4e")
     "m s" '(message-send-and-exit :wk "Send email")
     ;; org
@@ -565,7 +565,7 @@ Resources I've found particularly useful:
     "w a" '(evil-window-rotate-upwards :wk "Switch windows around")))
 #+end_src
 
-** Edits for TAB, RET, and SPC
+** Evil edits for TAB, RET, and SPC
 
 #+begin_src emacs-lisp
 (use-package evil
@@ -578,6 +578,14 @@ Resources I've found particularly useful:
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil)
     (define-key evil-insert-state-map (kbd "TAB") 'indent-for-tab-command)))
+#+end_src
+
+** Other Evil edits
+
+#+begin_src emacs-lisp
+;; insert new line without moving cursor
+(with-eval-after-load 'evil-maps
+  (define-key evil-insert-state-map (kbd "C-<return>") 'open-line))
 #+end_src
 
 ** Org agenda keybindings

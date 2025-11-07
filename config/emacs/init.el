@@ -60,8 +60,8 @@
   (setq-default electric-indent-mode nil) ; no automatic identation
   (setq-default indent-tabs-mode nil) ; use spaces everywhere
   
-  (setq truncate-string-ellipsis "…") ; Unicode ellipsis rather than "..."
-  (setq sentence-end-double-space nil)) ; Make sure sentences end with one space
+  (setq truncate-string-ellipsis "…") ; unicode ellipsis rather than "..."
+  (setq sentence-end-double-space nil)) ; make sure sentences end with one space
 
 (use-package emacs
   :config
@@ -405,7 +405,7 @@
     "l l" '(org-insert-link :wk "Insert a link")
     "l s" '(org-store-link :wk "Store a link")
     ;; mail
-    "m" '(:ignore t :wk "Org")
+    "m" '(:ignore t :wk "Mail")
     "m m" '(mu4e :wk "Start mu4e")
     "m s" '(message-send-and-exit :wk "Send email")
     ;; org
@@ -483,6 +483,10 @@
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil)
     (define-key evil-insert-state-map (kbd "TAB") 'indent-for-tab-command)))
+
+;; insert new line without moving cursor
+(with-eval-after-load 'evil-maps
+  (define-key evil-insert-state-map (kbd "C-<return>") 'open-line))
 
 ;; evil key configurations for org-agenda
 (evil-set-initial-state 'org-agenda-mode 'normal)
