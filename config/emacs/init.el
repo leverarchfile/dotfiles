@@ -796,12 +796,15 @@
   (setopt org-bullets-bullet-list '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-;; face for horizontal rules
+;; adpated from org-modern
+;; https://github.com/minad/org-modern/tree/main
+
 (defface my-org-horizontal-rule
-  '((t :inherit shadow :strike-through t))
+  '((default :inherit org-hide)
+    (((background light)) :strike-through "gray70")
+    (t :strike-through "gray30"))
   "Face for horizontal rules in org mode.")
 
-;; hook to display horizontal rules (adapted from org-modern)
 (add-hook 'org-mode-hook
           (lambda ()
             (font-lock-add-keywords nil
