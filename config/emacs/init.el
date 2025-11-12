@@ -796,6 +796,19 @@
   (setopt org-bullets-bullet-list '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
+;; face for horizontal rules
+(defface my-org-horizontal-rule
+  '((t :inherit shadow :strike-through t))
+  "Face for horizontal rules in org mode.")
+
+;; hook to display horizontal rules (adapted from org-modern)
+(add-hook 'org-mode-hook
+          (lambda ()
+            (font-lock-add-keywords nil
+              '(("^[ \t]*-\\{5,\\}$" 0
+                 '(face my-org-horizontal-rule 
+                   display (space :width (- text 1))))))))
+
 (setq calendar-holidays
       '((holiday-fixed 1 1 "New Year's Day")
         (holiday-fixed 2 6 "Waitangi Day")
