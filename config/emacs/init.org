@@ -301,6 +301,18 @@ Resources I've found particularly useful:
                             (display-line-numbers-mode 1)))
 #+end_src
 
+** Logos
+
+#+begin_src emacs-lisp
+(use-package logos
+  :config
+  (setq logos-outlines-are-pages t)
+  (setq logos-outline-regexp-alist
+        `((emacs-lisp-mode . "^;;;+ ")
+          (org-mode . ,(format "\\(^\\*+ +\\|^-\\{5,\\}$\\)" ))
+          (markdown-mode . "^\\#+ +"))))
+#+end_src
+
 * Completion
 
 #+begin_src emacs-lisp
@@ -490,6 +502,13 @@ Resources I've found particularly useful:
     "f s" '(find-file :wk "Find file")
     ;; comments
     "g c" '(comment-line :wk "Comment lines")
+    ;; jump/narrow
+    "j" '(:ignore t :wk "Logos")
+    "j j" '(logos-forward-page-dwim :wk "Logos next section")
+    "j k" '(logos-backward-page-dwim :wk "Logos previous section")
+    "j f" '(logos-narrow-dwim :wk "Logos narrow/widen")
+    "j a" '(my/org-next-level-1-headline :wk "Next level 1 org")
+    "j s" '(my/org-previous-level-1-headline :wk "Previous level 1 org")
     ;; links
     "l" '(:ignore t :wk "Links")
     "l c" '(copy-link-url-at-point :wk "Copy URL of link at point")
@@ -603,6 +622,20 @@ Resources I've found particularly useful:
     "a m" '(org-agenda-month-view :wk "Month view")
     "a t" '(org-agenda-todo :wk "All todos")
     "a /" '(org-agenda-filter-by-tag :wk "Filter by tag"))
+#+end_src
+
+** Org jump between level one headlines
+
+#+begin_src emacs-lisp
+(defun my/org-next-level-1-headline ()
+  "Jump to the next level 1 org headline."
+  (interactive)
+  (re-search-forward "^\\* " nil t))
+
+(defun my/org-previous-level-1-headline ()
+  "Jump to the previous level 1 org headline."
+  (interactive)
+  (re-search-backward "^\\* " nil t))
 #+end_src
 
 ** Elfeed keybindings
@@ -947,8 +980,8 @@ Resources I've found particularly useful:
 ** Horizontal rules in org buffers
 
 #+begin_src emacs-lisp
-;; adpated from org-modern
-;; https://github.com/minad/org-modern/tree/main
+;; taken from org-modern
+;; https://github.com/minad/org-modern
 
 (defface my-org-horizontal-rule
   '((default :inherit org-hide)

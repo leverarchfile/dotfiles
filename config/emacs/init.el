@@ -231,6 +231,14 @@
 (add-hook 'prog-mode-hook (lambda ()
                             (display-line-numbers-mode 1)))
 
+(use-package logos
+  :config
+  (setq logos-outlines-are-pages t)
+  (setq logos-outline-regexp-alist
+        `((emacs-lisp-mode . "^;;;+ ")
+          (org-mode . ,(format "\\(^\\*+ +\\|^-\\{5,\\}$\\)" ))
+          (markdown-mode . "^\\#+ +"))))
+
 (use-package vertico
   :init (vertico-mode 1))
 
@@ -399,6 +407,13 @@
     "f s" '(find-file :wk "Find file")
     ;; comments
     "g c" '(comment-line :wk "Comment lines")
+    ;; jump/narrow
+    "j" '(:ignore t :wk "Logos")
+    "j j" '(logos-forward-page-dwim :wk "Logos next section")
+    "j k" '(logos-backward-page-dwim :wk "Logos previous section")
+    "j f" '(logos-narrow-dwim :wk "Logos narrow/widen")
+    "j a" '(my/org-next-level-1-headline :wk "Next level 1 org")
+    "j s" '(my/org-previous-level-1-headline :wk "Previous level 1 org")
     ;; links
     "l" '(:ignore t :wk "Links")
     "l c" '(copy-link-url-at-point :wk "Copy URL of link at point")
@@ -500,6 +515,16 @@
     "a m" '(org-agenda-month-view :wk "Month view")
     "a t" '(org-agenda-todo :wk "All todos")
     "a /" '(org-agenda-filter-by-tag :wk "Filter by tag"))
+
+(defun my/org-next-level-1-headline ()
+  "Jump to the next level 1 org headline."
+  (interactive)
+  (re-search-forward "^\\* " nil t))
+
+(defun my/org-previous-level-1-headline ()
+  "Jump to the previous level 1 org headline."
+  (interactive)
+  (re-search-backward "^\\* " nil t))
 
 ;; use 'o' to view elfeed entry in vertical split
 ;; make sure 'q' deletes the split window
@@ -796,8 +821,8 @@
   (setopt org-bullets-bullet-list '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-;; adpated from org-modern
-;; https://github.com/minad/org-modern/tree/main
+;; taken from org-modern
+;; https://github.com/minad/org-modern
 
 (defface my-org-horizontal-rule
   '((default :inherit org-hide)
