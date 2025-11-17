@@ -4,7 +4,7 @@
 (
     address: "127.0.0.1:6600",
     password: None,
-    theme: None,
+    theme: "theme",
     cache_dir: None,
     on_song_change: None,
     volume_step: 5,
@@ -20,10 +20,10 @@
     browser_song_sort: [Disc, Track, Artist, Title],
     directories_sort: SortFormat(group_by_type: true, reverse: false),
     album_art: (
-        method: Auto,
+        method: Sixel,
         max_size_px: (width: 500, height: 500),
         disabled_protocols: ["http://", "https://"],
-        vertical_align: Center,
+        vertical_align: Top,
         horizontal_align: Center,
     ),
     keybinds: (

@@ -1,0 +1,33 @@
+directory: ~/music/library
+library: ~/.local/share/beets/library.db
+threaded: yes
+
+plugins: musicbrainz discogs scrub lastgenre chroma fetchart info
+
+import:
+  move: yes
+  write: yes
+  resume: yes
+  incremental: yes
+  autotag: yes
+  languages: en
+  log: ~/.local/share/beets/import.log
+
+paths:
+    default: $albumartist/$album%aunique{}/$track $title
+    singleton: Non-Album/$artist/$title
+    comp: Compilations/$album%aunique{}/$track $title
+    albumtype_soundtrack: Soundtracks/$album/$track $title
+
+scrub:
+  auto: no
+
+lastgenre:
+  auto: yes
+  source: album
+
+chroma:
+  auto: yes
+
+fetchart:
+  auto: yes
