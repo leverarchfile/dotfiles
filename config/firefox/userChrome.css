@@ -1,7 +1,7 @@
 * {
-	border-radius: 0 !important;
-	box-shadow: none !important;
-	text-shadow: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
 #navigator-toolbox {
@@ -26,6 +26,7 @@
 #identity-box,
 #page-action-buttons,
 #tracking-protection-icon-container,
+#reset-pbm-toolbar-button,
 #alltabs-button,
 #PersonalToolbar,
 #toolbar-menubar,
