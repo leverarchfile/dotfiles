@@ -8,7 +8,7 @@
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: wrap !important;
-	border-bottom: 0 !important;	
+  border-bottom: 0 !important;	
 }
 
 #nav-bar{
@@ -17,7 +17,7 @@
 
 #titlebar {
   flex-grow: 1 !important;
-	background: var(--accent-color) !important;
+  background: var(--accent-color) !important;
 }
 
 .titlebar-spacer,
