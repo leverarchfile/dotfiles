@@ -5,7 +5,7 @@
 
 send_notification() {
   volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf ("%d%%\n", 100 *$2)}')
-  dunstify -a "changevolume" -u low -r 9993 -h int:value:"$volume" "Volume: ${volume}" -t 2000
+  notify-send -a "changevolume" -u low -r 9993 -h int:value:"$volume" "Volume: ${volume}" -t 2000
 }
 
 case $1 in
@@ -39,7 +39,7 @@ mute)
     send_notification up
   else
     wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle  
-    dunstify -a "changevolume" -t 2000 -r 9993 -u low "Muted"
+    notify-send -a "changevolume" -t 2000 -r 9993 -u low "Muted"
   fi
   ;;
 esac
