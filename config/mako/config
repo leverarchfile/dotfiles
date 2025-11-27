@@ -1,0 +1,26 @@
+include=~/.cache/wal/pywal16-mako
+
+sort=-time
+layer=overlay
+anchor=top-right
+margin=12,12
+padding=12,14
+width=300
+height=100
+border-size=0
+border-radius=0
+outer-margin=1
+icons=0
+text-alignment=left
+group-by=app-name,body
+max-history=6
+max-visible=6
+default-timeout=10000
+ignore-timeout=0
+font=Iosevka 12
+
+on-button-left=dismiss-group
+on-button-right=invoke-default-action
+
+[grouped]
+format=<b>%s</b>\n%b

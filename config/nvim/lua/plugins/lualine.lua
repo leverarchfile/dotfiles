@@ -1,8 +1,7 @@
 require('lualine').setup {
   options = {
     icons_enabled = true,
-    theme = 'gruvbox-material',
---    theme = 'base16',
+    theme = 'pywal16-nvim',
 --    component_separators = { left = '', right = ''},
 --    section_separators = { left = '', right = ''},
     component_separators = '',

@@ -15,16 +15,12 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   {
-    "sainnhe/gruvbox-material", 
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.g.gruvbox_material_enable_italic = true,
-      vim.cmd.colorscheme('gruvbox-material')
-    end
-  },
-  {
-    "RRethy/nvim-base16",
+  'uZer/pywal16.nvim',
+  lazy = false,
+  priority = 1000,
+  config = function()
+    vim.cmd.colorscheme("pywal16")
+  end
   },
   {
     "ThePrimeagen/harpoon",

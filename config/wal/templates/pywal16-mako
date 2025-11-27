@@ -1,0 +1,16 @@
+[urgency=low]
+background-color={foreground}
+text-color={background}
+progress-color=source {color4}
+default-timeout=5000
+
+[urgency=normal]
+background-color={foreground}
+text-color={background}
+progress-color=source {color4}
+default-timeout=10000
+
+[urgency=high]
+background-color={color9}
+text-color={color0}
+ignore-timeout=0

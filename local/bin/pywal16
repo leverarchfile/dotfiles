@@ -1,0 +1,23 @@
+#!/bin/sh
+
+FOLDER=~/pictures/wallpaper
+
+for arg in "$@"; do
+  [ "$arg" = "light" ] && LIGHT="-l"
+done
+
+menu() {
+  nsxiv -otb "$FOLDER" | xargs -r -I {} wal -i {} $LIGHT
+}
+
+case "$1" in
+  wallpaper) menu $LIGHT ;;
+  theme) pkill swaybg; wal --theme "$2" ;;
+  themeonly) wal --theme "$2" ;;
+  image) wal -i "$2" $LIGHT ;;
+esac
+
+xrdb -merge ~/.cache/wal/colors.Xresources
+pywalfox update
+makoctl reload
+(sleep 0.5 && pkill foot && foot --server &) &

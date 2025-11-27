@@ -23,7 +23,7 @@ riverctl background-color "0x282828"
 
 kanshi &
 waybar &
-dunst &
+mako &
 udiskie &
 foot --server &
 emacs --daemon &

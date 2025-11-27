@@ -1,17 +1,9 @@
-/* gruvbox dark colours */
-@define-color base03 #282828;
-@define-color base02 #282828; 
-@define-color base1 #928374;
-@define-color red #fb4934;
-@define-color yellow #fabd2f;
-/* @define-color text #ebdbb2; */
-/* @define-color comment #928374; */
-/* @define-color grey #909090; */
+@import "/home/sammy/.cache/wal/colors-waybar.css";
 
 * {
     border-radius: 0;
     font-family: Iosevka;
-    font-size: 15;
+    font-size: 15px;
     min-height: 0px;
     min-width: 0px;
 }
@@ -24,15 +16,15 @@ window#waybar {
     margin-top: 6px;
     margin-left: 6px;
     padding: 1px;
-    background-color: @base02; 
-    border: 2px solid @base1;
+    background-color: @color0; 
+    border: 2px solid @color8;
 }
 
 #tags button {
     margin: 2px;
     padding: 1 6px;
-    color: @base1;
-    border: 2px solid @base02;
+    color: @color8;
+    border: 2px solid @color0;
 }
 
 #tags button:hover {
@@ -42,35 +34,35 @@ window#waybar {
 }
 
 #tags button.focused {
-    color: @base02;
-    background-color: @base1;
-    border: 2px solid @base02;
+    color: @color0;
+    background-color: @color8;
+    border: 2px solid @color0;
 }
 
 #tags button.occupied {
-    border: 2px solid @base1;
+    border: 2px solid @color8;
 }
 
 #tags button.focused.occupied {
-    color: @base02;
-    background-color: @base1;
-    border: 2px solid @base1;
+    color: @color0;
+    background-color: @color8;
+    border: 2px solid @color8;
 }
 
 #tags button.urgent {
-    border: 2px solid @red; 
+    border: 2px solid @color1; 
 }
 
 #tags button.occupied.urgent {
-    border: 2px solid @red;
+    border: 2px solid @color1;
 }
 
 #network, #idle_inhibitor, #clock, #custom-inbox, #cpu, #memory, #disk, #temperature, #battery {
    padding: 1 6px;
    margin-top: 6px;
-   background-color: @base02; 
-   color: @base1;
-   border: 2px solid @base1; 
+   background-color: @color0; 
+   color: @color8;
+   border: 2px solid @color8; 
 }
 
 #clock {
@@ -84,18 +76,18 @@ window#waybar {
 
 #battery.charging, 
 #battery.plugged {
-    color: @base1;
-    background-color: @base02;
+    color: @color8;
+    background-color: @color0;
 }
 
 #battery.warning,
 #battery.critical {
-    border: 2px solid @yellow; 
+    border: 2px solid @color3; 
 }
 
 #cpu.critical,
 #memory.critical,
 #temperature.critical, 
 #battery.critical:not(.charging) {
-    border: 2px solid @red;
+    border: 2px solid @color1;
 }
