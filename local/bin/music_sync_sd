@@ -1,0 +1,10 @@
+#!/bin/sh
+
+rsync -av --delete "$HOME/music/library/" "/run/media/sammy/F929-FA97/Music"
+rsync -av --delete "$HOME/music/playlists/" "/run/media/sammy/F929-FA97/playlist_data"
+
+# paths for Tempotec Variations V1
+for playlist in /run/media/sammy/F929-FA97/playlist_data/*.m3u; do
+    [ -f "$playlist" ] || continue
+    sed -i 's|^|..\\Music\\|; s|/|\\|g' "$playlist"
+done

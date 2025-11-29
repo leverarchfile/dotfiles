@@ -55,6 +55,7 @@
             "O":       ShowOutputs,
             "P":       ShowDecoders,
             "R":       AddRandom,
+            "?":       ShowHelp,
         },
         navigation: {
             "k":         Up,
