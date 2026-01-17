@@ -40,7 +40,7 @@ cmd trash ${{
     while [ "$files" ]; do
       file=${files%%;*}
 
-      trash put "$(basename "$file")"
+      trashy put "$(basename "$file")"
       if [ "$files" = "$file" ]; then
         files=''
       else
