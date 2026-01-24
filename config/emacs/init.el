@@ -407,6 +407,9 @@
     "f s" '(find-file :wk "Find file")
     ;; comments
     "g c" '(comment-line :wk "Comment lines")
+    ;; images
+    "i" '(:ignore t :wk "Images")
+    "i i" '(org-toggle-inline-images :wk "Org-toggle-inline-images")
     ;; jump/narrow
     "j" '(:ignore t :wk "Logos")
     "j j" '(logos-forward-page-dwim :wk "Logos next section")
@@ -642,6 +645,8 @@
         org-agenda-start-day "+0d"
         org-agenda-block-separator nil
         org-agenda-compact-blocks nil) ; hides header when set to true ('t')
+
+  (setq org-agenda-time-leading-zero t)
   
   (setq org-deadline-warning-days 3)
  
