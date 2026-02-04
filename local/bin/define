@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Adapated from a script by BreadOnPenguins
+# https://github.com/BreadOnPenguins/scripts/blob/master/shortcuts-menus/define
+
+word=${1:-$(wl-paste -p 2>/dev/null || wl-paste 2>/dev/null)}
+
+# Check for empty word or special characters
+case "$word" in
+    ""|*[/\\]*) notify-send -t 3000 "Invalid input."; exit 0 ;;
+esac
+
+query=$(curl -s --connect-timeout 5 --max-time 10 "https://api.dictionaryapi.dev/api/v2/entries/en_GB/$word")
+
+# Check for connection error (curl exit status stored in $?)
+[ $? -ne 0 ] && notify-send -t 3000 "Connection error." && exit 1
+
+# Check for invalid word response
+case "$query" in
+    *"No Definitions Found"*) notify-send -t 3000 "Invalid word."; exit 0 ;;
+esac
+
+# Show only first 5 definitions (Pango markup formatting for the part of speech)
+def=$(echo "$query" | jq -r '[.[].meanings[] | {pos: .partOfSpeech, def: .definitions[].definition}] | .[:5].[] | "\n<i>\(.pos)</i>. \(.def)"')
+
+# Display definitions with Pango markup formatting (bold word, italic part of speech)
+yad --text="<big><b>$word</b></big>\n\n$def" --no-buttons --timeout=60 --width=600 --wrap --selectable --title="emacs-float"
