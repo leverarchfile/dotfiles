@@ -522,12 +522,24 @@
 (defun my/org-next-level-1-headline ()
   "Jump to the next level 1 org headline."
   (interactive)
-  (re-search-forward "^\\* " nil t))
+  (let ((found nil))
+    (save-excursion
+      (end-of-line)
+      (while (and (not found) (outline-next-heading))
+        (when (= (org-current-level) 1)
+          (setq found (point)))))
+    (when found (goto-char found))))
 
 (defun my/org-previous-level-1-headline ()
   "Jump to the previous level 1 org headline."
   (interactive)
-  (re-search-backward "^\\* " nil t))
+  (let ((found nil))
+    (save-excursion
+      (beginning-of-line)
+      (while (and (not found) (outline-previous-heading))
+        (when (= (org-current-level) 1)
+          (setq found (point)))))
+    (when found (goto-char found))))
 
 ;; use 'o' to view elfeed entry in vertical split
 ;; make sure 'q' deletes the split window
@@ -582,13 +594,12 @@
     '((:startgroup)
       ("Teaching" . ?t)
       (:grouptags)
-      ("FA205" . ?f) ("DES102G" . ?g) ("DES303" . ?d) ("DES232" . ?h) ("PhD" . ?p)
+      ("FA110" . ?i) ("FA205" . ?f) ("DES232" . ?h) ("DES240" . ?d) ("DES304" . ?c) ("PhD" . ?p)
       (:endgroup)
       (:startgroup)
       ("Service" . ?s)
       (:grouptags)
-      ("Extern" . ?x) ("ReDes" . ?r) ("TnL" . ?l) ("AIsc" . ?a) ("IJETA" . ?i)
-      (:endgroup)
+      ("Extern" . ?x) ("ReDes" . ?r) ("TnL" . ?l) ("AI" . ?a)       (:endgroup)
       (:startgroup)
       ("Perso" . ?u)
       (:grouptags)
@@ -597,7 +608,7 @@
       (:startgroup)
       ("Computing" . ?c)
       (:grouptags)
-      ("Emacs" . ?e) ("FW13" . ?w) ("SprN" . ?n) ("Server" . ?b)
+      ("Emacs" . ?e) ("FW13" . ?w) ("SprN" . ?n) ("Lab" . ?b)
       (:endgroup))))
 
 ;; org-insert-structure-template and create new line inside the block
@@ -811,6 +822,10 @@
 
 (add-hook 'after-save-hook #'my-check-update-desktop-agenda-files)
 
+(setq org-refile-targets
+      '((nil :maxlevel . 3)
+        (org-agenda-files :maxlevel . 3)))
+
 (defun my/count-refile-items ()
   "Count items to refile: level-2 headlines under '* Refile' 
 in agenda.org and level-1 headlines in inbox-phone.org."
@@ -905,10 +920,6 @@ in agenda.org and level-1 headlines in inbox-phone.org."
       cfw:fchar-top-right-corner ?┓)
 
 (use-package calfw-org)
-
-(setq org-refile-targets
-      '((nil :maxlevel . 3)
-        (org-agenda-files :maxlevel . 3)))
 
 (setq org-capture-templates
   '(;; todos to refile later

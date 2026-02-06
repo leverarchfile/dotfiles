@@ -633,12 +633,24 @@ Resources I've found particularly useful:
 (defun my/org-next-level-1-headline ()
   "Jump to the next level 1 org headline."
   (interactive)
-  (re-search-forward "^\\* " nil t))
+  (let ((found nil))
+    (save-excursion
+      (end-of-line)
+      (while (and (not found) (outline-next-heading))
+        (when (= (org-current-level) 1)
+          (setq found (point)))))
+    (when found (goto-char found))))
 
 (defun my/org-previous-level-1-headline ()
   "Jump to the previous level 1 org headline."
   (interactive)
-  (re-search-backward "^\\* " nil t))
+  (let ((found nil))
+    (save-excursion
+      (beginning-of-line)
+      (while (and (not found) (outline-previous-heading))
+        (when (= (org-current-level) 1)
+          (setq found (point)))))
+    (when found (goto-char found))))
 #+end_src
 
 ** Elfeed keybindings
@@ -707,13 +719,12 @@ Resources I've found particularly useful:
     '((:startgroup)
       ("Teaching" . ?t)
       (:grouptags)
-      ("FA205" . ?f) ("DES102G" . ?g) ("DES303" . ?d) ("DES232" . ?h) ("PhD" . ?p)
+      ("FA110" . ?i) ("FA205" . ?f) ("DES232" . ?h) ("DES240" . ?d) ("DES304" . ?c) ("PhD" . ?p)
       (:endgroup)
       (:startgroup)
       ("Service" . ?s)
       (:grouptags)
-      ("Extern" . ?x) ("ReDes" . ?r) ("TnL" . ?l) ("AIsc" . ?a) ("IJETA" . ?i)
-      (:endgroup)
+      ("Extern" . ?x) ("ReDes" . ?r) ("TnL" . ?l) ("AI" . ?a)       (:endgroup)
       (:startgroup)
       ("Perso" . ?u)
       (:grouptags)
@@ -722,7 +733,7 @@ Resources I've found particularly useful:
       (:startgroup)
       ("Computing" . ?c)
       (:grouptags)
-      ("Emacs" . ?e) ("FW13" . ?w) ("SprN" . ?n) ("Server" . ?b)
+      ("Emacs" . ?e) ("FW13" . ?w) ("SprN" . ?n) ("Lab" . ?b)
       (:endgroup))))
 #+end_src
 
@@ -963,6 +974,14 @@ Resources I've found particularly useful:
 (add-hook 'after-save-hook #'my-check-update-desktop-agenda-files)
 #+end_src
 
+** Org refile
+
+#+begin_src emacs-lisp
+(setq org-refile-targets
+      '((nil :maxlevel . 3)
+        (org-agenda-files :maxlevel . 3)))
+#+end_src
+
 ** Count refile items
 
 #+begin_src emacs-lisp
@@ -1076,14 +1095,6 @@ in agenda.org and level-1 headlines in inbox-phone.org."
       cfw:fchar-top-right-corner ?┓)
 
 (use-package calfw-org)
-#+end_src
-
-** Org refile
-
-#+begin_src emacs-lisp
-(setq org-refile-targets
-      '((nil :maxlevel . 3)
-        (org-agenda-files :maxlevel . 3)))
 #+end_src
 
 ** Org capture
