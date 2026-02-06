@@ -811,6 +811,40 @@
 
 (add-hook 'after-save-hook #'my-check-update-desktop-agenda-files)
 
+(defun my/count-refile-items ()
+  "Count items to refile: level-2 headlines under '* Refile' 
+in agenda.org and level-1 headlines in inbox-phone.org."
+  (let ((count 0))
+    ;; Count level-2 headlines under '* Refile' in agenda.org
+    (with-current-buffer (find-file-noselect "~/org/agenda.org")
+      (org-with-wide-buffer
+       (when-let ((pos (org-find-exact-headline-in-buffer "Refile")))
+         (goto-char pos)
+         (setq count (length (org-map-entries t "LEVEL=2" 'tree))))))
+    ;; Count level-1 headlines in inbox-phone.org
+    (with-current-buffer (find-file-noselect "~/org/inbox-phone.org")
+      (setq count (+ count (length (org-map-entries t "LEVEL=1" 'file)))))
+    count))
+
+;; update waybar after org-capture and when agenda.org or inbox-phone.org are saved
+;; covers orgzly-revived syncs provided global-auto-revert-mode is 1
+
+(defun my/update-waybar ()
+  (start-process-shell-command "waybar-update" nil "pkill -RTMIN+1 waybar"))
+
+;; Update Waybar after capturing
+(add-hook 'org-capture-after-finalize-hook #'my/update-waybar)
+
+;; Update Waybar when these specific files are saved or reverted
+(defun my/setup-waybar-update-hooks ()
+  (when (member (expand-file-name (buffer-file-name))
+                (list (expand-file-name "~/org/agenda.org")
+                      (expand-file-name "~/org/inbox-phone.org")))
+    (add-hook 'after-save-hook #'my/update-waybar nil t)
+    (add-hook 'after-revert-hook #'my/update-waybar nil t)))
+
+(add-hook 'org-mode-hook #'my/setup-waybar-update-hooks)
+
 (use-package toc-org
   :commands toc-org-enable
   :init (add-hook 'org-mode-hook 'toc-org-enable))

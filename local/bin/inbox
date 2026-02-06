@@ -4,4 +4,6 @@ uoa="$(mu find maildir:'/uoa/Inbox' flag:unread | wc -l)"
 
 perso="$(mu find maildir:'/perso/Inbox' flag:unread | wc -l)"
 
-echo "u-$uoa  p-$perso"
+refile="$(emacsclient -e '(my/count-refile-items)' 2>/dev/null | tr -d '\n' || echo '-')"
+
+echo "u-$uoa  p-$perso r-$refile"
