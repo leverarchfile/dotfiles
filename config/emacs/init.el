@@ -875,6 +875,40 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   (setopt org-bullets-bullet-list '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
+(add-hook 'org-mode-hook 'electric-quote-local-mode)
+(add-hook 'electric-quote-inhibit-functions 'org-in-src-block-p)
+(setq electric-quote-replace-double t)
+
+;; Configure evil-surround for org-mode: curly quotes and no spaces added to parentheses
+(add-hook 'org-mode-hook
+          (lambda ()
+            ;; Insert curly quotes with evil-surround (using Unicode escapes)
+            (push '(?\" . ("\u201c" . "\u201d")) evil-surround-pairs-alist)   ; " "
+            (push '(?\' . ("\u2018" . "\u2019")) evil-surround-pairs-alist)   ; ' '
+            ;; Override default parentheses to not add spaces
+            (push '(?\( . ("(" . ")")) evil-surround-pairs-alist)
+            (push '(?\[ . ("[" . "]")) evil-surround-pairs-alist)
+            (push '(?\{ . ("{" . "}")) evil-surround-pairs-alist)
+            
+            ;; Define text objects that recognise both curly and straight quotes
+            (evil-define-text-object evil-inner-smart-double-quote (count &optional beg end type)
+              (or (ignore-errors (evil-select-paren "\u201c" "\u201d" beg end type count nil))
+                  (ignore-errors (evil-select-paren "\"" "\"" beg end type count nil))))
+            (evil-define-text-object evil-outer-smart-double-quote (count &optional beg end type)
+              (or (ignore-errors (evil-select-paren "\u201c" "\u201d" beg end type count t))
+                  (ignore-errors (evil-select-paren "\"" "\"" beg end type count t))))
+            (evil-define-text-object evil-inner-smart-single-quote (count &optional beg end type)
+              (or (ignore-errors (evil-select-paren "\u2018" "\u2019" beg end type count nil))
+                  (ignore-errors (evil-select-paren "'" "'" beg end type count nil))))
+            (evil-define-text-object evil-outer-smart-single-quote (count &optional beg end type)
+              (or (ignore-errors (evil-select-paren "\u2018" "\u2019" beg end type count t))
+                  (ignore-errors (evil-select-paren "'" "'" beg end type count t))))
+            
+            (define-key evil-inner-text-objects-map "\"" 'evil-inner-smart-double-quote)
+            (define-key evil-outer-text-objects-map "\"" 'evil-outer-smart-double-quote)
+            (define-key evil-inner-text-objects-map "'" 'evil-inner-smart-single-quote)
+            (define-key evil-outer-text-objects-map "'" 'evil-outer-smart-single-quote)))
+
 ;; taken from org-modern
 ;; https://github.com/minad/org-modern
 
