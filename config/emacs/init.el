@@ -878,6 +878,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 (add-hook 'org-mode-hook 'electric-quote-local-mode)
 (add-hook 'electric-quote-inhibit-functions 'org-in-src-block-p)
 (setq electric-quote-replace-double t)
+(setq electric-quote-context-sensitive t) ; for single quotes
 
 ;; Configure evil-surround for org-mode: curly quotes and no spaces added to parentheses
 (add-hook 'org-mode-hook
