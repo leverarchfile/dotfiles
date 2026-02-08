@@ -852,9 +852,10 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 
 ;; Update Waybar when these specific files are saved or reverted
 (defun my/setup-waybar-update-hooks ()
-  (when (member (expand-file-name (buffer-file-name))
+  (when (and (buffer-file-name)
+             (member (expand-file-name (buffer-file-name))
                 (list (expand-file-name "~/org/agenda.org")
-                      (expand-file-name "~/org/inbox-phone.org")))
+                      (expand-file-name "~/org/inbox-phone.org"))))
     (add-hook 'after-save-hook #'my/update-waybar nil t)
     (add-hook 'after-revert-hook #'my/update-waybar nil t)))
 
