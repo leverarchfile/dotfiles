@@ -28,6 +28,9 @@ riverctl map normal Super+Shift C spawn colour-picker
 # Toggle bluetooth
 riverctl map normal Super+Shift Z spawn bt_toggle
 
+# Mullvad-Tailscale select
+riverctl map normal Super+Shift M spawn tailscale_mullvad_select
+
 # Emacs org capture template
 riverctl map normal Super+Shift D spawn "emacsclient -e '(prot-window-popup-org-capture)'"
 

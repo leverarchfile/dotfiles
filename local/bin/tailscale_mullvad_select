@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# Get Mullvad exit nodes and format them
+nodes=$(tailscale exit-node list | grep mullvad | awk '{
+    country = $3; city = $4; hostname = $2
+    gsub(/,/, "", city)
+    printf "%s %s - %s\n", country, city, hostname
+}')
+
+# Add disable option at the top
+options="Disable Exit Node
+$nodes"
+
+# Show fuzzel menu
+selected=$(printf '%s\n' "$options" | fuzzel --dmenu --prompt="Mullvad Exit Node: ")
+
+# Exit if nothing selected
+if [ -z "$selected" ]; then
+    exit 0
+fi
+
+# Handle selection
+if [ "$selected" = "Disable Exit Node" ]; then
+    sudo tailscale up --exit-node= --exit-node-allow-lan-access=false --accept-dns=true
+else
+    hostname=$(printf '%s' "$selected" | sed 's/.* - //')
+    sudo tailscale up --exit-node="$hostname" --exit-node-allow-lan-access --accept-dns=true
+fi
+
+# Extract location for notification
+if [ "$selected" = "Disable Exit Node" ]; then
+    msg="Disabled"
+else
+    # Get "Australia Sydney" from "Australia Sydney - au-syd-wg-001.mullvad.ts.net"
+    msg=$(printf '%s' "$selected" | sed 's/ - .*//')
+fi
+
+# Send notification after the script completes, in the background
+(sleep 0.5 && notify-send "Mullvad-Tailscale" "$msg") &
