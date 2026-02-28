@@ -220,8 +220,9 @@
 (use-package dired-preview)
 
 (use-package olivetti
-  :config
+  :init
   (setq olivetti-body-width 100)
+  :config
   (setq olivetti-recall-visual-line-mode-entry-state t) 
   :hook (text-mode . olivetti-mode))
 
@@ -876,40 +877,46 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   (setopt org-bullets-bullet-list '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
+(defun my/setup-smart-quotes ()
+  "Set up curly quote pairs and text objects for evil-surround."
+  ;; Insert curly quotes with evil-surround (using Unicode escapes)
+  (push '(?\" . ("\u201c" . "\u201d")) evil-surround-pairs-alist)
+  (push '(?\' . ("\u2018" . "\u2019")) evil-surround-pairs-alist)
+  ;; Override default parentheses to not add spaces
+  (push '(?\( . ("(" . ")")) evil-surround-pairs-alist)
+  (push '(?\[ . ("[" . "]")) evil-surround-pairs-alist)
+  (push '(?\{ . ("{" . "}")) evil-surround-pairs-alist)
+
+  ;; Define text objects that recognise both curly and straight quotes
+  (evil-define-text-object evil-inner-smart-double-quote (count &optional beg end type)
+    (or (ignore-errors (evil-select-paren "\u201c" "\u201d" beg end type count nil))
+        (ignore-errors (evil-select-paren "\"" "\"" beg end type count nil))))
+  (evil-define-text-object evil-outer-smart-double-quote (count &optional beg end type)
+    (or (ignore-errors (evil-select-paren "\u201c" "\u201d" beg end type count t))
+        (ignore-errors (evil-select-paren "\"" "\"" beg end type count t))))
+  (evil-define-text-object evil-inner-smart-single-quote (count &optional beg end type)
+    (or (ignore-errors (evil-select-paren "\u2018" "\u2019" beg end type count nil))
+        (ignore-errors (evil-select-paren "'" "'" beg end type count nil))))
+  (evil-define-text-object evil-outer-smart-single-quote (count &optional beg end type)
+    (or (ignore-errors (evil-select-paren "\u2018" "\u2019" beg end type count t))
+        (ignore-errors (evil-select-paren "'" "'" beg end type count t))))
+
+  (define-key evil-inner-text-objects-map "\"" 'evil-inner-smart-double-quote)
+  (define-key evil-outer-text-objects-map "\"" 'evil-outer-smart-double-quote)
+  (define-key evil-inner-text-objects-map "'" 'evil-inner-smart-single-quote)
+  (define-key evil-outer-text-objects-map "'" 'evil-outer-smart-single-quote))
+
 (add-hook 'org-mode-hook 'electric-quote-local-mode)
-(add-hook 'electric-quote-inhibit-functions 'org-in-src-block-p)
 (setq electric-quote-replace-double t)
 (setq electric-quote-context-sensitive t) ; for single quotes
+(add-hook 'org-mode-hook 'my/setup-smart-quotes)
 
-;; Configure evil-surround for org-mode: curly quotes and no spaces added to parentheses
-(add-hook 'org-mode-hook
-          (lambda ()
-            ;; Insert curly quotes with evil-surround (using Unicode escapes)
-            (push '(?\" . ("\u201c" . "\u201d")) evil-surround-pairs-alist)   ; " "
-            (push '(?\' . ("\u2018" . "\u2019")) evil-surround-pairs-alist)   ; ' '
-            ;; Override default parentheses to not add spaces
-            (push '(?\( . ("(" . ")")) evil-surround-pairs-alist)
-            (push '(?\[ . ("[" . "]")) evil-surround-pairs-alist)
-            (push '(?\{ . ("{" . "}")) evil-surround-pairs-alist)
-            
-            ;; Define text objects that recognise both curly and straight quotes
-            (evil-define-text-object evil-inner-smart-double-quote (count &optional beg end type)
-              (or (ignore-errors (evil-select-paren "\u201c" "\u201d" beg end type count nil))
-                  (ignore-errors (evil-select-paren "\"" "\"" beg end type count nil))))
-            (evil-define-text-object evil-outer-smart-double-quote (count &optional beg end type)
-              (or (ignore-errors (evil-select-paren "\u201c" "\u201d" beg end type count t))
-                  (ignore-errors (evil-select-paren "\"" "\"" beg end type count t))))
-            (evil-define-text-object evil-inner-smart-single-quote (count &optional beg end type)
-              (or (ignore-errors (evil-select-paren "\u2018" "\u2019" beg end type count nil))
-                  (ignore-errors (evil-select-paren "'" "'" beg end type count nil))))
-            (evil-define-text-object evil-outer-smart-single-quote (count &optional beg end type)
-              (or (ignore-errors (evil-select-paren "\u2018" "\u2019" beg end type count t))
-                  (ignore-errors (evil-select-paren "'" "'" beg end type count t))))
-            
-            (define-key evil-inner-text-objects-map "\"" 'evil-inner-smart-double-quote)
-            (define-key evil-outer-text-objects-map "\"" 'evil-outer-smart-double-quote)
-            (define-key evil-inner-text-objects-map "'" 'evil-inner-smart-single-quote)
-            (define-key evil-outer-text-objects-map "'" 'evil-outer-smart-single-quote)))
+;; Fix to allow my quotation config to work with Markdown and Quarto
+(defun my/org-inhibit-electric-quote ()
+  "Inhibit electric quotes inside Org source blocks."
+  (and (derived-mode-p 'org-mode)
+       (org-in-src-block-p)))
+(add-hook 'electric-quote-inhibit-functions 'my/org-inhibit-electric-quote)
 
 ;; taken from org-modern
 ;; https://github.com/minad/org-modern
@@ -1158,6 +1165,38 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   (citar-denote-open-attachment nil)  ; don't open attachment when creating new note
   :init
   (citar-denote-mode))
+
+(use-package markdown-mode
+  :config
+  (define-key markdown-mode-map (kbd "C-c C-x C-v") #'markdown-toggle-inline-images))
+
+;; Smart quotes and text objects for evil-surround
+(add-hook 'markdown-mode-hook 'electric-quote-local-mode)
+(add-hook 'markdown-mode-hook 'my/setup-smart-quotes)
+
+;; Fix to allow my quotation config to work with Markdown and Quarto
+(defun my/markdown-inhibit-electric-quote ()
+  "Inhibit electric quotes inside Markdown code blocks."
+  (and (derived-mode-p 'markdown-mode)
+       (markdown-code-block-at-point-p)))
+
+(add-hook 'electric-quote-inhibit-functions 'my/markdown-inhibit-electric-quote)
+
+(use-package quarto-mode
+  :mode (("\\.qmd\\'" . poly-quarto-mode))
+  :hook (poly-quarto-mode . markdown-display-inline-images))
+
+;; Smart quotes and text objects for evil-surround
+(add-hook 'poly-quarto-mode-hook 'electric-quote-local-mode)
+(add-hook 'poly-quarto-mode-hook 'my/setup-smart-quotes)
+
+(defun my/quarto-preview ()
+  "Launch quarto preview for the current file."
+  (interactive)
+  (let ((file (buffer-file-name)))
+    (async-shell-command
+     (format "quarto preview %s --to revealjs --no-browser" (shell-quote-argument file))
+     "*quarto-preview*")))
 
 (use-package pdf-tools
   :init

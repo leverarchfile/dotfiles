@@ -9,6 +9,7 @@ history
 org-roam.db
 places
 projects
+tramp
 straight/*
 !straight/versions/
 straight/versions/*
