@@ -45,6 +45,12 @@
   (global-auto-revert-mode 1) ; refresh buffers with file changes
   (setq auto-revert-verbose nil) ; don't clutter minibuffer with "Reverting..." messages
 
+  ;; Disable the creation of lockfiles (e.g., .#filename).
+  ;; Rely on `global-auto-revert-mode' to handle external file changes gracefully
+  (setq create-lockfiles nil)
+  
+  (setq make-backup-files nil) ; disable backup files (filename~)
+
   (setq cursor-in-non-selected-windows nil) ; hide cursor in non-active windows
 
   (setq frame-inhibit-implied-resize t)
