@@ -1398,8 +1398,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 
 #+begin_src emacs-lisp
 (use-package quarto-mode
-  :mode (("\\.qmd\\'" . poly-quarto-mode))
-  :hook (poly-quarto-mode . markdown-display-inline-images))
+  :mode (("\\.qmd\\'" . poly-quarto-mode)))
 #+end_src
 
 #+begin_src emacs-lisp

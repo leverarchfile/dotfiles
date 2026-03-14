@@ -1183,8 +1183,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 (add-hook 'electric-quote-inhibit-functions 'my/markdown-inhibit-electric-quote)
 
 (use-package quarto-mode
-  :mode (("\\.qmd\\'" . poly-quarto-mode))
-  :hook (poly-quarto-mode . markdown-display-inline-images))
+  :mode (("\\.qmd\\'" . poly-quarto-mode)))
 
 ;; Smart quotes and text objects for evil-surround
 (add-hook 'poly-quarto-mode-hook 'electric-quote-local-mode)
