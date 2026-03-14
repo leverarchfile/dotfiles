@@ -1,0 +1,33 @@
+#!/bin/sh
+set -e
+export NODE_OPTIONS="--no-deprecation"
+
+BACKUP_DEST="server:/files/bitwarden-backup.json"
+EXPORT_FILE="$HOME/bw-backup.json"
+
+# Get master password from pass into an environment variable
+export BW_PASSWORD=$(pass show bitwarden)
+
+# Try unlock first (faster if already logged in), fall back to login
+BW_SESSION=$(bw unlock --passwordenv BW_PASSWORD --raw 2>/dev/null) || \
+BW_SESSION=$(bw login --passwordenv BW_PASSWORD --raw 2>/dev/null)
+export BW_SESSION
+
+# Sync to get latest vault data
+bw sync
+
+# Export as password-protected encrypted JSON
+bw export --format encrypted_json --password "$BW_PASSWORD" --session "$BW_SESSION"
+
+# Move the export file (bw exports to working directory by default)
+mv ~/bitwarden_encrypted_export_*.json "$EXPORT_FILE"
+
+# Copy to server and clean up
+scp "$EXPORT_FILE" "$BACKUP_DEST"
+rm "$EXPORT_FILE"
+
+# Lock vault and clear sensitive variables
+bw lock 2>/dev/null
+unset BW_SESSION BW_PASSWORD
+
+echo "Bitwarden backup complete."
