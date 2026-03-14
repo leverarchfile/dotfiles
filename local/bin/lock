@@ -1,5 +1,5 @@
 #!/bin/sh
-
+pgrep -x waylock > /dev/null && exit 0
 waylock -fork-on-lock \
   -input-color 0xA89984 \
   -fail-color 0xF7768E \
