@@ -5,6 +5,6 @@
     "username": "mail@leverarchfile.org",
     "passwordCMD": "pass mail@leverarchfile.org",
     "onNewMail": "mbsync -qc \"${XDG_CONFIG_HOME}/mbsync/config\" --pull --new perso:INBOX",
-    "onNewMailPost": "emacsclient -e \"(mu4e-update-index)\"",
+    "onNewMailPost": "emacsclient -e \"(mu4e-update-index)\" 2>/dev/null || (mu index && ~/.local/bin/mail_alert)",
     "boxes": ["INBOX"]
 }

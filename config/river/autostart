@@ -26,7 +26,6 @@ waybar &
 mako &
 udiskie &
 foot --server &
-emacs --daemon &
 kmonad ~/.config/kmonad/config.kbd &
 wl-paste --type text --watch cliphist store &
 wl-paste --type image --watch cliphist store &

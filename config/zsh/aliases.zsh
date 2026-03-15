@@ -11,7 +11,7 @@ alias ..="cd .."
 alias sync-server="ssh -L 9988:localhost:8384 server"
 alias sync-remote="ssh -L 9987:localhost:8384 jenasoffice"
 
-alias restart-emacs="killall emacs || echo 'Emacs server not running'; /usr/bin/emacs --daemon" 
+alias restart-emacs="killall emacs 2>/dev/null; setsid emacs"
 alias reload-wifi="sudo rmmod mt7921e && sudo modprobe mt7921e"
 
 alias tr="trash"

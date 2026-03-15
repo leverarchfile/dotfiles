@@ -8,4 +8,4 @@ wait && sleep 1
 
 pkill -RTMIN+1 waybar
 
-emacsclient -e "(mu4e-update-index)"
+emacsclient -e "(mu4e-update-index)" 2>/dev/null || (mu index && mail_alert)

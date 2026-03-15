@@ -69,6 +69,9 @@
   (setq truncate-string-ellipsis "…") ; unicode ellipsis rather than "..."
   (setq sentence-end-double-space nil)) ; make sure sentences end with one space
 
+(require 'server)
+(unless (server-running-p) (server-start))
+
 (use-package emacs
   :config
   (setq tab-always-indent 'complete)
@@ -185,11 +188,10 @@
 (use-package spacious-padding
   :init 
   (setq spacious-padding-subtle-mode-line t)
-  (spacious-padding-mode 1))
-
-(setq spacious-padding-widths
+  (setq spacious-padding-widths
         '( :right-divider-width 1
            :mode-line-width 0))
+  (spacious-padding-mode 1))
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
@@ -802,15 +804,16 @@
 	        (org-deadline-warning-days 90)
 	        (org-agenda-entry-types '(:deadline)))))))
 
-;; show org-agenda list on startup
-(add-hook 'server-after-make-frame-hook (lambda ()
-                                          (setq olivetti-body-width 100)
-                                          (olivetti-mode)
-                                          (org-agenda nil "a")))
-
 (add-hook 'org-agenda-mode-hook (lambda ()
                                   (setq olivetti-body-width 100)
                                   (olivetti-mode)))
+
+;; show org-agenda list on startup
+(defun my/startup-agenda ()
+  (org-agenda nil "a"))
+
+(add-hook 'emacs-startup-hook #'my/startup-agenda)
+(add-hook 'server-after-make-frame-hook #'my/startup-agenda)
 
 ;; automatically export two agenda views as .txt files whenever an org agenda file is saved 
 (defun my-update-desktop-agenda-files ()

@@ -91,6 +91,12 @@ Resources I've found particularly useful:
   (setq sentence-end-double-space nil)) ; make sure sentences end with one space
 #+end_src
 
+** Server mode
+#+begin_src emacs-lisp
+(require 'server)
+(unless (server-running-p) (server-start))
+#+end_src
+
 ** Tabs
 
 #+begin_src emacs-lisp
@@ -250,11 +256,10 @@ Resources I've found particularly useful:
 (use-package spacious-padding
   :init 
   (setq spacious-padding-subtle-mode-line t)
-  (spacious-padding-mode 1))
-
-(setq spacious-padding-widths
+  (setq spacious-padding-widths
         '( :right-divider-width 1
            :mode-line-width 0))
+  (spacious-padding-mode 1))
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
@@ -949,15 +954,16 @@ Resources I've found particularly useful:
 ** Org agenda startup screen
 
 #+begin_src emacs-lisp
-;; show org-agenda list on startup
-(add-hook 'server-after-make-frame-hook (lambda ()
-                                          (setq olivetti-body-width 100)
-                                          (olivetti-mode)
-                                          (org-agenda nil "a")))
-
 (add-hook 'org-agenda-mode-hook (lambda ()
                                   (setq olivetti-body-width 100)
                                   (olivetti-mode)))
+
+;; show org-agenda list on startup
+(defun my/startup-agenda ()
+  (org-agenda nil "a"))
+
+(add-hook 'emacs-startup-hook #'my/startup-agenda)
+(add-hook 'server-after-make-frame-hook #'my/startup-agenda)
 #+end_src
 
 ** Org agenda export files
