@@ -154,8 +154,10 @@
   (setq fontaine-presets
         '((regular)
           (alternative
-           :inherit standard
            :variable-pitch-family "Libertinus Serif")
+          (xcharter
+           :variable-pitch-family "XCharter"
+           :variable-pitch-height 1.13)
           (presentation
            :default-height 180)
           (t
@@ -168,17 +170,17 @@
     (add-hook 'fontaine-set-preset-hook #'pulsar-pulse-line)))
 
 (use-package mixed-pitch
-    :hook (text-mode . mixed-pitch-mode))
-
-(use-package ef-themes
-  :config
-  (setq ef-themes-common-palette-overrides
-        '((prose-done fg-dim))))
+    :hook (text-mode . mixed-pitch-mode)
+    :config
+    (setq mixed-pitch-set-height t)
+    (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-special-keyword)
+    (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-date)
+    (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-document-info))
 
 (use-package doric-themes
  :config
- (setq doric-themes-to-toggle '(doric-earth doric-obsidian))
- (doric-themes-select 'doric-obsidian))
+ (setq doric-themes-to-toggle '(doric-mermaid doric-siren))
+(doric-themes-select 'doric-mermaid))
 
 (defun my-switch-theme ()
     (interactive)
@@ -645,6 +647,7 @@
             ("X" . "export"))))
 
 (defun my/org-font-setup ()
+  (set-face-attribute 'org-document-title nil :font "Iosevka Etoile" :height 1.4 :weight 'bold)
   (set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold :overline t)
   (set-face-attribute 'org-level-2 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
   (set-face-attribute 'org-level-3 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
