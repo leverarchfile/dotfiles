@@ -1,4 +1,4 @@
-require('nvim-treesitter.configs').setup {
+require('nvim-treesitter').setup {
   -- languages for treesitter
   ensure_installed = {
     'c', 'lua', 'vim', 'vimdoc', 'query', 'elixir',
@@ -7,8 +7,4 @@ require('nvim-treesitter.configs').setup {
     'bash', 'css', 'go', 'json', 'toml', 'sql',
     'rust', 'regex', 'java',
   },
-
-  sync_install = false,
-  highlight = { enable = true },
-  indent = { enable = true },
 }
