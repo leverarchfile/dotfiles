@@ -161,9 +161,9 @@
           (presentation
            :default-height 180)
           (t
-           :default-family "Iosevka"
+           :default-family "IosevkaTermSlab Nerd Font Mono"
            :default-height 115
-           :fixed-pitch-family "Iosevka"
+           :fixed-pitch-family "IosevkaTermSlab Nerd Font Mono"
            :variable-pitch-family "Aporetic Serif"          
            :variable-pitch-height 1.0)))
   (with-eval-after-load 'pulsar

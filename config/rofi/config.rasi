@@ -1,5 +1,6 @@
 configuration {
   modes: [ combi, drun, run, calc ];
+  font: "XCharter";
 } 
 
 @theme "gruvbox-dark"
