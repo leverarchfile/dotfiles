@@ -47,3 +47,18 @@ vim.g.maplocalleader = ' '
 -- disable netrw (recommended nvim-tree settings)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = function()
+    local function fix_underline(group)
+      local hl = vim.api.nvim_get_hl(0, { name = group })
+      hl.undercurl = nil
+      hl.underdotted = true
+      vim.api.nvim_set_hl(0, group, hl)
+    end
+    fix_underline("DiagnosticUnderlineError")
+    fix_underline("DiagnosticUnderlineWarn")
+    fix_underline("DiagnosticUnderlineInfo")
+    fix_underline("DiagnosticUnderlineHint")
+  end,
+})
