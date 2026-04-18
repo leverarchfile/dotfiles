@@ -37,7 +37,7 @@ vim.o.cursorline = true
 vim.o.numberwidth = 2
 
 -- undo history
-vim.o.undofile = true 
+vim.o.undofile = true
 
 -- leader key
 -- must be before plugins (otherwise wrong leader will be used for plugins)
@@ -48,6 +48,7 @@ vim.g.maplocalleader = ' '
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- use underdotted style for diagnostic underlines instead of undercurl
 vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()
     local function fix_underline(group)
