@@ -1161,6 +1161,13 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 #+identifier: %4$s
 \n")
 
+;; required for denote-links dynamic blocks
+(use-package denote-org
+  :ensure t)
+
+;; auto-update dynamic blocks (including denote-links) on save
+(add-hook 'before-save-hook 'org-update-all-dblocks)
+
 ;; update the "modified" timestamp when edits are saved
 (add-hook 'org-mode-hook (lambda ()
                            (setq-local time-stamp-active t
