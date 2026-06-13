@@ -8,6 +8,8 @@ riverctl default-attach-mode bottom
 riverctl rule-add ssd
 riverctl rule-add -title "emacs-window-popup" float
 riverctl rule-add -title "emacs-float" float
+riverctl rule-add -app-id "xdg-desktop-portal-gtk" float
+riverctl rule-add -app-id "xdg-desktop-portal-gtk" position 200 50
 
 gsettings set "org.gnome.desktop.interface" gtk-theme "Gruvbox-Material-Dark"
 gsettings set "org.gnome.desktop.interface" icon-theme "breeze-dark"
