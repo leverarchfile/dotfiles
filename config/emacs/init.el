@@ -377,6 +377,13 @@
     :prefix "SPC" ; set leader
     :global-prefix "M-SPC") ; use leader in insert mode
   (my/leader-keys
+    ;; agenda
+    "a" '(:ignore t :wk "Agenda")
+    "a e" '(org-agenda-earlier :wk "Earlier view")
+    "a l" '(org-agenda-later :wk "Later view")
+    "a m" '(org-agenda-month-view :wk "Month view")
+    "a t" '(org-agenda-todo :wk "All todos")
+    "a /" '(org-agenda-filter-by-tag :wk "Filter by tag")
     ;; buffers
     "b" '(:ignore t :wk "Buffers")
     "b b" '(consult-buffer :wk "Show buffers")
@@ -516,19 +523,6 @@
 ;; insert new line without moving cursor
 (with-eval-after-load 'evil-maps
   (define-key evil-insert-state-map (kbd "C-<return>") 'open-line))
-
-;; evil key configurations for org-agenda
-(evil-set-initial-state 'org-agenda-mode 'normal)
-(general-define-key
-  :keymaps 'org-agenda-mode-map
-  :prefix "SPC"
-  :states '(normal motion)
-    "a" '(:ignore t :wk "Agenda")
-    "a e" '(org-agenda-earlier :wk "Earlier view")
-    "a l" '(org-agenda-later :wk "Later view")
-    "a m" '(org-agenda-month-view :wk "Month view")
-    "a t" '(org-agenda-todo :wk "All todos")
-    "a /" '(org-agenda-filter-by-tag :wk "Filter by tag"))
 
 (defun my/org-next-level-1-headline ()
   "Jump to the next level 1 org headline."
@@ -1217,7 +1211,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
      "*quarto-preview*")))
 
 (use-package pdf-tools
-  :init
+  :config
   (pdf-tools-install)
   :bind (:map pdf-view-mode-map
               ("j" . pdf-view-next-line-or-next-page)
@@ -1325,7 +1319,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
 
   ;; bury buffer instead of quitting
-  (evil-define-key 'normal mu4e-main-mode-map (kbd "q") 'bury-buffer))
+  (evil-define-key 'normal mu4e-main-mode-map (kbd "q") 'bury-buffer)) 
 
 (use-package mu4e
   :config
