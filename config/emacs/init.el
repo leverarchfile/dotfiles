@@ -179,13 +179,55 @@
 
 (use-package doric-themes
  :config
- (setq doric-themes-to-toggle '(doric-mermaid doric-siren))
-(doric-themes-select 'doric-mermaid))
+ (setq doric-themes-to-toggle '(doric-mermaid doric-tiger))
+(doric-themes-select 'doric-tiger))
 
 (defun my-switch-theme ()
     (interactive)
     (doric-themes-toggle)
     (my/org-font-setup))
+
+;; (use-package weyland-yutani-theme
+;;   :config
+;;   (load-theme 'weyland-yutani t)
+
+;;   (deftheme weyland-yutani-fixes)
+
+;;   (custom-theme-set-faces
+;;    'weyland-yutani-fixes
+;;    ;; remove extra lines on src block begin/end
+;;    '(org-block-begin-line ((t (:underline nil))))
+;;    '(org-block-end-line   ((t (:underline nil :overline nil))))
+;;    ;; remove underline under org-agenda date headers
+;;    '(org-agenda-date      ((t (:underline nil))))
+;;    ;; make selected/highlighted text more visible inside src blocks
+;;    '(region ((t (:background "#3d4f6b" :foreground "#dbe6ff"))))
+;;    ;; remove underline from TODO-type keywords, keep bold only, use vibrant-Purple
+;;    '(org-todo ((t (:underline nil :foreground "#AD83EB"))))
+;;    ;; make SCHEDULED/DEADLINE label match the color of the timestamp
+;;    '(org-special-keyword ((t (:foreground "#C264C6"))))
+;;    ;; remove underline on org document title
+;;    '(org-document-title ((t (:underline nil))))
+;;    ;; make drawer markers (:PROPERTIES:/:END:) monospace
+;;    '(org-drawer ((t (:inherit fixed-pitch))))
+;;    ;; make DONE org keyword match the grey strikethrough headline color
+;;    '(org-done ((t (:foreground "#606873" :weight bold)))))
+
+;;   (enable-theme 'weyland-yutani-fixes)
+;;   (provide-theme 'weyland-yutani-fixes)
+
+;;   ;; keep theme edits tied to weyland-yutani only
+;;   (defun weyland-yutani--disable-fixes-too (theme &rest _)
+;;     (when (eq theme 'weyland-yutani)
+;;       (disable-theme 'weyland-yutani-fixes)))
+;;   (advice-add 'disable-theme :before #'weyland-yutani--disable-fixes-too)
+
+;; ;; strip stray background from blank separator lines org-agenda inserts
+;;   (defun weyland-yutani--strip-blank-line-face ()
+;;     (goto-char (point-min))
+;;     (while (re-search-forward "^\n" nil t)
+;;       (put-text-property (match-beginning 0) (match-end 0) 'face nil)))
+;;   (add-hook 'org-agenda-finalize-hook #'weyland-yutani--strip-blank-line-face))
 
 (use-package spacious-padding
   :init 
@@ -424,6 +466,7 @@
     "f p" '(consult-yank-pop :wk "Search clipboard to paste")
     "f r" '(consult-recent-file :wk "Find recent files")
     "f s" '(find-file :wk "Find file")
+    "f /" '(consult-ripgrep :wk "Search whole directory")
     ;; comments
     "g c" '(comment-line :wk "Comment lines")
     ;; images
