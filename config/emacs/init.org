@@ -516,6 +516,7 @@ Resources I've found particularly useful:
     "f g" `(,(general-simulate-key "C-x g") :wk "Magit status buffer")
     "f h" '(consult-org-heading :wk "Find org heading")
     "f l" '(consult-line :wk "Find line in current buffer")
+    "f o" '(consult-outline :wk "Find org/markdown headline in current buffer")
     "f p" '(consult-yank-pop :wk "Search clipboard to paste")
     "f r" '(consult-recent-file :wk "Find recent files")
     "f s" '(find-file :wk "Find file")
@@ -572,12 +573,14 @@ Resources I've found particularly useful:
     "s" '(:ignore t :wk "Slips")
     "s a" '(citar-denote-dwim :wk "Access attachments etc. for bib. slip")
     "s b" '(denote-backlinks :wk "Backlinks for slip")
-    "s f" '(denote-open-or-create :wk "Open or reate slip")
+    "s f" '(denote-open-or-create :wk "Open or create slip")
+    "s g" '(consult-notes :wk "Go to slip")
     "s l" '(denote-link :wk "Insert Denote link")
     "s m" '(denote-link-after-creating :wk "Create new slip and link")
     "s q" '(citar-denote-open-note :wk "Open bib. slip")
     "s r" '(citar-create-note :wk "New bib. slip")
     "s s" '(denote :wk "New slip with Denote")
+    "s /" '(consult-notes-search-in-all-notes :wk "Search across all slips")
     ;; toggle
     "t" '(:ignore t :wk "Toggle")
     "t e" '(my-switch-theme :wk "Toggle ef-themes")
@@ -1382,6 +1385,12 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   (citar-denote-mode))
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package consult-notes
+  :config
+  (consult-notes-denote-mode))
+#+end_src
+
 * Markdown
 
 #+begin_src emacs-lisp
@@ -1463,7 +1472,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   (setq elfeed-protocol-fever-fetch-category-as-tag t)
   (setq elfeed-protocol-fever-update-unread-only t)
 
-  (setq elfeed-protocol-feeds `((,fever-url-zt
+  (setq elfeed-feeds `((,fever-url-zt
                                  :api-url ,fever-api-url
                                  :password ,fever-password)))
 
