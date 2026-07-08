@@ -2,7 +2,7 @@ directory: ~/music/library
 library: ~/.local/share/beets/library.db
 threaded: yes
 
-plugins: musicbrainz discogs scrub lastgenre chroma fetchart info
+plugins: musicbrainz scrub lastgenre chroma fetchart info
 
 import:
   move: yes
