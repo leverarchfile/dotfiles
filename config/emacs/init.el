@@ -1298,9 +1298,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 (use-package markdown-mode
   :custom
   (markdown-asymmetric-header t)
-  (markdown-list-item-bullets '("•"))
   (markdown-fontify-code-blocks-natively t)
-  (markdown-hide-markup t)
   :bind (:map markdown-mode-map
               ("C-c C-x C-v" . markdown-toggle-inline-images)
               ("M-<left>"    . markdown-promote)
@@ -1316,19 +1314,6 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   (set-face-attribute 'markdown-header-face-5 nil :height 1.0)
   (set-face-attribute 'markdown-header-face-6 nil :height 1.0))
 (add-hook 'markdown-mode-hook #'my/markdown-header-height-setup)
-
-(defun my/markdown-render-on ()
-  "Conceal markup in normal and visual modes."
-  (when (derived-mode-p 'markdown-mode)
-    (markdown-toggle-markup-hiding 1)))
-
-(defun my/markdown-render-off ()
-  "Show markup in insert mode."
-  (when (derived-mode-p 'markdown-mode)
-    (markdown-toggle-markup-hiding -1)))
-
-(add-hook 'evil-insert-state-entry-hook #'my/markdown-render-off)
-(add-hook 'evil-insert-state-exit-hook  #'my/markdown-render-on)
 
 ;; Smart quotes and text objects for evil-surround
 (add-hook 'markdown-mode-hook 'electric-quote-local-mode)
