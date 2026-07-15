@@ -1296,8 +1296,39 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   (consult-notes-denote-mode))
 
 (use-package markdown-mode
-  :config
-  (define-key markdown-mode-map (kbd "C-c C-x C-v") #'markdown-toggle-inline-images))
+  :custom
+  (markdown-asymmetric-header t)
+  (markdown-list-item-bullets '("•"))
+  (markdown-fontify-code-blocks-natively t)
+  (markdown-hide-markup t)
+  :bind (:map markdown-mode-map
+              ("C-c C-x C-v" . markdown-toggle-inline-images)
+              ("M-<left>"    . markdown-promote)
+              ("M-<right>"   . markdown-demote)
+              ("M-<up>"      . markdown-move-up)
+              ("M-<down>"    . markdown-move-down)))
+
+(defun my/markdown-header-height-setup ()
+  (set-face-attribute 'markdown-header-face-1 nil :height 1.8)
+  (set-face-attribute 'markdown-header-face-2 nil :height 1.6)
+  (set-face-attribute 'markdown-header-face-3 nil :height 1.4)
+  (set-face-attribute 'markdown-header-face-4 nil :height 1.2)
+  (set-face-attribute 'markdown-header-face-5 nil :height 1.0)
+  (set-face-attribute 'markdown-header-face-6 nil :height 1.0))
+(add-hook 'markdown-mode-hook #'my/markdown-header-height-setup)
+
+(defun my/markdown-render-on ()
+  "Conceal markup in normal and visual modes."
+  (when (derived-mode-p 'markdown-mode)
+    (markdown-toggle-markup-hiding 1)))
+
+(defun my/markdown-render-off ()
+  "Show markup in insert mode."
+  (when (derived-mode-p 'markdown-mode)
+    (markdown-toggle-markup-hiding -1)))
+
+(add-hook 'evil-insert-state-entry-hook #'my/markdown-render-off)
+(add-hook 'evil-insert-state-exit-hook  #'my/markdown-render-on)
 
 ;; Smart quotes and text objects for evil-surround
 (add-hook 'markdown-mode-hook 'electric-quote-local-mode)
