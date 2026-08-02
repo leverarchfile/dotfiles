@@ -1,0 +1,264 @@
+// ---------------------------------------------------------------------
+// OUTPUTS — deliberately empty.
+//
+// kanshi handles mode/scale/position/enable for eDP-1 and both docks.
+// Anything written here risks niri#676. Leave this block commented out.
+// ---------------------------------------------------------------------
+
+// ---------------------------------------------------------------------
+// INPUT — ported from river `settings`
+// ---------------------------------------------------------------------
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+        // river: set-repeat 50 250  (rate, delay)
+        repeat-delay 250
+        repeat-rate 50
+    }
+
+    touchpad {
+        // No device name needed — niri applies this to all touchpads,
+        // so the PIXA3854 string doesn't need updating on the new laptop.
+        tap
+        natural-scroll
+        dwt                          // disable-while-typing
+        accel-profile "adaptive"
+        accel-speed 0.30             // river: pointer-accel 0.30
+        scroll-factor 1.5
+        // river had `drag disabled`; niri's tap-drag is off unless enabled,
+        // so there is nothing to write here.
+    }
+
+    // river: focus-follows-cursor normal
+    focus-follows-mouse
+
+    // river: set-cursor-warp on-output-change
+    warp-mouse-to-focus mode="center-xy-always"
+}
+
+// river: hide-cursor timeout 5000 / when-typing enabled
+cursor {
+    hide-when-typing
+    hide-after-inactive-ms 5000
+}
+
+// ---------------------------------------------------------------------
+// LAYOUT (ported from the wideriver flags in `autostart`)
+// ---------------------------------------------------------------------
+layout {
+    // wideriver: --outer-gaps 6 --inner-gaps 6
+    // niri has one `gaps` value covering both.
+    gaps 6
+
+    // wideriver: --ratio-master 0.50
+    default-column-width { proportion 0.5; }
+
+    // wideriver: --border-width 2, gruvbox colours
+    border {
+        on
+        width 2
+        active-color "#ebdbb2"
+        inactive-color "#928374"
+    }
+
+    // River had borders only, no separate focus ring.
+    focus-ring {
+        off
+    }
+
+    // river: background-color "0x282828"
+    background-color "#282828"
+
+}
+
+// ---------------------------------------------------------------------
+// WORKSPACES
+//
+// River tags 1-9 were fixed slots. niri workspaces are dynamic, so
+// declaring them by name pins nine stable slots for continuity
+// (plan, Stage 3 step 1). Drop this block later if named-by-context
+// workspaces turn out to suit the model better.
+// ---------------------------------------------------------------------
+workspace "1"
+workspace "2"
+workspace "3"
+workspace "4"
+workspace "5"
+workspace "6"
+workspace "7"
+workspace "8"
+workspace "9"
+
+// river: rule-add ssd
+prefer-no-csd
+
+screenshot-path "~/pictures/screenshots/%Y-%m-%d-%H%M%S.png"
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+// ---------------------------------------------------------------------
+// WINDOW RULES (ported from river `settings`)
+// ---------------------------------------------------------------------
+window-rule {
+    match title="emacs-window-popup"
+    match title="emacs-float"
+    open-floating true
+}
+
+window-rule {
+    match app-id="xdg-desktop-portal-gtk"
+    open-floating true
+    default-floating-position x=200 y=50 relative-to="top-left"
+}
+
+// ---------------------------------------------------------------------
+// ENVIRONMENT
+//
+// Note: these do NOT reach apps started by systemd user units.
+// GTK_IM_MODULE belongs in .zprofile if it needs to apply everywhere
+// (plan, "Compose key and dead keys").
+// ---------------------------------------------------------------------
+environment {
+    XDG_CURRENT_DESKTOP "niri"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+}
+
+// ---------------------------------------------------------------------
+// STARTUP — ALL COMMENTED OUT ON PURPOSE.
+//
+// Do not enable these while testing nested under River: a second kmonad
+// will fight the running one for the keyboard, a second swayidle will
+// lock the real session, and waybar/mako will double up.
+//
+// Enable them only with a TTY.
+// ---------------------------------------------------------------------
+// spawn-at-startup "kanshi"
+// spawn-at-startup "waybar"
+// spawn-at-startup "mako"
+// spawn-at-startup "udiskie"
+spawn-at-startup "foot" "--server"
+// spawn-sh-at-startup "kmonad ~/.config/kmonad/config.kbd"
+// spawn-at-startup "librepods" "--no-tray"
+// spawn-at-startup "wl-clip-persist" "--clipboard" "regular"
+// spawn-sh-at-startup "wl-paste --type text  --watch cliphist store"
+// spawn-sh-at-startup "wl-paste --type image --watch cliphist store"
+// spawn-at-startup "swayidle" "-w" \
+//     "timeout" "300" "lock" \
+//     "timeout" "600" "niri msg action power-off-monitors" \
+//     "resume"  "niri msg action power-on-monitors" \
+//     "before-sleep" "lock"
+//
+spawn-at-startup "niri_tilemod" "-n" "3"
+//
+// NOT HERE: nm-applet and the polkit agent. Both have files in
+// /etc/xdg/autostart/, and niri (unlike River) processes that directory,
+// so listing them here would start each one twice.
+
+// ---------------------------------------------------------------------
+// BINDS
+// ---------------------------------------------------------------------
+binds {
+    Mod+Slash { show-hotkey-overlay; }
+
+    // ---- window management ----
+    Mod+Escape       { close-window; }
+    Mod+A            { toggle-window-floating; }
+    Mod+Shift+Tab    { fullscreen-window; }
+    Mod+Tab          { toggle-overview; }
+
+    // Toggle the focused column between full width and its previous width.
+    // Acts on the column, so with a stacked column it maximises both windows.
+    Mod+F { maximize-column; }
+
+    // Was wideriver `zoom` — promote focused window to master position.
+    Mod+Shift+A { move-column-to-first; }
+
+    // Super+A (river `focus-view next`) intentionally dropped: niri's
+    // columns make h/j/k/l sufficient. If wrap-around is ever wanted,
+    // the action is focus-column-right-or-first.
+
+    // ---- focus (h/j/k/l) ----
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+    Mod+L { focus-column-right; }
+
+    // ---- move (Shift) ----
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+J { move-window-down; }
+    Mod+Shift+K { move-window-up; }
+    Mod+Shift+L { move-column-right; }
+
+    // Move focused window out of its column into its own (or pull the
+    // neighbouring column in). Undoes tilemod's auto-stacking per-window.
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+
+    // ---- launchers ----
+    // NB: `spawn` does not expand $TERMINAL. footclient needs `foot --server`.
+    Mod+Return    { spawn "footclient"; }
+    Mod+S         { spawn "screenshot"; }
+    Mod+D         { spawn "tofi-drun" "--drun-launch=true"; }
+    Mod+G         { spawn "footclient" "lf"; }
+    Mod+X         { spawn "system_state"; }
+    Mod+C         { spawn "clipboard"; }
+    Mod+B         { spawn "firefox"; }
+    Mod+M         { spawn "bookmark" "add"; }
+    Mod+V         { spawn "bookmark" "open"; }
+    Mod+Semicolon { spawn-sh "emacsclient -c 2>/dev/null || emacs"; }
+    Mod+Minus     { spawn "password_menu"; }
+
+    Mod+Shift+S { spawn-sh "wl-paste -t image | swappy -f -"; }
+    Mod+Shift+C { spawn "colour-picker"; }
+    Mod+Shift+Z { spawn "bt_toggle"; }
+    Mod+Shift+M { spawn "tailscale_mullvad_select"; }
+    Mod+Shift+V { spawn "define"; }
+    Mod+Shift+B { spawn "reload-waybar"; }
+
+    Mod+Shift+D { spawn "emacsclient" "-e" "(prot-window-popup-org-capture)"; }
+    Mod+Shift+G { spawn "emacsclient" "-e" "(thanos/type)"; }
+
+    // ---- workspaces ----
+    Mod+1 { focus-workspace "1"; }
+    Mod+2 { focus-workspace "2"; }
+    Mod+3 { focus-workspace "3"; }
+    Mod+4 { focus-workspace "4"; }
+    Mod+5 { focus-workspace "5"; }
+    Mod+6 { focus-workspace "6"; }
+    Mod+7 { focus-workspace "7"; }
+    Mod+8 { focus-workspace "8"; }
+    Mod+9 { focus-workspace "9"; }
+
+    Mod+Shift+1 { move-column-to-workspace "1"; }
+    Mod+Shift+2 { move-column-to-workspace "2"; }
+    Mod+Shift+3 { move-column-to-workspace "3"; }
+    Mod+Shift+4 { move-column-to-workspace "4"; }
+    Mod+Shift+5 { move-column-to-workspace "5"; }
+    Mod+Shift+6 { move-column-to-workspace "6"; }
+    Mod+Shift+7 { move-column-to-workspace "7"; }
+    Mod+Shift+8 { move-column-to-workspace "8"; }
+    Mod+Shift+9 { move-column-to-workspace "9"; }
+
+    // NB: river's Super+Ctrl+N (toggle-view-tags — one window on several
+    //     tags at once) has no niri equivalent. Tags are not workspaces.
+
+    // ---- monitors ----
+    Mod+Period { focus-monitor-next; }
+    Mod+Comma  { focus-monitor-previous; }
+    Mod+Shift+Period { move-column-to-monitor-next; }
+    Mod+Shift+Comma  { move-column-to-monitor-previous; }
+
+    // ---- media keys ----
+    XF86AudioRaiseVolume  allow-when-locked=true { spawn "volume" "up"; }
+    XF86AudioLowerVolume  allow-when-locked=true { spawn "volume" "down"; }
+    XF86AudioMute         allow-when-locked=true { spawn "volume" "mute"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightness" "up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightness" "down"; }
+
+    // ---- session ----
+    Mod+Ctrl+Z { quit; }
+}
