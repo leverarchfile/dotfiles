@@ -1,0 +1,12 @@
+#!/bin/sh
+# Run by kanshi on display profile changes.
+#
+# tilemod caches the monitor list at startup and dies with a KeyError when a
+# new output appears, so restart it whenever the display setup changes.
+# https://github.com/heyoeyo/niri_tweaks
+# Remove if fixed upstream.
+
+[ "$XDG_CURRENT_DESKTOP" = "niri" ] || exit 0
+
+pkill -f "python3 .*niri_tilemod"
+setsid niri_tilemod -n 3 >/dev/null 2>&1 &

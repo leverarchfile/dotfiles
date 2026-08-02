@@ -120,7 +120,8 @@ spawn-at-startup "swayidle" "-w" \
 
 // niri_tilemod: auto-stacks windows into columns, N per column.
 // From https://github.com/heyoeyo/niri_tweaks
-spawn-at-startup "niri_tilemod" "-n" "3"
+// kanhsi handles this
+// spawn-sh-at-startup "niri_tilemod -n 3 >/tmp/tilemod.log 2>&1"
 
 // NOT HERE: nm-applet and the polkit agent. Both have files in
 // /etc/xdg/autostart/, and niri (unlike River) processes that directory,

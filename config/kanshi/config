@@ -1,14 +1,16 @@
 profile undocked {
     output eDP-1 enable scale 1.75
+    exec ~/.local/bin/niri_tilemod_hook
 }
 
 profile docked {
     output eDP-1 enable position 0,0 scale 1.75
-		output "Dell Inc. DELL S2721QS 6XG8M43" scale 2 
+    output "Dell Inc. DELL S2721QS 6XG8M43" scale 2
+    exec ~/.local/bin/niri_tilemod_hook
 }
 
 profile uoa {
     output eDP-1 enable position 0,0 scale 1.75
     output "Dell Inc. DELL U2718Q H0YFH9BQ0EDL" scale 2
+    exec ~/.local/bin/niri_tilemod_hook
 }
-
