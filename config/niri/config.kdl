@@ -28,8 +28,6 @@ input {
     }
 
     focus-follows-mouse
-
-    warp-mouse-to-focus mode="center-xy-always"
 }
 
 cursor {
