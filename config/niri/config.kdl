@@ -64,7 +64,6 @@ layout {
 // WORKSPACES
 // ---------------------------------------------------------------------
 
-
 prefer-no-csd
 
 screenshot-path "~/pictures/screenshots/%Y-%m-%d-%H%M%S.png"
@@ -119,6 +118,8 @@ spawn-at-startup "swayidle" "-w" \
     "resume"  "niri msg action power-on-monitors" \
     "before-sleep" "lock"
 
+// niri_tilemod: auto-stacks windows into columns, N per column.
+// From https://github.com/heyoeyo/niri_tweaks
 spawn-at-startup "niri_tilemod" "-n" "3"
 
 // NOT HERE: nm-applet and the polkit agent. Both have files in
@@ -137,6 +138,8 @@ binds {
     Mod+Tab          { toggle-overview; }
     Mod+Shift+Tab    { toggle-window-floating; }
 
+    // niri_maximize: maximize that restores position
+    // From https://github.com/heyoeyo/niri_tweaks
     Mod+F            { spawn "niri_maximize" "maximize-window-to-edges"; }
     Mod+Shift+F      { spawn "niri_maximize" "fullscreen-window"; }
 
