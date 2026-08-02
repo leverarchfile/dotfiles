@@ -3,7 +3,7 @@
   "layer": "top",
   "height": 40,
   "spacing": 6,
-  "modules-left": ["river/tags", "network", "idle_inhibitor"],
+  "modules-left": ["niri/workspaces", "network", "idle_inhibitor"],
   "modules-center": ["clock"],
   "modules-right":["custom/inbox", "cpu", "memory", "temperature", "battery"],
   "network": {

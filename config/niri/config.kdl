@@ -6,56 +6,45 @@
 // ---------------------------------------------------------------------
 
 // ---------------------------------------------------------------------
-// INPUT — ported from river `settings`
+// INPUT
 // ---------------------------------------------------------------------
 input {
     keyboard {
         xkb {
             layout "us"
         }
-        // river: set-repeat 50 250  (rate, delay)
         repeat-delay 250
         repeat-rate 50
     }
 
     touchpad {
-        // No device name needed — niri applies this to all touchpads,
-        // so the PIXA3854 string doesn't need updating on the new laptop.
         tap
+        drag true
         natural-scroll
         dwt                          // disable-while-typing
         accel-profile "adaptive"
-        accel-speed 0.30             // river: pointer-accel 0.30
+        accel-speed 0.30
         scroll-factor 1.5
-        // river had `drag disabled`; niri's tap-drag is off unless enabled,
-        // so there is nothing to write here.
     }
 
-    // river: focus-follows-cursor normal
     focus-follows-mouse
 
-    // river: set-cursor-warp on-output-change
     warp-mouse-to-focus mode="center-xy-always"
 }
 
-// river: hide-cursor timeout 5000 / when-typing enabled
 cursor {
     hide-when-typing
     hide-after-inactive-ms 5000
 }
 
 // ---------------------------------------------------------------------
-// LAYOUT (ported from the wideriver flags in `autostart`)
+// LAYOUT
 // ---------------------------------------------------------------------
 layout {
-    // wideriver: --outer-gaps 6 --inner-gaps 6
-    // niri has one `gaps` value covering both.
     gaps 6
 
-    // wideriver: --ratio-master 0.50
     default-column-width { proportion 0.5; }
 
-    // wideriver: --border-width 2, gruvbox colours
     border {
         on
         width 2
@@ -63,35 +52,19 @@ layout {
         inactive-color "#928374"
     }
 
-    // River had borders only, no separate focus ring.
     focus-ring {
         off
     }
 
-    // river: background-color "0x282828"
     background-color "#282828"
 
 }
 
 // ---------------------------------------------------------------------
 // WORKSPACES
-//
-// River tags 1-9 were fixed slots. niri workspaces are dynamic, so
-// declaring them by name pins nine stable slots for continuity
-// (plan, Stage 3 step 1). Drop this block later if named-by-context
-// workspaces turn out to suit the model better.
 // ---------------------------------------------------------------------
-workspace "1"
-workspace "2"
-workspace "3"
-workspace "4"
-workspace "5"
-workspace "6"
-workspace "7"
-workspace "8"
-workspace "9"
 
-// river: rule-add ssd
+
 prefer-no-csd
 
 screenshot-path "~/pictures/screenshots/%Y-%m-%d-%H%M%S.png"
@@ -101,7 +74,7 @@ hotkey-overlay {
 }
 
 // ---------------------------------------------------------------------
-// WINDOW RULES (ported from river `settings`)
+// WINDOW RULES
 // ---------------------------------------------------------------------
 window-rule {
     match title="emacs-window-popup"
@@ -128,32 +101,26 @@ environment {
 }
 
 // ---------------------------------------------------------------------
-// STARTUP — ALL COMMENTED OUT ON PURPOSE.
-//
-// Do not enable these while testing nested under River: a second kmonad
-// will fight the running one for the keyboard, a second swayidle will
-// lock the real session, and waybar/mako will double up.
-//
-// Enable them only with a TTY.
+// STARTUP
 // ---------------------------------------------------------------------
-// spawn-at-startup "kanshi"
-// spawn-at-startup "waybar"
-// spawn-at-startup "mako"
-// spawn-at-startup "udiskie"
+spawn-at-startup "kanshi"
+spawn-at-startup "waybar"
+spawn-at-startup "mako"
+spawn-at-startup "udiskie"
 spawn-at-startup "foot" "--server"
-// spawn-sh-at-startup "kmonad ~/.config/kmonad/config.kbd"
-// spawn-at-startup "librepods" "--no-tray"
-// spawn-at-startup "wl-clip-persist" "--clipboard" "regular"
-// spawn-sh-at-startup "wl-paste --type text  --watch cliphist store"
-// spawn-sh-at-startup "wl-paste --type image --watch cliphist store"
-// spawn-at-startup "swayidle" "-w" \
-//     "timeout" "300" "lock" \
-//     "timeout" "600" "niri msg action power-off-monitors" \
-//     "resume"  "niri msg action power-on-monitors" \
-//     "before-sleep" "lock"
-//
+spawn-sh-at-startup "kmonad ~/.config/kmonad/config.kbd"
+spawn-at-startup "librepods" "--no-tray"
+spawn-at-startup "wl-clip-persist" "--clipboard" "regular"
+spawn-sh-at-startup "wl-paste --type text  --watch cliphist store"
+spawn-sh-at-startup "wl-paste --type image --watch cliphist store"
+spawn-at-startup "swayidle" "-w" \
+    "timeout" "300" "lock" \
+    "timeout" "600" "niri msg action power-off-monitors" \
+    "resume"  "niri msg action power-on-monitors" \
+    "before-sleep" "lock"
+
 spawn-at-startup "niri_tilemod" "-n" "3"
-//
+
 // NOT HERE: nm-applet and the polkit agent. Both have files in
 // /etc/xdg/autostart/, and niri (unlike River) processes that directory,
 // so listing them here would start each one twice.
@@ -166,20 +133,17 @@ binds {
 
     // ---- window management ----
     Mod+Escape       { close-window; }
-    Mod+A            { toggle-window-floating; }
-    Mod+Shift+Tab    { fullscreen-window; }
+
     Mod+Tab          { toggle-overview; }
+    Mod+Shift+Tab    { toggle-window-floating; }
 
-    // Toggle the focused column between full width and its previous width.
-    // Acts on the column, so with a stacked column it maximises both windows.
-    Mod+F { maximize-column; }
+    Mod+F            { spawn "niri_maximize" "maximize-window-to-edges"; }
+    Mod+Shift+F      { spawn "niri_maximize" "fullscreen-window"; }
 
-    // Was wideriver `zoom` — promote focused window to master position.
+    Mod+A { focus-window-previous; }
+
+    // Promote focused window to master position.
     Mod+Shift+A { move-column-to-first; }
-
-    // Super+A (river `focus-view next`) intentionally dropped: niri's
-    // columns make h/j/k/l sufficient. If wrap-around is ever wanted,
-    // the action is focus-column-right-or-first.
 
     // ---- focus (h/j/k/l) ----
     Mod+H { focus-column-left; }
@@ -223,28 +187,25 @@ binds {
     Mod+Shift+G { spawn "emacsclient" "-e" "(thanos/type)"; }
 
     // ---- workspaces ----
-    Mod+1 { focus-workspace "1"; }
-    Mod+2 { focus-workspace "2"; }
-    Mod+3 { focus-workspace "3"; }
-    Mod+4 { focus-workspace "4"; }
-    Mod+5 { focus-workspace "5"; }
-    Mod+6 { focus-workspace "6"; }
-    Mod+7 { focus-workspace "7"; }
-    Mod+8 { focus-workspace "8"; }
-    Mod+9 { focus-workspace "9"; }
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
 
-    Mod+Shift+1 { move-column-to-workspace "1"; }
-    Mod+Shift+2 { move-column-to-workspace "2"; }
-    Mod+Shift+3 { move-column-to-workspace "3"; }
-    Mod+Shift+4 { move-column-to-workspace "4"; }
-    Mod+Shift+5 { move-column-to-workspace "5"; }
-    Mod+Shift+6 { move-column-to-workspace "6"; }
-    Mod+Shift+7 { move-column-to-workspace "7"; }
-    Mod+Shift+8 { move-column-to-workspace "8"; }
-    Mod+Shift+9 { move-column-to-workspace "9"; }
-
-    // NB: river's Super+Ctrl+N (toggle-view-tags — one window on several
-    //     tags at once) has no niri equivalent. Tags are not workspaces.
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
 
     // ---- monitors ----
     Mod+Period { focus-monitor-next; }

@@ -12,48 +12,49 @@ window#waybar {
     background-color: rgba(0,0,0,0);
 }
 
-#tags {
+#workspaces {
+    min-width: 240px;
     margin-top: 6px;
     margin-left: 6px;
     padding: 1px;
-    background-color: @color0; 
+    background-color: @color0;
     border: 2px solid @color8;
 }
 
-#tags button {
+#workspaces button {
     margin: 2px;
     padding: 1 6px;
     color: @color8;
     border: 2px solid @color0;
 }
 
-#tags button:hover {
+#workspaces button:hover {
     box-shadow: inherit;
     text-shadow: inherit;
     background: inherit;
 }
 
-#tags button.focused {
+#workspaces button.focused {
     color: @color0;
     background-color: @color8;
     border: 2px solid @color0;
 }
 
-#tags button.occupied {
+#workspaces button:not(.empty) {
     border: 2px solid @color8;
 }
 
-#tags button.focused.occupied {
+#workspaces button.focused:not(.empty) {
     color: @color0;
     background-color: @color8;
     border: 2px solid @color8;
 }
 
-#tags button.urgent {
-    border: 2px solid @color1; 
+#workspaces button.urgent {
+    border: 2px solid @color1;
 }
 
-#tags button.occupied.urgent {
+#workspaces button.urgent:not(.empty) {
     border: 2px solid @color1;
 }
 
