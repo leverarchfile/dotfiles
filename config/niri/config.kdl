@@ -126,8 +126,14 @@ spawn-at-startup "swayidle" "-w" \
 // so listing them here would start each one twice.
 
 // ---------------------------------------------------------------------
-// BINDS
+// KEYBINDINGS
 // ---------------------------------------------------------------------
+recent-windows {
+      binds {
+          Mod+A { next-window scope="workspace"; }
+        }
+    }
+
 binds {
     Mod+Slash { show-hotkey-overlay; }
 
@@ -141,22 +147,22 @@ binds {
     // From https://github.com/heyoeyo/niri_tweaks
     Mod+F            { spawn "niri_maximize" "maximize-window-to-edges"; }
     Mod+Shift+F      { spawn "niri_maximize" "fullscreen-window"; }
-
-    Mod+A { focus-window-previous; }
-
+  
     // Promote focused window to master position.
     Mod+Shift+A { move-column-to-first; }
 
     // ---- focus (h/j/k/l) ----
     Mod+H { focus-column-left; }
-    Mod+J { focus-window-down; }
-    Mod+K { focus-window-up; }
+    Mod+J { focus-window-or-workspace-down; }
+    Mod+K { focus-window-or-workspace-up; }
     Mod+L { focus-column-right; }
 
     // ---- move (Shift) ----
+    // niri_overview_bind: to reorder workspaces in overview mode 
+    // From https://github.com/heyoeyo/niri_tweaks
     Mod+Shift+H { move-column-left; }
-    Mod+Shift+J { move-window-down; }
-    Mod+Shift+K { move-window-up; }
+    Mod+Shift+J { spawn "niri_overview_bind" "move-workspace-down" "move-window-down"; }
+    Mod+Shift+K { spawn "niri_overview_bind" "move-workspace-up" "move-window-up"; }
     Mod+Shift+L { move-column-right; }
 
     // Move focused window out of its column into its own (or pull the
