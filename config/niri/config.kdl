@@ -162,8 +162,9 @@ binds {
 
     // Move focused window out of its column into its own (or pull the
     // neighbouring column in). Undoes tilemod's auto-stacking per-window.
-    Mod+BracketLeft  { consume-or-expel-window-left; }
-    Mod+BracketRight { consume-or-expel-window-right; }
+    Mod+Ctrl+L { spawn-sh "niri msg action consume-or-expel-window-right; niri msg action set-column-width 100%"; }
+    Mod+Ctrl+H { spawn-sh "niri msg action set-column-width 50%"; }
+    Mod+Ctrl+J { consume-or-expel-window-left; }
 
     // ---- launchers ----
     // NB: `spawn` does not expand $TERMINAL. footclient needs `foot --server`.
