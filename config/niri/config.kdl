@@ -130,8 +130,11 @@ spawn-at-startup "swayidle" "-w" \
 // ---------------------------------------------------------------------
 recent-windows {
       binds {
+          Alt+Tab         { next-window; }
+          Alt+Shift+Tab   { previous-window; }
+
           Mod+A { next-window scope="workspace"; }
-        }
+      }
     }
 
 binds {
