@@ -12,6 +12,9 @@
     "format-disconnected": "disconnected",
     "tooltip": false
   },
+  "mango/workspaces": {
+    "on-click": "activate"
+  },
   "idle_inhibitor": {
      "format": "{icon}",
      "format-icons": {
