@@ -1,9 +1,9 @@
 // -*- mode: jsonc -*-
 {
   "layer": "top",
-  "height": 40,
+  "height": 42,
   "spacing": 6,
-  "modules-left": ["niri/workspaces", "network", "idle_inhibitor"],
+  "modules-left": ["mango/workspaces", "network", "idle_inhibitor"],
   "modules-center": ["clock"],
   "modules-right":["custom/inbox", "cpu", "memory", "temperature", "battery"],
   "network": {

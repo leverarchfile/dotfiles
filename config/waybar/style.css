@@ -34,7 +34,13 @@ window#waybar {
     background: inherit;
 }
 
-#workspaces button.focused {
+#workspaces button.active {
+    color: @color0;
+    background-color: @color8;
+    border: 2px solid @color0;
+}
+
+#workspaces button.overview {
     color: @color0;
     background-color: @color8;
     border: 2px solid @color0;
@@ -44,7 +50,7 @@ window#waybar {
     border: 2px solid @color8;
 }
 
-#workspaces button.focused:not(.empty) {
+#workspaces button.active:not(.empty) {
     color: @color0;
     background-color: @color8;
     border: 2px solid @color8;
@@ -57,7 +63,6 @@ window#waybar {
 #workspaces button.urgent:not(.empty) {
     border: 2px solid @color1;
 }
-
 #network, #idle_inhibitor, #clock, #custom-inbox, #cpu, #memory, #disk, #temperature, #battery {
    padding: 1 6px;
    margin-top: 6px;
