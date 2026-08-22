@@ -17,6 +17,7 @@ wl-paste --type text --watch cliphist store &
 wl-paste --type image --watch cliphist store &
 wl-clip-persist --clipboard regular &
 nm-applet &
+wayland-pipewire-idle-inhibit &
 librepods --no-tray &
 
 swayidle -w timeout 300 "lock" timeout 600 "wlopm --off '*'" \
