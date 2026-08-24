@@ -20,6 +20,23 @@
   background: var(--accent-color) !important;
 }
 
+#tab-preview-panel,
+panel,
+menupopup {
+  --panel-border-color: #bda7f0;
+  --panel-background: #303030;
+  --panel-color: #bda7f0;
+}
+
+.urlbarView {
+  background-color: #303030 !important;
+  color: #bda7f0 !important;
+}
+
+.search-one-offs {
+  border-top: 1px solid #bda7f0 !important;
+}
+
 .titlebar-spacer,
 .titlebar-buttonbox-container,
 .urlbar-background,
