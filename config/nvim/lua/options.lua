@@ -61,5 +61,8 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     fix_underline("DiagnosticUnderlineWarn")
     fix_underline("DiagnosticUnderlineInfo")
     fix_underline("DiagnosticUnderlineHint")
+
+    -- prism: readable visual selection (black on bright lavender)
+    vim.api.nvim_set_hl(0, "Visual", { bg = "#bda7f0", fg = "#000000" })
   end,
 })

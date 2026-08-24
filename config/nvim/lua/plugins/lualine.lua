@@ -1,14 +1,35 @@
 return {
   "nvim-lualine/lualine.nvim",
   dependencies = { "nvim-tree/nvim-web-devicons" },
-  
+
   config = function()
-    require('lualine').setup { 
+    -- prism: statusline sits on the surface tone, not the page
+    local theme = require('lualine.themes.pywal16-nvim')
+
+    for _, mode in pairs(theme) do
+      if type(mode) == 'table' then
+        for _, sec in ipairs({ 'b', 'c', 'x', 'y' }) do
+          if mode[sec] then
+            mode[sec].bg = '#303030'
+          end
+        end
+      end
+    end
+
+    -- prism: inactive splits use quiet grey on the same surface
+    if theme.inactive then
+      for _, section in pairs(theme.inactive) do
+        section.bg = '#303030'
+        section.fg = '#989898'
+      end
+    end
+
+    require('lualine').setup {
       options = {
         icons_enabled = true,
-        theme = 'pywal16-nvim',
-    --    component_separators = { left = '', right = ''},
-    --    section_separators = { left = '', right = ''},
+        theme = theme,
+    --    component_separators = { left = '', right = ''},
+    --    section_separators = { left = '', right = ''},
         component_separators = '',
         section_separators = '',
 

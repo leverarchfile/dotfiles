@@ -1,16 +1,19 @@
 [urgency=low]
 background-color={foreground}
 text-color={background}
-progress-color=source {color4}
+border-color={foreground}
+progress-color=over {color1}
 default-timeout=5000
 
 [urgency=normal]
 background-color={foreground}
 text-color={background}
-progress-color=source {color4}
+border-color={foreground}
+progress-color=over {color1}
 default-timeout=10000
 
 [urgency=high]
-background-color={color9}
-text-color={color0}
+background-color={color1}
+text-color={background}
+border-color={color1}
 ignore-timeout=0

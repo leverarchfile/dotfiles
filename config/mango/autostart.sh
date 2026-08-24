@@ -4,7 +4,9 @@ systemctl --user restart xdg-desktop-portal
 
 /usr/lib/polkit-kde-authentication-agent-1 &
 
-gsettings set "org.gnome.desktop.interface" gtk-theme "Gruvbox-Material-Dark"
+gsettings set "org.gnome.desktop.interface" gtk-theme "gnome-prism"
+gsettings set "org.gnome.desktop.interface" color-scheme "prefer-dark"
+gsettings set "org.gnome.desktop.interface" font-name "IosevkaTermSlab Nerd Font Mono 12"
 gsettings set "org.gnome.desktop.interface" icon-theme "breeze-dark"
 
 kanshi &

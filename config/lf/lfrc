@@ -19,6 +19,9 @@ set scrolloff 10
 # use the `dim` attribute instead of underline for the cursor in the preview pane
 set cursorpreviewfmt "\033[7;2m"
 
+# make sure error lines are readable (prism theme)
+set errorfmt "\033[30;41m"
+
 # unset default bindings
 map d
 map m

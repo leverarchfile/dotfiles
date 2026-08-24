@@ -8,3 +8,60 @@ headerbar.default-decoration {
   text-shadow: none;
   box-shadow: none;
 }
+
+treeview.view:selected,
+treeview.view:selected:focus,
+iconview:selected,
+row:selected,
+row:selected label {
+  background-color: #bda7f0;
+  color: #000000;
+}
+
+headerbar {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+separator {
+  background-color: #bda7f0;
+  min-height: 1px;
+  min-width: 1px;
+}
+
+paned > separator,
+paned > separator.wide {
+  background-color: #000000;
+  background-image: linear-gradient(#bda7f0, #bda7f0);
+}
+
+.path-bar button,
+pathbar button {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+tooltip,
+tooltip.background {
+  background-color: #303030;
+  color: #bda7f0;
+  border: 1px solid #bda7f0;
+}
+
+tooltip label {
+  color: #bda7f0;
+}
+
+@keyframes prism-spin {
+  to { -gtk-icon-transform: rotate(1turn); }
+}
+
+spinner {
+  opacity: 0;
+}
+
+spinner:checked {
+  opacity: 1;
+  color: #bda7f0;
+  animation: prism-spin 1s linear infinite;
+}
