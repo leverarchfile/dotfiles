@@ -200,7 +200,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
     ;; Count level-2 headlines under '* Refile' in agenda.org
     (with-current-buffer (find-file-noselect "~/org/agenda.org")
       (org-with-wide-buffer
-       (when-let ((pos (org-find-exact-headline-in-buffer "Refile")))
+       (when-let* ((pos (org-find-exact-headline-in-buffer "Refile")))
          (goto-char pos)
          (setq count (length (org-map-entries t "LEVEL=2" 'tree))))))
     ;; Count level-1 headlines in inbox-phone.org
