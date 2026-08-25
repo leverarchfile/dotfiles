@@ -107,7 +107,7 @@
   (setq xclip-mode t)
   (setq xclip-method (quote wl-copy)))
 
-(defun copy-link-url-at-point ()
+(defun lbr/copy-link-url-at-point ()
   "Copy URL of link at point."
   (interactive)
   (let ((url (or (thing-at-point 'url t)
@@ -120,7 +120,7 @@
           (message "Copied URL: %s" url))
       (message "No URL found at point"))))
 
-(defun copy-current-file-path ()
+(defun lbr/copy-current-file-path ()
   "Copy current buffer's file path and show it in the minibuffer."
   (interactive)
   (let ((file-name (buffer-file-name)))
@@ -182,15 +182,15 @@
  (setq doric-themes-to-toggle '(doric-obsidian doric-marble))
 (doric-themes-select 'doric-obsidian))
 
-(defun my-switch-theme ()
+(defun lbr/switch-theme ()
     (interactive)
     (doric-themes-toggle)
-    (my/org-font-setup))
+    (lbr/org-font-setup))
 
 ;; make any theme monochrome (and optionally, invert the colours)
 ;; taken from poet-theme (https://github.com/kunalb/poet) by kunalb (Kunal Bhalla)
 
-(defun desaturate-color (color-hex)
+(defun lbr-theme-desaturate-color (color-hex)
   "Converts a color string to its desaturated equivalent hex string"
   (require 'color)
   (apply
@@ -202,7 +202,7 @@
              `(,@(apply 'color-rgb-to-hsl (color-name-to-rgb color-hex)) 100)))
            '(2))))
 
-(defun transform-theme-colors (fn)
+(defun lbr-theme-transform-colors (fn)
   "Apply FN to the colors on every active face.
 
    FN should accept the face symbol and the current color,
@@ -231,18 +231,18 @@
       '(:underline :overline :box)))
    (face-list)))
 
-(defun desaturate-theme ()
+(defun lbr-theme-desaturate ()
   "Desaturate all currently active face colors."
   (interactive)
-  (transform-theme-colors
+  (lbr-theme-transform-colors
    (lambda (face color)
-     (desaturate-color color))))
+     (lbr-theme-desaturate-color color))))
 
-(defun invert-theme ()
+(defun lbr-theme-invert ()
   "Take the complement of all currently active colors."
   (interactive)
   (require 'color)
-  (transform-theme-colors
+  (lbr-theme-transform-colors
    (lambda (face color)
      (apply
       'color-rgb-to-hex
@@ -352,7 +352,7 @@
 (use-package consult
   :init)
 
-(defvar org-source
+(defvar lbr/org-source
   (list :name     "Org Buffer"
         :category 'buffer
         :narrow   ?o
@@ -369,7 +369,7 @@
         (lambda ()
           (consult--buffer-query :mode 'org-mode :as #'consult--buffer-pair))))
 
-(add-to-list 'consult-buffer-sources 'org-source 'append)
+(add-to-list 'consult-buffer-sources 'lbr/org-source 'append)
 
 (use-package which-key
   :config (which-key-mode)
@@ -437,12 +437,12 @@
   :config
   (general-evil-setup)
   ;; use SPACE as global leader key
-  (general-create-definer my/leader-keys
+  (general-create-definer lbr/leader-keys
     :states '(normal insert visual emacs)
     :keymaps 'override
     :prefix "SPC" ; set leader
     :global-prefix "M-SPC") ; use leader in insert mode
-  (my/leader-keys
+  (lbr/leader-keys
     ;; agenda
     "a" '(:ignore t :wk "Agenda")
     "a e" '(org-agenda-earlier :wk "Earlier view")
@@ -480,7 +480,7 @@
     ;; files
     "f" '(:ignore t :wk "Files")
     "f a" '(consult-org-agenda :wk "Jump to org agenda heading")
-    "f c" '(copy-current-file-path :wk "Copy current file path")
+    "f c" '(lbr/copy-current-file-path :wk "Copy current file path")
     "f d" '(kill-current-buffer :wk "Kill current buffer")
     "f f" '(basic-save-buffer :wk "Save buffer")
     "f g" `(,(general-simulate-key "C-x g") :wk "Magit status buffer")
@@ -501,11 +501,11 @@
     "j j" '(logos-forward-page-dwim :wk "Logos next section")
     "j k" '(logos-backward-page-dwim :wk "Logos previous section")
     "j f" '(logos-narrow-dwim :wk "Logos narrow/widen")
-    "j a" '(my/org-next-level-1-headline :wk "Next level 1 org")
-    "j s" '(my/org-previous-level-1-headline :wk "Previous level 1 org")
+    "j a" '(lbr/org-next-level-1-headline :wk "Next level 1 org")
+    "j s" '(lbr/org-previous-level-1-headline :wk "Previous level 1 org")
     ;; links
     "l" '(:ignore t :wk "Links")
-    "l c" '(copy-link-url-at-point :wk "Copy URL of link at point")
+    "l c" '(lbr/copy-link-url-at-point :wk "Copy URL of link at point")
     "l l" '(org-insert-link :wk "Insert a link")
     "l s" '(org-store-link :wk "Store a link")
     ;; mail
@@ -516,7 +516,7 @@
     "o" '(:ignore t :wk "Org")
     "o a" '(org-agenda :wk "Org agenda")
     "o A" '(org-archive-subtree :wk "Move current subtree to the archive")
-    "o c" '(my/org-insert-str-template :wk "Insert Org source code block")
+    "o c" '(lbr/org-insert-str-template :wk "Insert Org source code block")
     "o d" `(,(general-simulate-key "C-c C-d") :wk "Org deadline")
     "o e" `(,(general-simulate-key "C-c '") :wk "Edit src block or exit edit")
     "o f" `(,(lambda() (interactive)(find-file "~/org/projects.org")) :wk "Open projects.org")
@@ -534,7 +534,7 @@
     "q q" '(citar-insert-citation :wk "Insert citation")
     "q r" '(citar-insert-reference :wk "Insert reference")
     "q u" '(citar-org-update-prefix-suffix :wk "Update citation prefix/suffix")
-    "q w" '(my/org-cite-noauthor :wk "Insert narrative citation")
+    "q w" '(lbr/org-cite-noauthor :wk "Insert narrative citation")
     ;; refile
     "r" '(:ignore t :wk "Refile")
     "r r" '(org-refile :wk "Org refile")
@@ -554,7 +554,7 @@
     "s /" '(consult-notes-search-in-all-notes :wk "Search across all slips")
     ;; toggle
     "t" '(:ignore t :wk "Toggle")
-    "t e" '(my-switch-theme :wk "Toggle ef-themes")
+    "t e" '(lbr/switch-theme :wk "Toggle ef-themes")
     "t f" '(flyspell-mode :wk "Toggle flyspell")
     "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
     "t r" '(rainbow-mode :wk "Toggle rainbow mode")
@@ -594,7 +594,7 @@
 (with-eval-after-load 'evil-maps
   (define-key evil-insert-state-map (kbd "C-<return>") 'open-line))
 
-(defun my/org-next-level-1-headline ()
+(defun lbr/org-next-level-1-headline ()
   "Jump to the next level 1 org headline."
   (interactive)
   (let ((found nil))
@@ -605,7 +605,7 @@
           (setq found (point)))))
     (when found (goto-char found))))
 
-(defun my/org-previous-level-1-headline ()
+(defun lbr/org-previous-level-1-headline ()
   "Jump to the previous level 1 org headline."
   (interactive)
   (let ((found nil))
@@ -620,7 +620,7 @@
 ;; make sure 'q' deletes the split window
 (with-eval-after-load 'elfeed
   (evil-collection-define-key 'normal 'elfeed-search-mode-map
-    "o" #'my-elfeed-search-open-other-window)
+    "o" #'lbr/elfeed-search-open-other-window)
   (evil-collection-define-key 'normal 'elfeed-show-mode-map
     "q" (lambda ()
           (interactive)
@@ -687,7 +687,7 @@
       (:endgroup))))
 
 ;; org-insert-structure-template and create new line inside the block
-(defun my/org-insert-str-template ()
+(defun lbr/org-insert-str-template ()
   (interactive)
   (let ((pt (point)))
     (call-interactively #'org-insert-structure-template)
@@ -710,7 +710,7 @@
             ("x" . "example")
             ("X" . "export"))))
 
-(defun my/org-font-setup ()
+(defun lbr/org-font-setup ()
   (set-face-attribute 'org-document-title nil :font "Iosevka Etoile" :height 1.4 :weight 'bold)
   (set-face-attribute 'org-level-1 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold :overline t)
   (set-face-attribute 'org-level-2 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
@@ -720,7 +720,7 @@
   (set-face-attribute 'org-level-6 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
   (set-face-attribute 'org-level-7 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold)
   (set-face-attribute 'org-level-8 nil :font "Iosevka Etoile" :height 1.2 :weight 'bold))
-(add-hook 'org-mode-hook #'my/org-font-setup)
+(add-hook 'org-mode-hook #'lbr/org-font-setup)
 
 (use-package org
   :config
@@ -876,14 +876,14 @@
                                   (olivetti-mode)))
 
 ;; show org-agenda list on startup
-(defun my/startup-agenda ()
+(defun lbr/startup-agenda ()
   (org-agenda nil "a"))
 
-(add-hook 'emacs-startup-hook #'my/startup-agenda)
-(add-hook 'server-after-make-frame-hook #'my/startup-agenda)
+(add-hook 'emacs-startup-hook #'lbr/startup-agenda)
+(add-hook 'server-after-make-frame-hook #'lbr/startup-agenda)
 
 ;; automatically export two agenda views as .txt files whenever an org agenda file is saved 
-(defun my-update-desktop-agenda-files ()
+(defun lbr/update-desktop-agenda-files ()
   (let ((inhibit-message t))
     (save-window-excursion
       (org-agenda nil "zt")
@@ -891,19 +891,19 @@
       (org-agenda nil "zu")
       (org-agenda-write "~/.local/share/agenda-upcoming.txt"))))
 
-(defun my-check-update-desktop-agenda-files ()
+(defun lbr/check-update-desktop-agenda-files ()
   (when (and buffer-file-name
              (member (file-truename buffer-file-name) 
                      (mapcar 'file-truename org-agenda-files)))
-    (my-update-desktop-agenda-files)))
+    (lbr/update-desktop-agenda-files)))
 
-(add-hook 'after-save-hook #'my-check-update-desktop-agenda-files)
+(add-hook 'after-save-hook #'lbr/check-update-desktop-agenda-files)
 
 (setq org-refile-targets
       '((nil :maxlevel . 3)
         (org-agenda-files :maxlevel . 3)))
 
-(defun my/count-refile-items ()
+(defun lbr/count-refile-items ()
   "Count items to refile: level-2 headlines under '* Refile' 
 in agenda.org and level-1 headlines in inbox-phone.org."
   (let ((count 0))
@@ -921,22 +921,22 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 ;; update waybar after org-capture and when agenda.org or inbox-phone.org are saved
 ;; covers orgzly-revived syncs provided global-auto-revert-mode is 1
 
-(defun my/update-waybar ()
+(defun lbr/update-waybar ()
   (start-process-shell-command "waybar-update" nil "pkill -RTMIN+1 waybar"))
 
 ;; Update Waybar after capturing
-(add-hook 'org-capture-after-finalize-hook #'my/update-waybar)
+(add-hook 'org-capture-after-finalize-hook #'lbr/update-waybar)
 
 ;; Update Waybar when these specific files are saved or reverted
-(defun my/setup-waybar-update-hooks ()
+(defun lbr/setup-waybar-update-hooks ()
   (when (and (buffer-file-name)
              (member (expand-file-name (buffer-file-name))
                 (list (expand-file-name "~/org/agenda.org")
                       (expand-file-name "~/org/inbox-phone.org"))))
-    (add-hook 'after-save-hook #'my/update-waybar nil t)
-    (add-hook 'after-revert-hook #'my/update-waybar nil t)))
+    (add-hook 'after-save-hook #'lbr/update-waybar nil t)
+    (add-hook 'after-revert-hook #'lbr/update-waybar nil t)))
 
-(add-hook 'org-mode-hook #'my/setup-waybar-update-hooks)
+(add-hook 'org-mode-hook #'lbr/setup-waybar-update-hooks)
 
 (use-package toc-org
   :commands toc-org-enable
@@ -953,7 +953,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   (setopt org-bullets-bullet-list '("◉" "○" "◆" "◇" "◇" "◇" "◇" "◇"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-(defun my/setup-smart-quotes ()
+(defun lbr/setup-smart-quotes ()
   "Set up curly quote pairs and text objects for evil-surround."
   ;; Insert curly quotes with evil-surround (using Unicode escapes)
   (push '(?\" . ("\u201c" . "\u201d")) evil-surround-pairs-alist)
@@ -985,19 +985,19 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 (add-hook 'org-mode-hook 'electric-quote-local-mode)
 (setq electric-quote-replace-double t)
 (setq electric-quote-context-sensitive t) ; for single quotes
-(add-hook 'org-mode-hook 'my/setup-smart-quotes)
+(add-hook 'org-mode-hook 'lbr/setup-smart-quotes)
 
 ;; Fix to allow my quotation config to work with Markdown and Quarto
-(defun my/org-inhibit-electric-quote ()
+(defun lbr/org-inhibit-electric-quote ()
   "Inhibit electric quotes inside Org source blocks."
   (and (derived-mode-p 'org-mode)
        (org-in-src-block-p)))
-(add-hook 'electric-quote-inhibit-functions 'my/org-inhibit-electric-quote)
+(add-hook 'electric-quote-inhibit-functions 'lbr/org-inhibit-electric-quote)
 
 ;; taken from org-modern
 ;; https://github.com/minad/org-modern
 
-(defface my-org-horizontal-rule
+(defface lbr-org-horizontal-rule
   '((default :inherit org-hide)
     (((background light)) :strike-through "gray70")
     (t :strike-through "gray30"))
@@ -1007,7 +1007,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
           (lambda ()
             (font-lock-add-keywords nil
               '(("^[ \t]*-\\{5,\\}$" 0
-                 '(face my-org-horizontal-rule 
+                 '(face lbr-org-horizontal-rule 
                    display (space :width (- text 1))))))))
 
 (setq calendar-holidays
@@ -1196,7 +1196,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   :no-require
   :config (citar-embark-mode))
 
-(defun my/org-cite-noauthor ()
+(defun lbr/org-cite-noauthor ()
   "Insert citation with 'noauthor' style, e.g. for APA narrative citation"
   (interactive)
    (let ((start (point)))
@@ -1264,35 +1264,35 @@ in agenda.org and level-1 headlines in inbox-phone.org."
               ("M-<up>"      . markdown-move-up)
               ("M-<down>"    . markdown-move-down)))
 
-(defun my/markdown-header-height-setup ()
+(defun lbr/markdown-header-height-setup ()
   (set-face-attribute 'markdown-header-face-1 nil :height 1.8)
   (set-face-attribute 'markdown-header-face-2 nil :height 1.6)
   (set-face-attribute 'markdown-header-face-3 nil :height 1.4)
   (set-face-attribute 'markdown-header-face-4 nil :height 1.2)
   (set-face-attribute 'markdown-header-face-5 nil :height 1.0)
   (set-face-attribute 'markdown-header-face-6 nil :height 1.0))
-(add-hook 'markdown-mode-hook #'my/markdown-header-height-setup)
+(add-hook 'markdown-mode-hook #'lbr/markdown-header-height-setup)
 
 ;; Smart quotes and text objects for evil-surround
 (add-hook 'markdown-mode-hook 'electric-quote-local-mode)
-(add-hook 'markdown-mode-hook 'my/setup-smart-quotes)
+(add-hook 'markdown-mode-hook 'lbr/setup-smart-quotes)
 
 ;; Fix to allow my quotation config to work with Markdown and Quarto
-(defun my/markdown-inhibit-electric-quote ()
+(defun lbr/markdown-inhibit-electric-quote ()
   "Inhibit electric quotes inside Markdown code blocks."
   (and (derived-mode-p 'markdown-mode)
        (markdown-code-block-at-point-p)))
 
-(add-hook 'electric-quote-inhibit-functions 'my/markdown-inhibit-electric-quote)
+(add-hook 'electric-quote-inhibit-functions 'lbr/markdown-inhibit-electric-quote)
 
 (use-package quarto-mode
   :mode (("\\.qmd\\'" . poly-quarto-mode)))
 
 ;; Smart quotes and text objects for evil-surround
 (add-hook 'poly-quarto-mode-hook 'electric-quote-local-mode)
-(add-hook 'poly-quarto-mode-hook 'my/setup-smart-quotes)
+(add-hook 'poly-quarto-mode-hook 'lbr/setup-smart-quotes)
 
-(defun my/quarto-preview ()
+(defun lbr/quarto-preview ()
   "Launch quarto preview for the current file."
   (interactive)
   (let ((file (buffer-file-name)))
@@ -1351,7 +1351,7 @@ in agenda.org and level-1 headlines in inbox-phone.org."
   :store  #'elfeed-link-store-link
   :export #'elfeed-link-export-link)
 
-(defun my-elfeed-search-open-other-window ()
+(defun lbr/elfeed-search-open-other-window ()
   "Open elfeed entry in other window."
   (interactive)
   (let* ((entry (if (eq major-mode 'elfeed-show-mode)
