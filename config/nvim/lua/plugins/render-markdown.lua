@@ -7,9 +7,9 @@ return {
       local ok, pywal = pcall(require, "pywal16.core")
       if not ok then return end
       local c = pywal.get_colors()
-      local accents = { c.color1, c.color2, c.color3, c.color4, c.color5, c.color6 }
+      local accents = { c.color5, c.color4, c.color2, c.color3, c.color6, c.color1 }
       for i, bg in ipairs(accents) do
-        vim.api.nvim_set_hl(0, "RenderMarkdownH" .. i .. "Bg", { fg = c.foreground, bg = bg })
+        vim.api.nvim_set_hl(0, "RenderMarkdownH" .. i .. "Bg", { fg = c.background, bg = bg })
       end
     end
 
