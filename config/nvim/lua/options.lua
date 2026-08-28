@@ -72,6 +72,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "PmenuThumb",  { bg = "#989898" })
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#303030", fg = "#bda7f0" })
     vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#303030", fg = "#bda7f0" })
+    vim.api.nvim_set_hl(0, "FloatTitle", { bg = "#303030", fg = "#989898" })
     vim.api.nvim_set_hl(0, "CmpItemAbbrMatch",      { fg = "#ff7447", bold = true })
     vim.api.nvim_set_hl(0, "CmpItemAbbrMatchFuzzy", { fg = "#ff7447", bold = true })
 
@@ -82,8 +83,5 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
     -- prism: nvim-tree git-modified marker in amber
     vim.api.nvim_set_hl(0, "NvimTreeGitDirtyIcon", { fg = "#ffcc66" })
-
-    -- prism: float titles in periwinkle, distinct from border and list
-    vim.api.nvim_set_hl(0, "FloatTitle", { bg = "#303030", fg = "#989898" })
   end,
 })
