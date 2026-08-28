@@ -13,11 +13,11 @@
     modal_background_color: None,
     modal_backdrop: false,
     tab_bar: (
-        active_style: (fg: "{color2}", modifiers: "Bold"),
+        active_style: (fg: "{color0}", modifiers: "Bold"),
         inactive_style: (fg: "{color1}"),
     ),
     highlighted_item_style: (fg: "{color1}", modifiers: "Bold"),
-    current_item_style: (fg: "{color2}", bg: "{color1}", modifiers: "Bold"),
+    current_item_style: (fg: "{color0}", bg: "{color1}", modifiers: "Bold"),
     borders_style: (fg: "{color1}", modifiers: "Bold"),
     highlight_border_style: (fg: "{color1}"),
     symbols: (song: "󰝚 ", dir: " ", marker: "* ", ellipsis: "..."),
