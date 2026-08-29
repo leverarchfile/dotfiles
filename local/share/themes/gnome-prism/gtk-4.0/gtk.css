@@ -251,7 +251,9 @@ notebook > header > tabs > tab {
 }
 
 notebook > header > tabs > tab:checked {
-  font-weight: 600;
+  box-shadow: none;
+  background-color: #BDA7F0;
+  color: #000000;
 }
 
 /* Scrollbars. */
@@ -331,9 +333,19 @@ levelbar trough {
   background-color: #303030;
 }
 
-/* volume you set: orange */
+/* volume that is set: orange */
 scale highlight {
   background-color: #ff7447;
+}
+
+/* slider beyond the current level: grey */
+scale trough {
+  border: 1px solid #303030;
+}
+
+/* slider up to the current level: orange */
+scale highlight {
+  border: 1px solid #ff7447;
 }
 
 /* passive meters: lavender */
