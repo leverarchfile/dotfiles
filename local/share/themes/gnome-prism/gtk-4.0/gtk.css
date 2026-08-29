@@ -15,47 +15,47 @@
 @define-color fp_highlight #FF7447;
 
 /* Override libadwaita named colors. */
-@define-color accent_bg_color @fp_stroke;
-@define-color accent_fg_color @fp_bg;
-@define-color accent_color @fp_stroke;
-@define-color window_bg_color @fp_bg;
-@define-color window_fg_color @fp_stroke;
-@define-color view_bg_color @fp_bg;
-@define-color view_fg_color @fp_stroke;
-@define-color headerbar_bg_color @fp_bg;
-@define-color headerbar_fg_color @fp_stroke;
-@define-color headerbar_border_color @fp_stroke;
-@define-color headerbar_backdrop_color @fp_bg;
+@define-color accent_bg_color #BDA7F0;
+@define-color accent_fg_color #000000;
+@define-color accent_color #BDA7F0;
+@define-color window_bg_color #000000;
+@define-color window_fg_color #BDA7F0;
+@define-color view_bg_color #000000;
+@define-color view_fg_color #BDA7F0;
+@define-color headerbar_bg_color #000000;
+@define-color headerbar_fg_color #BDA7F0;
+@define-color headerbar_border_color #BDA7F0;
+@define-color headerbar_backdrop_color #000000;
 @define-color headerbar_shade_color transparent;
-@define-color card_bg_color @fp_bg;
-@define-color card_fg_color @fp_stroke;
-@define-color dialog_bg_color @fp_bg;
-@define-color dialog_fg_color @fp_stroke;
-@define-color popover_bg_color @fp_bg;
-@define-color popover_fg_color @fp_stroke;
-@define-color sidebar_bg_color @fp_bg;
-@define-color sidebar_fg_color @fp_stroke;
-@define-color sidebar_backdrop_color @fp_bg;
+@define-color card_bg_color #000000;
+@define-color card_fg_color #BDA7F0;
+@define-color dialog_bg_color #000000;
+@define-color dialog_fg_color #BDA7F0;
+@define-color popover_bg_color #000000;
+@define-color popover_fg_color #BDA7F0;
+@define-color sidebar_bg_color #000000;
+@define-color sidebar_fg_color #BDA7F0;
+@define-color sidebar_backdrop_color #000000;
 @define-color sidebar_shade_color transparent;
-@define-color secondary_sidebar_bg_color @fp_bg;
-@define-color secondary_sidebar_fg_color @fp_stroke;
+@define-color secondary_sidebar_bg_color #000000;
+@define-color secondary_sidebar_fg_color #BDA7F0;
 @define-color shade_color transparent;
-@define-color scrollbar_outline_color @fp_stroke;
+@define-color scrollbar_outline_color #BDA7F0;
 
 /* Base surfaces. */
 window,
 dialog,
 .background {
-  background-color: @fp_bg;
-  color: @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
 }
 
 /* Headerbar / titlebar. */
 headerbar,
 .titlebar {
-  background-color: @fp_bg;
-  color: @fp_stroke;
-  border-bottom: 1px solid @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
+  border-bottom: 1px solid #BDA7F0;
   box-shadow: none;
 }
 
@@ -76,22 +76,22 @@ windowcontrols button {
   border-radius: 0;
   padding: 3px;
   margin: 0 2px;
-  background-color: @fp_bg;
-  color: @fp_stroke;
-  border: 1px solid @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
+  border: 1px solid #BDA7F0;
   box-shadow: none;
   background-image: none;
 }
 
 windowcontrols button:hover {
-  background-color: @fp_surface;
-  color: @fp_stroke;
+  background-color: #303030;
+  color: #BDA7F0;
 }
 
 windowcontrols button:active,
 windowcontrols button:checked {
-  background-color: @fp_stroke;
-  color: @fp_bg;
+  background-color: #BDA7F0;
+  color: #000000;
 }
 
 windowcontrols > button > image {
@@ -108,22 +108,22 @@ headerbar button.titlebutton.close,
 
 /* Buttons. */
 button {
-  background-color: @fp_bg;
-  color: @fp_stroke;
-  border: 1px solid @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
+  border: 1px solid #BDA7F0;
   border-radius: 0;
   box-shadow: none;
 }
 
 button:hover {
-  background-color: @fp_surface;
-  color: @fp_stroke;
+  background-color: #303030;
+  color: #BDA7F0;
 }
 
 button:active,
 button:checked {
-  background-color: @fp_stroke;
-  color: @fp_bg;
+  background-color: #BDA7F0;
+  color: #000000;
 }
 
 /* Text entries. */
@@ -131,27 +131,27 @@ entry,
 textview,
 text,
 spinbutton {
-  background-color: @fp_bg;
-  color: @fp_stroke;
-  border-color: @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
+  border-color: #BDA7F0;
   border-radius: 0;
-  caret-color: @fp_highlight;
+  caret-color: #FF7447;
 }
 
 /* Selection. */
 selection {
-  background-color: @fp_stroke;
-  color: @fp_bg;
+  background-color: #BDA7F0;
+  color: #000000;
 }
 
 /* Links. */
 link {
-  color: @fp_highlight;
+  color: #FF7447;
 }
 
 /* Progress bars. */
 progressbar progress {
-  background-color: @fp_highlight;
+  background-color: #FF7447;
 }
 
 /* Sidebar (Nautilus places panel). */
@@ -159,15 +159,15 @@ progressbar progress {
 .navigation-sidebar,
 placessidebar,
 .sidebar-pane {
-  background-color: @fp_bg;
-  color: @fp_stroke;
-  border-right: 1px solid @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
+  border-right: 1px solid #BDA7F0;
 }
 
 .sidebar row,
 .navigation-sidebar row,
 placessidebar row {
-  color: @fp_stroke;
+  color: #BDA7F0;
   border-radius: 0;
   padding: 3px 6px;
 }
@@ -175,15 +175,15 @@ placessidebar row {
 .sidebar row:selected,
 .navigation-sidebar row:selected,
 placessidebar row:selected {
-  background-color: @fp_stroke;
-  color: @fp_bg;
+  background-color: #BDA7F0;
+  color: #000000;
 }
 
 .sidebar row:hover,
 .navigation-sidebar row:hover,
 placessidebar row:hover {
-  background-color: @fp_surface;
-  color: @fp_stroke;
+  background-color: #303030;
+  color: #BDA7F0;
 }
 
 /* Content / file list area. */
@@ -192,35 +192,35 @@ treeview,
 columnview,
 listview,
 gridview {
-  background-color: @fp_bg;
-  color: @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
 }
 
 columnview row,
 listview row,
 gridview child {
-  color: @fp_stroke;
+  color: #BDA7F0;
   border-radius: 0;
 }
 
 columnview row:selected,
 listview row:selected,
 gridview child:selected {
-  background-color: @fp_stroke;
-  color: @fp_bg;
+  background-color: #BDA7F0;
+  color: #000000;
 }
 
 columnview row:hover,
 listview row:hover,
 gridview child:hover {
-  background-color: @fp_surface;
+  background-color: #303030;
 }
 
 /* Column headers in list view. */
 columnview > header > button {
-  background-color: @fp_bg;
-  color: @fp_stroke;
-  border-bottom: 1px solid @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
+  border-bottom: 1px solid #BDA7F0;
   border-radius: 0;
   font-weight: 600;
 }
@@ -229,24 +229,24 @@ columnview > header > button {
 popover,
 popover.background,
 popover contents {
-  background-color: @fp_bg;
-  color: @fp_stroke;
-  border-color: @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
+  border-color: #BDA7F0;
   border-radius: 0;
 }
 
 popover modelbutton:hover,
 popover row:hover {
-  background-color: @fp_surface;
+  background-color: #303030;
 }
 
 /* Tabs / notebook. */
 notebook > header > tabs > tab {
   padding: 4px 10px;
   margin: 0 2px;
-  background-color: @fp_bg;
-  color: @fp_stroke;
-  border: 1px solid @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
+  border: 1px solid #BDA7F0;
   border-radius: 0;
 }
 
@@ -256,22 +256,22 @@ notebook > header > tabs > tab:checked {
 
 /* Scrollbars. */
 scrollbar {
-  background-color: @fp_bg;
+  background-color: #000000;
 }
 
 scrollbar slider {
-  background-color: @fp_stroke;
+  background-color: #BDA7F0;
   min-width: 8px;
   min-height: 8px;
   border-radius: 0;
 }
 
 scrollbar slider:hover {
-  background-color: @fp_highlight;
+  background-color: #FF7447;
 }
 
 scrollbar trough {
-  background-color: @fp_surface;
+  background-color: #303030;
 }
 
 /* Dialogs. */
@@ -280,9 +280,9 @@ dialog.message,
 .message-dialog,
 dialog,
 window.dialog {
-  background-color: @fp_bg;
-  color: @fp_stroke;
-  border: 1px solid @fp_stroke;
+  background-color: #000000;
+  color: #BDA7F0;
+  border: 1px solid #BDA7F0;
 }
 
 /* Path bar / breadcrumbs. */
@@ -331,7 +331,12 @@ levelbar trough {
   background-color: #303030;
 }
 
-scale highlight,
+/* volume you set: orange */
+scale highlight {
+  background-color: #ff7447;
+}
+
+/* passive meters: lavender */
 levelbar block.filled {
   background-color: #bda7f0;
 }
@@ -339,6 +344,7 @@ levelbar block.filled {
 scale slider {
   background-color: #bda7f0;
   border: 1px solid #000000;
+  background-image: none;
 }
 
 /* square corners everywhere */
@@ -371,4 +377,42 @@ popover modelbutton:selected {
 
 popover cellview {
   background-color: transparent;
+}
+
+/* classed buttons: default theme styles these with higher specificity
+ * than bare `button`, so restate per class */
+button.toggle,
+button.flat,
+button.image-button,
+button.combo {
+  background-color: #000000;
+  color: #BDA7F0;
+  border: 1px solid #BDA7F0;
+  background-image: none;
+}
+
+button.toggle:hover,
+button.flat:hover,
+button.image-button:hover {
+  background-color: #303030;
+}
+
+/* combo hover: no grey slab, orange border as the signal */
+button.combo:hover {
+  background-color: #000000;
+  border-color: #FF7447;
+}
+
+button.toggle:checked,
+button.flat:checked,
+button.image-button:checked {
+  background-color: #BDA7F0;
+  color: #000000;
+}
+
+/* strip the combo's outer frame */
+combobox,
+combobox > box {
+  background-color: transparent;
+  border: none;
 }
