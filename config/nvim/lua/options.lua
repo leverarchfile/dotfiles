@@ -83,5 +83,10 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
     -- prism: nvim-tree git-modified marker in amber
     vim.api.nvim_set_hl(0, "NvimTreeGitDirtyIcon", { fg = "#ffcc66" })
+
+    -- prism: search matches lavender, current match orange
+    vim.api.nvim_set_hl(0, "Search",    { fg = "#000000", bg = "#7ec9a0" })
+    vim.api.nvim_set_hl(0, "CurSearch", { fg = "#000000", bg = "#ff7447" })
+    vim.api.nvim_set_hl(0, "IncSearch", { fg = "#000000", bg = "#ff7447" })
   end,
 })
