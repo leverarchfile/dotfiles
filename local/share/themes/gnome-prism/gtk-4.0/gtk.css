@@ -313,3 +313,62 @@ popover label,
 notebook > header label,
 columnview > header label {
 }
+
+/* containers that carry their own background in GTK4's default theme */
+window, box, stack, notebook, scrolledwindow, viewport {
+  background-color: #000000;
+}
+
+/* active tab: replace the stock blue underline */
+notebook > header > tabs > tab:checked {
+  box-shadow: none;
+  border-bottom: 2px solid #BDA7F0;
+}
+
+/* sliders and level meters (pavucontrol etc.) */
+scale trough,
+levelbar trough {
+  background-color: #303030;
+}
+
+scale highlight,
+levelbar block.filled {
+  background-color: #bda7f0;
+}
+
+scale slider {
+  background-color: #bda7f0;
+  border: 1px solid #000000;
+}
+
+/* square corners everywhere */
+* {
+  border-radius: 0;
+}
+
+/* notebook tab strip (the tabs node paints the band, not header) */
+notebook > header,
+notebook > header > tabs {
+  background-color: #000000;
+}
+
+/* popup menus (combobox popups etc.): border on contents only */
+popover > contents {
+  background-color: #000000;
+  border: 1px solid #bda7f0;
+}
+
+popover modelbutton {
+  background-color: #000000;
+  color: #bda7f0;
+}
+
+popover modelbutton:hover,
+popover modelbutton:selected {
+  background-color: #bda7f0;
+  color: #000000;
+}
+
+popover cellview {
+  background-color: transparent;
+}
