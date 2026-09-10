@@ -1,0 +1,92 @@
+#!/bin/sh
+
+# Quick reminders with fuzzel, systemd user timers, and notify-send
+#
+# Usage:
+#   remind
+#       Fuzzel prompts for minutes, then for a message. Empty message uses a default.
+#   remind <minutes> [message]
+#       Same, but from a terminal, with no prompts.
+#   remind list
+#       Fuzzel shows pending reminders. Enter cancels the selected one, Escape closes.
+
+set -eu
+
+FUZZEL="fuzzel --dmenu --width 60"
+
+err() {
+    notify-send -u critical -t 5000 "Reminder" -- "$1"
+}
+
+prompt() {
+    printf '' | $FUZZEL --lines 1 --prompt "$1: "
+}
+
+list_reminders() {
+    now=$(date +%s)
+    entries=""
+
+    for unit in $(systemctl --user list-units --type=timer --plain --no-legend 'remind-*' | awk '{print $1}'); do
+        fire=${unit#remind-}
+        fire=${fire%%-*}
+        msg=$(systemctl --user show -p Description --value "${unit%.timer}.service")
+        at=$(date -d "@$fire" +%H:%M)
+        left=$(( (fire - now + 59) / 60 ))
+        line="$at  ${left}m  $msg"
+        entries="$entries$line	$unit	$msg in $left min ($at)
+"
+    done
+
+    if [ -z "$entries" ]; then
+        err "No reminders"
+        exit 0
+    fi
+
+    chosen=$(printf '%s' "$entries" | cut -f1 | $FUZZEL --prompt "Reminders: ") || exit 0
+    match=$(printf '%s' "$entries" | awk -F'\t' -v c="$chosen" '$1 == c { print; exit }')
+    unit=$(printf '%s' "$match" | cut -f2)
+    summary=$(printf '%s' "$match" | cut -f3)
+
+    systemctl --user stop "$unit"
+    notify-send "Reminder cancelled" -- "$summary"
+}
+
+case ${1:-} in
+    list)
+        list_reminders
+        exit 0
+        ;;
+    "")
+        minutes=$(prompt "Minutes") || exit 0
+        message=$(prompt "Message") || exit 0
+        ;;
+    *)
+        minutes=$1
+        shift
+        message=$*
+        ;;
+esac
+
+case $minutes in
+    ""|*[!0-9]*)
+        err "Minutes must be a positive whole number"
+        exit 1
+        ;;
+esac
+
+if [ "$minutes" -eq 0 ]; then
+    err "Minutes must be a positive whole number"
+    exit 1
+fi
+
+[ -n "$message" ] || message="Your $minutes minutes are up"
+
+fire=$(( $(date +%s) + minutes * 60 ))
+
+systemd-run --user --quiet --collect \
+    --on-calendar="$(date -d "@$fire" '+%Y-%m-%d %H:%M:%S')" \
+    --unit="remind-$fire-$$" \
+    --description="$message" \
+    notify-send -u critical -t 0 "Reminder" -- "$message"
+
+notify-send "Reminder set" -- "$message in $minutes min ($(date -d "@$fire" +%H:%M))"
