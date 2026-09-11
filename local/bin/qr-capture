@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Capture a QR code from the screen: drag out a region around it, and the
+# decoded contents are copied to the clipboard. Nothing is printed or shown,
+# since QR codes often contain secrets.
+# Requires: slurp, grim, zbar, wl-clipboard, libnotify
+
+SELECTION=$(slurp 2>/dev/null)
+
+[ -z "$SELECTION" ] && exit 0
+
+RESULT=$(grim -g "$SELECTION" - | zbarimg -q --raw -Sdisable -Sqrcode.enable - 2>/dev/null)
+
+if [ -z "$RESULT" ]; then
+  notify-send -u critical "No QR code found"
+  exit 1
+fi
+
+printf '%s' "$RESULT" | wl-copy --sensitive
+notify-send "QR code copied to clipboard"
