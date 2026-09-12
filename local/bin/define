@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Adapated from a script by BreadOnPenguins
+# Adapted from a script by BreadOnPenguins
 # https://github.com/BreadOnPenguins/scripts/blob/master/shortcuts-menus/define
 
 word=${1:-$(wl-paste -p 2>/dev/null || wl-paste 2>/dev/null)}
@@ -10,18 +10,36 @@ case "$word" in
     ""|*[/\\]*) notify-send -t 3000 "Invalid input."; exit 0 ;;
 esac
 
-query=$(curl -s --connect-timeout 5 --max-time 10 "https://api.dictionaryapi.dev/api/v2/entries/en_GB/$word")
+# Fetch definitions from Wiktionary and print the first 5 English ones
+# (strip Wiktionary's HTML tags, decode entities, re-escape for Pango)
+lookup() {
+    query=$(curl -s --connect-timeout 5 --max-time 10 -A "define-script/1.0" \
+        "https://en.wiktionary.org/api/rest_v1/page/definition/$1")
+    rc=$?
+    [ "$rc" -ne 0 ] && notify-send -t 3000 "Connection error (curl $rc)." && exit 1
 
-# Check for connection error (curl exit status stored in $?)
-[ $? -ne 0 ] && notify-send -t 3000 "Connection error." && exit 1
+    printf '%s' "$query" | jq -r '
+      [ (.en // [])[] | {pos: (.partOfSpeech | ascii_downcase), def: .definitions[].definition} ]
+      | map(.def |= (gsub("<[^>]*>"; "")
+                    | gsub("&amp;"; "&") | gsub("&lt;"; "<") | gsub("&gt;"; ">")
+                    | gsub("&quot;"; "\"") | gsub("&#39;"; "'\''")
+                    | gsub("^\\s+|\\s+$"; "")))
+      | map(select(.def != ""))
+      | .[:5][]
+      | "\n<i>\(.pos)</i>. \(.def | gsub("&"; "&amp;") | gsub("<"; "&lt;"))"'
+}
 
-# Check for invalid word response
-case "$query" in
-    *"No Definitions Found"*) notify-send -t 3000 "Invalid word."; exit 0 ;;
-esac
+def=$(lookup "$word")
 
-# Show only first 5 definitions (Pango markup formatting for the part of speech)
-def=$(echo "$query" | jq -r '[.[].meanings[] | {pos: .partOfSpeech, def: .definitions[].definition}] | .[:5].[] | "\n<i>\(.pos)</i>. \(.def)"')
+# Wiktionary is case-sensitive: if nothing found, retry in lowercase
+# (e.g. a word capitalised at the start of a sentence)
+if [ -z "$def" ]; then
+    lower=$(printf '%s' "$word" | tr 'A-Z' 'a-z')
+    [ "$lower" != "$word" ] && word=$lower && def=$(lookup "$word")
+fi
+
+# Check for invalid word
+[ -z "$def" ] && notify-send -t 3000 "Invalid word." && exit 0
 
 # Display definitions with Pango markup formatting (bold word, italic part of speech)
-yad --text="<big><b>$word</b></big>\n\n$def" --no-buttons --timeout=60 --width=600 --wrap --selectable --title="emacs-float"
+yad --text="<big><b>$word</b></big>\n\n$def" --no-buttons --timeout=60 --width=600 --wrap --selectable-labels --title="emacs-float"
