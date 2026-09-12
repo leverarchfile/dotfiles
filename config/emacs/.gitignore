@@ -15,5 +15,6 @@ straight/*
 straight/versions/*
 !straight/versions/default.el
 recentf
+request/
 transient
 url/

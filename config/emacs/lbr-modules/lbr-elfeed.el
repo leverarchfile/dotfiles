@@ -1,40 +1,33 @@
 ;; -*- lexical-binding: t -*-
 
-(use-package elfeed
-  :config
-  (setq elfeed-db-directory "~/.local/share/elfeed"))
-
 (use-package password-store
   :config
-  (defconst fever-url-zt (password-store-get "zt_server_fever"))
-  (defconst fever-api-url (password-store-get "zt_server_fever_api"))
-  (defconst fever-password (password-store-get "freshrss_api")))
+  (defvar lbr/freshrss-url (password-store-get "freshrss_greader_url"))
+  (defvar lbr/freshrss-api-url (password-store-get "freshrss_greader_api"))
+  (defvar lbr/freshrss-password (password-store-get "freshrss_api")))
 
-(use-package elfeed-protocol
+(use-package elfeed
+  :after password-store
   :config
+  (setq elfeed-db-directory "~/.local/share/elfeed")
   (setq elfeed-use-curl t)
   (elfeed-set-timeout 36000)
-  (setq elfeed-curl-extra-arguments '("--insecure"))
-  (setq elfeed-protocol-fever-fetch-category-as-tag t)
-  (setq elfeed-protocol-fever-update-unread-only t)
+  (setq elfeed-feeds `((,lbr/freshrss-url
+                        :api-url ,lbr/freshrss-api-url
+                        :password ,lbr/freshrss-password))))
 
-  (setq elfeed-feeds `((,fever-url-zt
-                                 :api-url ,fever-api-url
-                                 :password ,fever-password)))
-
-  (setq elfeed-protocol-enabled-protocols '(fever))
+(use-package elfeed-protocol
+  :after elfeed
+  :config
+  (setq elfeed-protocol-enabled-protocols '(freshrss))
   (elfeed-protocol-enable))
 
-;; workaround to sync unread status
-;; https://github.com/fasheng/elfeed-protocol/issues/71
-(defun elfeed-protocol-fever-sync-unread-stat ()
-  "Set all entries in search view to read and fetch latest unread entries."
-  (interactive)
-  (mark-whole-buffer)
-  (cl-loop for entry in (elfeed-search-selected)
-           do (elfeed-untag-1 entry 'unread))
-  (let ((clean-url (replace-regexp-in-string "^fever\\+" "" fever-url-zt)))
-  (elfeed-protocol-fever--do-update clean-url 'update-unread)))
+(use-package elfeed-protocol-freshrss
+  :straight (elfeed-protocol-freshrss :type git :host nil
+             :repo "https://git.repetitions.de/elfeed-protocol-freshrss/")
+  :after elfeed-protocol
+  :config
+  (elfeed-protocol-freshrss-register-protocol))
 
 ;; org-store-link for elfeed
 (org-link-set-parameters "elfeed"
