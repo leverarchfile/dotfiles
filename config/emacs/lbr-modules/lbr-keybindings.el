@@ -99,6 +99,7 @@
     "o q" '(org-insert-structure-template :wk "Insert structure template")
     "o s" `(,(general-simulate-key "C-c C-s") :wk "Org schedule")
     "o t" '(org-todo :wk "Org todo")
+    "o w" '(org-timegrid-week :wk "Week calendar")
     "o T" '(org-todo-list :wk "Org todo list")
     ;; references
     "q" '(:ignore t :wk "References")

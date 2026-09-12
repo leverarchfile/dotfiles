@@ -34,6 +34,7 @@
 (require 'lbr-org)
 (require 'lbr-org-agenda)
 (require 'lbr-org-capture)
+(require 'lbr-org-timegrid)
 (require 'lbr-citations)
 (require 'lbr-denote)
 (require 'lbr-markdown)
