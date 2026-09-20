@@ -14,7 +14,7 @@ waybar &
 mako &
 udiskie &
 foot --server &
-# kmonad ~/.config/kmonad/config.kbd &
+kmonad ~/.config/kmonad/config.kbd &
 wl-paste --type text --watch cliphist store &
 wl-paste --type image --watch cliphist store &
 wl-clip-persist --clipboard regular &
