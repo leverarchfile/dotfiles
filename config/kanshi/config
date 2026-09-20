@@ -1,13 +1,13 @@
 profile undocked {
-    output eDP-1 enable scale 1.75
+    output eDP-1 enable scale 1.25
 }
 
 profile docked {
-    output eDP-1 enable position 0,0 scale 1.75
-    output "BNQ BenQ RD280UG EM55T00262087" mode 3840x2560@120Hz scale 2
+    output eDP-1 enable position 0,0 scale 1.25 
+    output "BNQ BenQ RD280UG EM55T00262087" scale 2
 }
 
 profile uoa {
-    output eDP-1 enable position 0,0 scale 1.75
+    output eDP-1 enable position 0,0 scale 1.25
     output "Dell Inc. DELL U2718Q H0YFH9BQ0EDL" scale 2
 }
