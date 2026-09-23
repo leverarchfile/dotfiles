@@ -52,3 +52,6 @@ source <(fzf --zsh)
 
 # for pywal16 colours to be applied in terminals
 (cat ~/.cache/wal/sequences &)
+
+# ls: legible world-writable dirs
+export LS_COLORS="$LS_COLORS:ow=01;30;42:tw=01;30;42"
