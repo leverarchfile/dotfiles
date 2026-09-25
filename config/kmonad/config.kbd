@@ -39,7 +39,7 @@
   tab   q    w    e    r    t    y    u    i    o    p    [     ]       \
   esc   a    s    d    f    g    h    j    k    l    ;    '             ret
   lsft  z    x    c    v    b    n    m    ,    .    /    rsft   up
-  @ctx  lmet lalt      @spx      @spr @nns                 left   down   rght
+  @ctx  lmet lalt      @spx      @nns @spr                 left   down   rght
 )
 
 (deflayer numsym
