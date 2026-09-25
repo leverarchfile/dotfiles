@@ -27,10 +27,10 @@
   nns (layer-next numsym)
   nss (layer-next supers)
   nsc (layer-next superc)
-  cw  (layer-switch capsword)
-  cwq (layer-switch base)
-  cwe (tap-macro spc (layer-switch base))
-  cwr (tap-macro ret (layer-switch base))
+  cw  (layer-add capsword)
+  cwq (layer-rem capsword)
+  cwe (tap-macro spc (layer-rem capsword))
+  cwr (tap-macro ret (layer-rem capsword))
 )
 
 (deflayer base
