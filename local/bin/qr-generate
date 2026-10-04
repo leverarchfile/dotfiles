@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Generate a QR code PNG using fuzzel, copy to clipboard, and send a 
+# notification
+# Requires: fuzzel, qrencode, wl-clipboard, libnotify
+
+qr_dir="$HOME/pictures/qr-codes"
+
+# Ask for the text to encode
+text=$(fuzzel --dmenu --width 60 --prompt-only "QR text: ")
+
+# Nothing to encode (e.g. fuzzel was cancelled)
+[ -n "$text" ] || exit 0
+
+# Generate, save, copy, notify
+mkdir -p "$qr_dir"
+file="$qr_dir/qr-$(date +%Y%m%d-%H%M%S).png"
+
+if qrencode -s 10 -o "$file" -- "$text"; then
+  wl-copy --type image/png < "$file"
+  notify-send "QR code generated" "$text"
+else
+  notify-send "QR code failed" "$text"
+fi
