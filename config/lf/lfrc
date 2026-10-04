@@ -85,8 +85,14 @@ map E !$f
 # open file via prompt to select program
 map o $mimeopen --ask $f
 
-# annotate image with satty
-map a &satty -f $f
+# annotate image with satty (apply EXIF orientation if needed)
+cmd annotate &{{
+    case "$(magick identify -ping -format '%[orientation]\n' "$f" 2>/dev/null | head -1)" in
+        TopLeft|Undefined|"") satty -f "$f" ;;
+        *) magick "$f" -auto-orient -define png:compression-level=1 png:- | satty -f - ;;
+    esac
+}}
+map a annotate
 
 # trash bindings
 map dd trash
