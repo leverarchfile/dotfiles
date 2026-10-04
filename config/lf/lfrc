@@ -85,6 +85,9 @@ map E !$f
 # open file via prompt to select program
 map o $mimeopen --ask $f
 
+# annotate image with satty
+map a &satty -f $f
+
 # trash bindings
 map dd trash
 map du $trash restore -r 0

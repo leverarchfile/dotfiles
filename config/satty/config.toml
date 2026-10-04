@@ -1,0 +1,30 @@
+[general]
+output-filename = "~/pictures/screenshots/annotated_%y%m%d_%H-%M-%S.png"
+copy-command = "wl-copy"
+initial-tool = "brush"
+default-hide-toolbars = false
+default-fill-shapes = false
+early-exit = false
+resize = { mode = "smart" }
+annotation-size-factor = 1
+corner-roundness = 0
+actions-on-enter = ["save-to-clipboard", "save-to-file", "exit"]
+actions-on-escape = ["exit"]
+disable-notifications = false
+
+[font]
+family = "sans-serif"
+style = "Regular"
+
+[color-palette]
+palette = [
+    "#d92643ff",  # 1 red
+    "#6ab04cff",  # 2 green
+    "#ffe600ff",  # 3 yellow
+    "#ff7447ff",  # 4 orange
+    "#bda7f0ff",  # 5 lavender
+    "#000000ff",  # 6 black
+    "#ffffffff",  # 7 white
+    "#989898ff",  # 8 grey
+]
+custom = ["#2f7bf5"]
