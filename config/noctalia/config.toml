@@ -1,0 +1,91 @@
+[audio]
+enable_sounds = false
+
+[bar.default]
+capsule_radius = 0
+concave_edge_corners = false
+end = [ "notifications", "network", "bluetooth", "volume", "cpu", "ram", "battery" ]
+margin_ends = 0
+radius = 0
+shadow = false
+start = [ "workspaces" ]
+
+[battery]
+warning_threshold = 21
+
+[desktop_widgets]
+enabled = false
+
+[hooks]
+colors_changed = "systemctl --user restart xdg-desktop-portal-gtk"
+
+[lockscreen]
+enabled = false
+
+[notification]
+layer = "overlay"
+show_app_name = false
+
+[shell]
+clipboard_image_action_command = "satty -f -"
+clipboard_keep_from_closed_apps = false
+corner_radius_scale = 0.0
+setup_wizard_enabled = false
+show_close_buttons = false
+
+    [shell.animation]
+    enabled = false
+
+[theme]
+builtin = "Tokyo-Night"
+community_palette = "Noctalia legacy"
+mode = "dark"
+source = "builtin"
+wallpaper_scheme = "m3-content"
+
+    [theme.templates]
+    builtin_ids = [ "foot", "gtk3", "gtk4", "mango" ]
+    community_ids = [ "fuzzel", "bat", "pywalfox" ]
+    enable_builtin_templates = true
+    enable_community_templates = true
+
+[wallpaper.default]
+path = "color:#000000"
+
+[widget.battery]
+capsule = true
+
+[widget.bluetooth]
+capsule = true
+
+[widget.clock]
+format = "{:%Y-%m-%d %a %H:%M}"
+
+[widget.cpu]
+capsule = true
+show_glyph = false
+stat = "cpu_temp"
+visualization = "none"
+
+[widget.network]
+capsule = true
+show_label = false
+vpn_status = "both"
+
+[widget.notifications]
+hide_when_no_unread = true
+
+[widget.ram]
+capsule = true
+show_glyph = false
+visualization = "none"
+
+[widget.volume]
+capsule = true
+show_label = false
+
+[widget.workspaces]
+active_pill_size = 1.0
+empty_color = "shadow"
+occupied_color = "tertiary"
+scale = 1.3
