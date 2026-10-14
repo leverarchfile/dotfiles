@@ -4,7 +4,7 @@ enable_sounds = false
 [bar.default]
 capsule_radius = 0
 concave_edge_corners = false
-end = [ "notifications", "network", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "battery" ]
+end = [ "network", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "battery" ]
 margin_ends = 0
 radius = 0
 shadow = false
@@ -87,9 +87,6 @@ visualization = "none"
 capsule = true
 show_label = false
 vpn_status = "both"
-
-[widget.notifications]
-hide_when_no_unread = true
 
 [widget.ram]
 capsule = true
