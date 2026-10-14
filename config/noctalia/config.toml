@@ -4,7 +4,7 @@ enable_sounds = false
 [bar.default]
 capsule_radius = 0
 concave_edge_corners = false
-end = [ "notifications", "network", "bluetooth", "volume", "cpu", "ram", "battery" ]
+end = [ "notifications", "network", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "battery" ]
 margin_ends = 0
 radius = 0
 shadow = false
@@ -36,6 +36,14 @@ show_close_buttons = false
     [shell.animation]
     enabled = false
 
+    [shell.launcher]
+    categories = false
+    sort_by_usage = false
+    compact = true
+    layout = "simple"
+    show_icons = false
+    show_app_origin_indicator = false
+
 [theme]
 builtin = "Tokyo-Night"
 community_palette = "Noctalia legacy"
@@ -61,10 +69,18 @@ capsule = true
 [widget.clock]
 format = "{:%Y-%m-%d %a %H:%M}"
 
-[widget.cpu]
+[widget.cpu-usage]
+type = "sysmon"
+stat = "cpu_usage"
 capsule = true
 show_glyph = false
+visualization = "none"
+
+[widget.cpu-temp]
+type = "sysmon"
 stat = "cpu_temp"
+capsule = true
+show_glyph = false
 visualization = "none"
 
 [widget.network]
