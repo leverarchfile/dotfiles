@@ -229,3 +229,33 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 (add-hook 'org-mode-hook #'lbr/setup-waybar-update-hooks)
 
 (provide 'lbr-org-agenda)
+
+;;; Org agenda iCalendar export
+
+(require 'ox-icalendar)
+(setq org-icalendar-combined-agenda-file "~/.local/share/calendars/org/org.ics"
+      org-icalendar-timezone "Pacific/Auckland"
+      org-icalendar-use-scheduled '(event-if-todo-not-done event-if-not-todo)
+      org-icalendar-use-deadline  '(event-if-todo-not-done event-if-not-todo)
+      org-icalendar-include-body nil
+      org-icalendar-include-sexps nil)
+
+;; export all agenda files to org.ics
+(defun lbr/update-org-ics ()
+  (let ((inhibit-message t)
+        (org-export-with-broken-links t)   ; ignore unresolvable links
+        (org-export-use-babel nil))        ; don't process code blocks
+    (org-icalendar-combine-agenda-files)))
+
+;; run it when an agenda file is saved or reloaded from disk
+(defun lbr/check-update-org-ics ()
+  (when (and buffer-file-name
+             (member (file-truename buffer-file-name)
+                     (mapcar 'file-truename org-agenda-files)))
+    (lbr/update-org-ics)))
+
+(add-hook 'after-save-hook #'lbr/check-update-org-ics)
+(add-hook 'after-revert-hook #'lbr/check-update-org-ics)
+
+;; run once at startup, in case files changed while Emacs was not running
+(add-hook 'emacs-startup-hook #'lbr/update-org-ics)

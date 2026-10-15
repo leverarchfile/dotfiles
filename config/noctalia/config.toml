@@ -13,6 +13,17 @@ start = [ "workspaces" ]
 [battery]
 warning_threshold = 21
 
+[calendar]
+enabled = true
+
+    [calendar.account.org]
+    type = "vdir"
+    path = "~/.local/share/calendars"
+
+    [calendar.reminders]
+    enabled = true
+    default_lead_minutes = 15
+
 [desktop_widgets]
 enabled = false
 
