@@ -235,8 +235,8 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 (require 'ox-icalendar)
 (setq org-icalendar-combined-agenda-file "~/.local/share/calendars/org/org.ics"
       org-icalendar-timezone "Pacific/Auckland"
-      org-icalendar-use-scheduled '(event-if-todo-not-done event-if-not-todo)
-      org-icalendar-use-deadline  '(event-if-todo-not-done event-if-not-todo)
+      org-icalendar-use-scheduled nil
+      org-icalendar-use-deadline nil
       org-icalendar-include-body nil
       org-icalendar-include-sexps nil)
 
