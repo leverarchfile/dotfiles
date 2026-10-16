@@ -4,7 +4,9 @@
 
 (use-package org
   :config
-  (setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))
+  (setq org-agenda-files
+       (seq-remove (lambda (f) (string-match-p "/archive/" f))
+                   (directory-files-recursively "~/org/" "\\.org$"))) 
   (setq org-agenda-window-setup 'only-window) ; agenda uses whole window
   (setq org-agenda-restore-windows-after-quit t) ; restore window configuration on exit
   
@@ -228,8 +230,6 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 
 (add-hook 'org-mode-hook #'lbr/setup-waybar-update-hooks)
 
-(provide 'lbr-org-agenda)
-
 ;;; Org agenda iCalendar export
 
 (require 'ox-icalendar)
@@ -240,18 +240,52 @@ in agenda.org and level-1 headlines in inbox-phone.org."
       org-icalendar-include-body nil
       org-icalendar-include-sexps nil)
 
-;; export all agenda files to org.ics
+(setq org-export-async-init-file (locate-library "lbr-org-ics"))
+
+;; session variables for background export
+(defvar lbr/org-ics-vars
+  '(org-todo-keywords
+    org-icalendar-combined-agenda-file
+    org-icalendar-timezone
+    org-icalendar-use-scheduled
+    org-icalendar-use-deadline
+    org-icalendar-include-body
+    org-icalendar-include-sexps
+    org-export-with-broken-links
+    org-export-use-babel))
+
+(defvar lbr/org-ics-timer nil)
+
+;; export agenda files to org.ics in a background emacs
+(defun lbr/update-org-ics-now ()
+  (setq lbr/org-ics-timer nil)
+  (let* ((inhibit-message t)
+         (org-export-with-broken-links t)   ; ignore unresolvable links
+         (org-export-use-babel nil)         ; don't process code blocks
+         (files org-agenda-files)
+         (settings (mapcan (lambda (v) (list v (list 'quote (symbol-value v))))
+                           lbr/org-ics-vars)))
+    (with-temp-buffer ; so the current buffer isn't copied to the child
+      (org-export-async-start
+          (lambda (_)
+            (org-export-add-to-stack
+             (expand-file-name org-icalendar-combined-agenda-file) 'icalendar))
+        `(progn
+           (setq ,@settings)
+           (apply #'org-icalendar--combine-files ',files))))))
+
+;; burst of saves as one export
 (defun lbr/update-org-ics ()
-  (let ((inhibit-message t)
-        (org-export-with-broken-links t)   ; ignore unresolvable links
-        (org-export-use-babel nil))        ; don't process code blocks
-    (org-icalendar-combine-agenda-files)))
+  (when lbr/org-ics-timer
+    (cancel-timer lbr/org-ics-timer))
+  (setq lbr/org-ics-timer
+        (run-with-timer 3 nil #'lbr/update-org-ics-now)))
 
 ;; run it when an agenda file is saved or reloaded from disk
 (defun lbr/check-update-org-ics ()
   (when (and buffer-file-name
              (member (file-truename buffer-file-name)
-                     (mapcar 'file-truename org-agenda-files)))
+                     (mapcar #'file-truename org-agenda-files)))
     (lbr/update-org-ics)))
 
 (add-hook 'after-save-hook #'lbr/check-update-org-ics)
@@ -259,3 +293,5 @@ in agenda.org and level-1 headlines in inbox-phone.org."
 
 ;; run once at startup, in case files changed while Emacs was not running
 (add-hook 'emacs-startup-hook #'lbr/update-org-ics)
+
+(provide 'lbr-org-agenda)
