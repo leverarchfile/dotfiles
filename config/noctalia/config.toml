@@ -4,7 +4,7 @@ enable_sounds = false
 [bar.default]
 capsule_radius = 0
 concave_edge_corners = false
-end = [ "network", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "battery" ]
+end = [ "network", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "ai_usage", "battery" ]
 margin_ends = 0
 radius = 0
 shadow = false
@@ -36,6 +36,9 @@ enabled = false
 [notification]
 layer = "overlay"
 show_app_name = false
+
+[plugins]
+enabled = ["felipeartur/ai-usagebar"]
 
 [shell]
 clipboard_image_action_command = "satty -f -"
@@ -70,6 +73,14 @@ wallpaper_scheme = "m3-content"
 
 [wallpaper.default]
 path = "color:#000000"
+
+[widget.ai_usage]
+type = "felipeartur/ai-usagebar:bar"
+capsule = true
+vendor = "anthropic"
+provider_limit = 1
+visualization = "none"
+extras = "none"
 
 [widget.battery]
 capsule = true
