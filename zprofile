@@ -23,3 +23,4 @@ export QT_AUTO_SCREEN_SCALE_FACTOR=1
 export QT_ENABLE_HIGHDPI_SCALING=1
 export MOZ_ENABLE_WAYLAND=1
 export LIBVIRT_DEFAULT_URI='qemu:///system'
+export CLAUDE_API_USAGE_KEY="$(pass claude-api-usage)"
