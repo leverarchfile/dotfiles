@@ -4,7 +4,7 @@ enable_sounds = false
 [bar.default]
 capsule_radius = 0
 concave_edge_corners = false
-end = [ "network", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "ai_usage", "battery" ]
+end = [ "recorder", "network", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "ai_usage", "battery" ]
 margin_ends = 0
 radius = 0
 shadow = false
@@ -38,7 +38,19 @@ layer = "overlay"
 show_app_name = false
 
 [plugins]
-enabled = ["felipeartur/ai-usagebar"]
+enabled = ["noctalia/screen_recorder", "felipeartur/ai-usagebar"]
+
+[plugin_settings."noctalia/screen_recorder"]
+video_source = "portal" # focused, portal, or region
+audio_source = "both" # output, input, both, or none
+directory = "~/videos/screen-recordings"
+filename_pattern = "recording_%Y%m%d_%H%M%S"
+frame_rate = 60
+resolution = "original"
+video_codec = "h264"
+video_qp = 22
+show_cursor = true
+hide_inactive = true # widget
 
 [shell]
 clipboard_image_action_command = "satty -f -"
@@ -114,6 +126,10 @@ vpn_status = "both"
 capsule = true
 show_glyph = false
 visualization = "none"
+
+[widget.recorder]
+type = "noctalia/screen_recorder:recorder"
+enabled = true
 
 [widget.volume]
 capsule = true
