@@ -1,27 +1,19 @@
-#!/usr/bin/env python3
+#!/bin/sh
 
-import re, subprocess, time
+# Join hard-wrapped lines in the selected text and paste the result over it.
+# Blank lines are kept as paragraph breaks.
 
-def run(cmd, **kw):
-    return subprocess.run(cmd, capture_output=True, text=True, **kw).stdout
+text=$(wl-paste --primary 2>/dev/null) || exit 0
+[ -n "$text" ] || exit 0
 
-LIST_ITEM = re.compile(r"^\s*([-*•]|\d+[.)])\s+")
+prev=$(wl-paste --no-newline 2>/dev/null)
 
-text = run(["wl-paste", "--primary", "--no-newline"])
-if text:
-    out = []
-    for para in re.split(r"\n\s*\n", text):
-        lines = [l.strip() for l in para.split("\n")]
-        joined = []
-        for line in lines:
-            if not joined or LIST_ITEM.match(line):
-                joined.append(line)
-            else:
-                joined[-1] += " " + line
-        out.append("\n".join(joined))
-    text = re.sub(r"[ \t]{2,}", " ", "\n\n".join(out))
-    previous = run(["wl-paste", "--no-newline"])
-    subprocess.run(["wl-copy", "--sensitive"], input=text, text=True)
-    subprocess.run(["wtype", "-M", "ctrl", "v", "-m", "ctrl"])
-    time.sleep(0.2)
-    subprocess.run(["wl-copy", "--sensitive"], input=previous, text=True)
+printf '%s\n' "$text" \
+  | awk 'BEGIN { RS = "" }
+         { gsub(/[ \t]*\n[ \t]*/, " "); gsub(/  +/, " ")
+           if (NR > 1) printf "\n\n"; printf "%s", $0 }' \
+  | wl-copy --sensitive
+
+wtype -M ctrl v -m ctrl
+sleep 0.2
+printf '%s' "$prev" | wl-copy --sensitive
