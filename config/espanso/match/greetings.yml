@@ -1,0 +1,13 @@
+matches:
+  - trigger: ";kk"
+    replace: "Kia ora kōrua"
+  - trigger: ";ka"
+    replace: "Kia ora koutou"
+  - trigger: ";kt"
+    replace: "Kia ora tātou katoa"
+  - trigger: ";tk"
+    replace: "Tēnā koe"
+  - trigger: ";mr"
+    replace: "Mōrena"
+  - trigger: ";at"
+    replace: "Ata mārie"

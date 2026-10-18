@@ -1,0 +1,11 @@
+matches:
+  - trigger: ";mtw"
+    replace: "Mā te wā"
+  - trigger: ";nm"
+    replace: "Ngā mihi"
+  - trigger: ";nn"
+    replace: "Ngā mihi nui"
+  - trigger: ";kp"
+    replace: "Kia pai tō rā"
+  - trigger: ";ab"
+    replace: "All the best,"

@@ -1,0 +1,24 @@
+matches:
+  - trigger: ";dt"
+    replace: "{{thedate}}"
+    vars:
+      - name: thedate
+        type: date
+        params:
+          format: "%d/%m/%Y"
+  - trigger: ";iso"
+    replace: "{{isodate}}"
+    vars:
+      - name: isodate
+        type: date
+        params:
+          format: "%Y-%m-%d"
+  - trigger: ";ic"
+    replace: "{{compactiso}}"
+    vars:
+      - name: compactiso
+        type: date
+        params:
+          format: "%Y%m%d"
+  - trigger: ";web"
+    replace: "https://leverarchfile.org"

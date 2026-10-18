@@ -1,0 +1,20 @@
+#!/usr/bin/env -S uv run --script
+
+# /// script
+# dependencies = ["smartypants"]
+# ///
+
+import html, subprocess, time, smartypants
+
+def run(cmd, **kw):
+    return subprocess.run(cmd, capture_output=True, text=True, **kw).stdout
+
+text = run(["wl-paste", "--primary", "--no-newline"])
+if text:
+    attrs = smartypants.Attr.q | smartypants.Attr.e
+    converted = html.unescape(smartypants.smartypants(text, attrs))
+    previous = run(["wl-paste", "--no-newline"])
+    subprocess.run(["wl-copy", "--sensitive"], input=converted, text=True)
+    subprocess.run(["wtype", "-M", "ctrl", "v", "-m", "ctrl"])
+    time.sleep(0.2)
+    subprocess.run(["wl-copy", "--sensitive"], input=previous, text=True)

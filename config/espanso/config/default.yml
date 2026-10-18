@@ -1,0 +1,5 @@
+show_notifications: false
+show_icon: false
+clipboard_threshold: 10000
+keyboard_layout:
+  layout: us
