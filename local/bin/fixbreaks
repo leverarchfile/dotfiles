@@ -1,18 +1,14 @@
 #!/bin/sh
 
-# Join hard-wrapped lines in the selected text and paste the result over it.
-# Blank lines are kept as paragraph breaks.
+# Join the selected text into one paragraph and paste it over the selection.
+# Select one paragraph at a time.
 
 text=$(wl-paste --primary 2>/dev/null) || exit 0
 [ -n "$text" ] || exit 0
 
 prev=$(wl-paste --no-newline 2>/dev/null)
 
-printf '%s\n' "$text" \
-  | awk 'BEGIN { RS = "" }
-         { gsub(/[ \t]*\n[ \t]*/, " "); gsub(/  +/, " ")
-           if (NR > 1) printf "\n\n"; printf "%s", $0 }' \
-  | wl-copy --sensitive
+printf '%s' "$text" | tr -s '[:space:]' ' ' | sed 's/ $//' | wl-copy --sensitive
 
 wtype -M ctrl v -m ctrl
 sleep 0.2
