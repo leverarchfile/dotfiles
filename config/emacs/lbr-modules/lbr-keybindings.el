@@ -134,6 +134,7 @@
     "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
     "t r" '(rainbow-mode :wk "Toggle rainbow mode")
     "t t" '(visual-line-mode :wk "Toggle truncated lines")
+    "t x" '(unfill-paragraph :wk "Join paragraph/region into one line")
     ;; elfeed
     "u" '(:ignore t :wk "Elfeed")
     "u r" '(elfeed-update :wk "Update elfeed")

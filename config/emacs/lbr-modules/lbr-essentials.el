@@ -114,6 +114,10 @@
     (kill-new file-name)
     (minibuffer-message "%s" file-name)))
 
+;;; Reflow text
+
+(use-package unfill)
+
 ;;; Dired
 
 (use-package dired

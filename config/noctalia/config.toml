@@ -37,6 +37,9 @@ enabled = false
 layer = "overlay"
 show_app_name = false
 
+[osd.kinds]
+keyboard_layout = false
+
 [plugins]
 enabled = ["noctalia/screen_recorder", "felipeartur/ai-usagebar"]
 
