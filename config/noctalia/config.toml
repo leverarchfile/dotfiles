@@ -104,7 +104,8 @@ capsule = true
 capsule = true
 
 [widget.clock]
-format = "{:%Y-%m-%d %a %H:%M}"
+capsule = true
+format = "{:%Y-%m-%d   %a %H:%M}"
 
 [widget.cpu-usage]
 type = "sysmon"
