@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Raise, lower, or mute the default audio sink via Noctalia.
+# Noctalia shows its own OSD on every change (no notifications).
+# If the sink is muted, 'up' and 'down' only unmute (volume is left as is).
+
+sink=@DEFAULT_AUDIO_SINK@
+
+is_muted() {
+  wpctl get-volume "$sink" | grep -q MUTED
+}
+
+case $1 in
+up|down)
+  if is_muted; then
+    wpctl set-mute "$sink" 0
+    noctalia msg volume-osd
+  else
+    noctalia msg volume-"$1"
+  fi
+  ;;
+mute)
+  noctalia msg volume-mute
+  ;;
+*)
+  echo "usage: ${0##*/} up|down|mute" >&2
+  exit 1
+  ;;
+esac

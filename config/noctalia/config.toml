@@ -1,5 +1,6 @@
 [audio]
 enable_sounds = false
+enable_overdrive = true
 
 [bar.default]
 capsule_radius = 0
