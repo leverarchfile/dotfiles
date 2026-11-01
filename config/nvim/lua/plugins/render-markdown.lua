@@ -3,6 +3,9 @@ return {
   dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
   ft = { "markdown" },
   config = function()
-    require("render-markdown").setup({ heading = { icons = {} } })
+    require("render-markdown").setup({ 
+      heading = { icons = {} },
+      code = { inline = false },
+    })
   end,
 }

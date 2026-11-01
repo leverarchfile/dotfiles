@@ -63,3 +63,12 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     fix_underline("DiagnosticUnderlineHint")
   end,
 })
+
+-- inline code: keep the theme's colour, drop the background
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = function()
+    local hl = vim.api.nvim_get_hl(0, { name = "@markup.raw.markdown_inline", link = false })
+    hl.bg = nil
+    vim.api.nvim_set_hl(0, "@markup.raw.markdown_inline", hl)
+  end,
+})
