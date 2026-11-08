@@ -5,7 +5,7 @@ enable_overdrive = true
 [bar.default]
 capsule_radius = 0
 concave_edge_corners = false
-end = [ "recorder", "network", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "ai_usage", "battery" ]
+end = [ "recorder", "network", "world_clock", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "ai_usage", "battery" ]
 margin_ends = 0
 radius = 0
 shadow = false
@@ -42,7 +42,7 @@ show_app_name = false
 keyboard_layout = false
 
 [plugins]
-enabled = ["noctalia/screen_recorder", "felipeartur/ai-usagebar"]
+enabled = ["noctalia/screen_recorder", "felipeartur/ai-usagebar", "noctalia/world_clock"]
 
 [plugin_settings."noctalia/screen_recorder"]
 video_source = "portal" # focused, portal, or region
@@ -107,6 +107,10 @@ capsule = true
 [widget.clock]
 capsule = true
 format = "{:%Y-%m-%d   %a %H:%M}"
+
+[widget.world_clock]
+type = "noctalia/world_clock:bar"
+capsule = true
 
 [widget.cpu-usage]
 type = "sysmon"
