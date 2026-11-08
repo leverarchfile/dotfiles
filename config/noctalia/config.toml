@@ -5,7 +5,7 @@ enable_overdrive = true
 [bar.default]
 capsule_radius = 0
 concave_edge_corners = false
-end = [ "recorder", "network", "world_clock", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "ai_usage", "battery" ]
+end = [ "recorder", "world_clock", "network", "bluetooth", "volume", "cpu-usage", "cpu-temp", "ram", "ai_usage", "battery" ]
 margin_ends = 0
 radius = 0
 shadow = false
@@ -55,6 +55,10 @@ video_codec = "h264"
 video_qp = 22
 show_cursor = true
 hide_inactive = true # widget
+
+[plugin_settings."noctalia/world_clock"]
+time_format = "24h"
+highlight_working_hours = false
 
 [shell]
 clipboard_image_action_command = "satty -f -"
