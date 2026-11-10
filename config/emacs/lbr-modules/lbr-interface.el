@@ -42,8 +42,8 @@
 
 (use-package doric-themes
  :config
- (setq doric-themes-to-toggle '(doric-obsidian doric-marble))
-(doric-themes-select 'doric-obsidian))
+ (setq doric-themes-to-toggle '(doric-marble doric-obsidian))
+(doric-themes-select 'doric-marble))
 
 (defun lbr/switch-theme ()
     (interactive)
