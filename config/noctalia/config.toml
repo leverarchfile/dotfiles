@@ -37,6 +37,7 @@ enabled = false
 [notification]
 layer = "overlay"
 show_app_name = false
+show_progress_bar = false
 
 [osd.kinds]
 keyboard_layout = false
