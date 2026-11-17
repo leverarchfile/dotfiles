@@ -9,6 +9,16 @@ export PASSWORD_STORE_DIR="${XDG_DATA_HOME}/password-store"
 export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 
+export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
+export ANDROID_USER_HOME="${XDG_DATA_HOME}/android"
+export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
+export W3M_DIR="${XDG_STATE_HOME}/w3m"
+export GTK2_RC_FILES="${XDG_CONFIG_HOME}/gtk-2.0/gtkrc"
+export MYPY_CACHE_DIR="${XDG_CACHE_HOME}/mypy"
+export JUPYTER_CONFIG_DIR="${XDG_CONFIG_HOME}/jupyter"
+export IPYTHONDIR="${XDG_CONFIG_HOME}/ipython"
+
 path=("${HOME}/.local/bin" $path)
 export PATH
 
