@@ -98,6 +98,7 @@ path = "color:#000000"
 [widget.ai_usage]
 type = "felipeartur/ai-usagebar:bar"
 capsule = true
+panel_view = "provider"
 vendor = "anthropic"
 provider_limit = 1
 visualization = "none"
