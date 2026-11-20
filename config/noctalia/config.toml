@@ -39,6 +39,9 @@ layer = "overlay"
 show_app_name = false
 show_progress_bar = false
 
+[osd]
+position = "top_center"
+
 [osd.kinds]
 keyboard_layout = false
 
@@ -78,6 +81,9 @@ show_close_buttons = false
     layout = "simple"
     show_icons = false
     show_app_origin_indicator = false
+
+    [shell.panel]
+    open_near_click_control_center = true
 
 [theme]
 builtin = "Tokyo-Night"
